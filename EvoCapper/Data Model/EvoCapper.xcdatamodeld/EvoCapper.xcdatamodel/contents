@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3396" systemVersion="12F45" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Entry" syncable="YES">
+        <attribute name="dateOfBirth" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pastLines" optional="YES" attributeType="String" syncable="YES"/>
+        <fetchedProperty name="fetchedProperty" optional="YES" syncable="YES">
+            <fetchRequest name="fetchedPropertyFetchRequest" entity="Entry"/>
+        </fetchedProperty>
+    </entity>
+    <entity name="FitnessStats" representedClassName="ClassStats" syncable="YES">
+        <attribute name="numberSuperfectaBets" optional="YES" attributeType="Integer 16" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="numberSuperfectaBetsWinners" optional="YES" attributeType="Integer 16" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="numberTrifectaBets" optional="YES" attributeType="Integer 16" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="numberTrifectaBetsWinners" optional="YES" attributeType="Integer 16" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="numberWinBets" optional="YES" attributeType="Integer 16" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="numberWinBetWinners" optional="YES" attributeType="Integer 16" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="returnOnInvestment" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="superfectaBetsCost" optional="YES" attributeType="Float" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="superfectaBetsWinnings" optional="YES" attributeType="Float" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="totalCost" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="totalProfit" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="totalWinnings" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="trifectaBetsCost" optional="YES" attributeType="Float" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="trifectaBetsWinnings" optional="YES" attributeType="Float" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="winBetsCost" optional="YES" attributeType="Float" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="winBetsWininings" optional="YES" attributeType="Float" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <relationship name="individualHandicapper" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="IndividualHandicapper" inverseName="fitnessStats" inverseEntity="IndividualHandicapper" syncable="YES"/>
+    </entity>
+    <entity name="HandicapperPopulation" representedClassName="Population" syncable="YES">
+        <attribute name="comments" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="generationsNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="genesisDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="initialSize" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="maxTreeDepth" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="minTreeDepth" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="mutationRate" optional="YES" attributeType="Float" defaultValueString="0" syncable="YES"/>
+        <attribute name="populationName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="populationSize" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="individualHandicapper" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="IndividualHandicapper" inverseName="handicapperPopulation" inverseEntity="IndividualHandicapper" syncable="YES"/>
+    </entity>
+    <entity name="IndividualHandicapper" representedClassName="Handicapper" syncable="YES">
+        <attribute name="breakPositionTree" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="breakSpeedTree" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="earlySpeedTree" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lateSpeedTree" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recentClassTree" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="relevanceTree" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="topSpeedTree" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="fitnessStats" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FitnessStats" inverseName="individualHandicapper" inverseEntity="FitnessStats" syncable="YES"/>
+        <relationship name="handicapperPopulation" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="HandicapperPopulation" inverseName="individualHandicapper" inverseEntity="HandicapperPopulation" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Entry" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="HandicapperPopulation" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="FitnessStats" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IndividualHandicapper" positionX="0" positionY="0" width="0" height="0"/>
+    </elements>
+</model>

@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "ECEvolutionManager.h"
 
 @interface ECAppDelegate : NSObject <NSApplicationDelegate>
 
@@ -17,5 +18,8 @@
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 - (IBAction)saveAction:(id)sender;
+
+- (IBAction)createNewPopulationButtonTapped:(id)sender;
+- (IBAction)trainPopulationButtonTapped:(id)sender;
 
 @end

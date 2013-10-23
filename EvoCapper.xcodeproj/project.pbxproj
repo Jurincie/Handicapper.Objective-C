@@ -7,13 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A27ED391818221400AA91AE /* evocappLogo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7A27ED381818221400AA91AE /* evocappLogo.jpg */; };
+		7A27ED3E1818497B00AA91AE /* EvoCapper.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7A27ED3C1818497B00AA91AE /* EvoCapper.xcdatamodeld */; };
+		7A27ED4118184CEE00AA91AE /* ECEvolutionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A27ED4018184CEE00AA91AE /* ECEvolutionManager.m */; };
 		7A98B3BA18170ECD0013F43D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A98B3B918170ECD0013F43D /* Cocoa.framework */; };
 		7A98B3C418170ECD0013F43D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A98B3C218170ECD0013F43D /* InfoPlist.strings */; };
 		7A98B3C618170ECD0013F43D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A98B3C518170ECD0013F43D /* main.m */; };
 		7A98B3CA18170ECD0013F43D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 7A98B3C818170ECD0013F43D /* Credits.rtf */; };
 		7A98B3CD18170ECD0013F43D /* ECAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A98B3CC18170ECD0013F43D /* ECAppDelegate.m */; };
 		7A98B3D018170ECE0013F43D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7A98B3CE18170ECE0013F43D /* MainMenu.xib */; };
-		7A98B3D318170ECE0013F43D /* EvoCapper.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7A98B3D118170ECE0013F43D /* EvoCapper.xcdatamodeld */; };
 		7A98B3D518170ECE0013F43D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A98B3D418170ECE0013F43D /* Images.xcassets */; };
 		7A98B3DC18170ECE0013F43D /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A98B3DB18170ECE0013F43D /* XCTest.framework */; };
 		7A98B3DD18170ECE0013F43D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A98B3B918170ECD0013F43D /* Cocoa.framework */; };
@@ -32,6 +34,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7A27ED381818221400AA91AE /* evocappLogo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = evocappLogo.jpg; path = MVC/Views/Images/evocappLogo.jpg; sourceTree = "<group>"; };
+		7A27ED3D1818497B00AA91AE /* EvoCapper.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = EvoCapper.xcdatamodel; sourceTree = "<group>"; };
+		7A27ED3F18184CEE00AA91AE /* ECEvolutionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECEvolutionManager.h; path = MVC/Controllers/ECEvolutionManager.h; sourceTree = "<group>"; };
+		7A27ED4018184CEE00AA91AE /* ECEvolutionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECEvolutionManager.m; path = MVC/Controllers/ECEvolutionManager.m; sourceTree = "<group>"; };
 		7A98B3B618170ECD0013F43D /* EvoCapper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EvoCapper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A98B3B918170ECD0013F43D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7A98B3BC18170ECD0013F43D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -45,7 +51,6 @@
 		7A98B3CB18170ECD0013F43D /* ECAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECAppDelegate.h; sourceTree = "<group>"; };
 		7A98B3CC18170ECD0013F43D /* ECAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECAppDelegate.m; sourceTree = "<group>"; };
 		7A98B3CF18170ECE0013F43D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		7A98B3D218170ECE0013F43D /* EvoCapper.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = EvoCapper.xcdatamodel; sourceTree = "<group>"; };
 		7A98B3D418170ECE0013F43D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		7A98B3DA18170ECE0013F43D /* EvoCapperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EvoCapperTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A98B3DB18170ECE0013F43D /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -75,6 +80,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7A27ED36181821F700AA91AE /* MVC */ = {
+			isa = PBXGroup;
+			children = (
+				7A27ED3B1818222600AA91AE /* C-Controllers */,
+				7A27ED3A1818221C00AA91AE /* M-Model */,
+				7A27ED371818220200AA91AE /* V-VIews */,
+			);
+			name = MVC;
+			sourceTree = "<group>";
+		};
+		7A27ED371818220200AA91AE /* V-VIews */ = {
+			isa = PBXGroup;
+			children = (
+				7A98B3CE18170ECE0013F43D /* MainMenu.xib */,
+				7A27ED381818221400AA91AE /* evocappLogo.jpg */,
+			);
+			name = "V-VIews";
+			sourceTree = "<group>";
+		};
+		7A27ED3A1818221C00AA91AE /* M-Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "M-Model";
+			sourceTree = "<group>";
+		};
+		7A27ED3B1818222600AA91AE /* C-Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				7A27ED3F18184CEE00AA91AE /* ECEvolutionManager.h */,
+				7A27ED4018184CEE00AA91AE /* ECEvolutionManager.m */,
+			);
+			name = "C-Controllers";
+			sourceTree = "<group>";
+		};
 		7A98B3AD18170ECD0013F43D = {
 			isa = PBXGroup;
 			children = (
@@ -119,9 +159,9 @@
 			children = (
 				7A98B3CB18170ECD0013F43D /* ECAppDelegate.h */,
 				7A98B3CC18170ECD0013F43D /* ECAppDelegate.m */,
-				7A98B3CE18170ECE0013F43D /* MainMenu.xib */,
+				7A27ED36181821F700AA91AE /* MVC */,
+				7A98B3F018181EA40013F43D /* Data Model */,
 				7A98B3D418170ECE0013F43D /* Images.xcassets */,
-				7A98B3D118170ECE0013F43D /* EvoCapper.xcdatamodeld */,
 				7A98B3C018170ECD0013F43D /* Supporting Files */,
 			);
 			path = EvoCapper;
@@ -155,6 +195,14 @@
 				7A98B3E318170ECE0013F43D /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7A98B3F018181EA40013F43D /* Data Model */ = {
+			isa = PBXGroup;
+			children = (
+				7A27ED3C1818497B00AA91AE /* EvoCapper.xcdatamodeld */,
+			);
+			name = "Data Model";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -205,6 +253,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Ron Jurincie";
 				TargetAttributes = {
+					7A98B3B518170ECD0013F43D = {
+						DevelopmentTeam = J5T6Z5N38H;
+					};
 					7A98B3D918170ECE0013F43D = {
 						TestTargetID = 7A98B3B518170ECD0013F43D;
 					};
@@ -235,6 +286,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A98B3C418170ECD0013F43D /* InfoPlist.strings in Resources */,
+				7A27ED391818221400AA91AE /* evocappLogo.jpg in Resources */,
 				7A98B3D518170ECE0013F43D /* Images.xcassets in Resources */,
 				7A98B3CA18170ECD0013F43D /* Credits.rtf in Resources */,
 				7A98B3D018170ECE0013F43D /* MainMenu.xib in Resources */,
@@ -256,9 +308,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7A98B3D318170ECE0013F43D /* EvoCapper.xcdatamodeld in Sources */,
 				7A98B3CD18170ECD0013F43D /* ECAppDelegate.m in Sources */,
 				7A98B3C618170ECD0013F43D /* main.m in Sources */,
+				7A27ED3E1818497B00AA91AE /* EvoCapper.xcdatamodeld in Sources */,
+				7A27ED4118184CEE00AA91AE /* ECEvolutionManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,6 +522,7 @@
 				7A98B3EC18170ECE0013F43D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7A98B3ED18170ECE0013F43D /* Build configuration list for PBXNativeTarget "EvoCapperTests" */ = {
 			isa = XCConfigurationList;
@@ -477,17 +531,19 @@
 				7A98B3EF18170ECE0013F43D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		7A98B3D118170ECE0013F43D /* EvoCapper.xcdatamodeld */ = {
+		7A27ED3C1818497B00AA91AE /* EvoCapper.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				7A98B3D218170ECE0013F43D /* EvoCapper.xcdatamodel */,
+				7A27ED3D1818497B00AA91AE /* EvoCapper.xcdatamodel */,
 			);
-			currentVersion = 7A98B3D218170ECE0013F43D /* EvoCapper.xcdatamodel */;
-			path = EvoCapper.xcdatamodeld;
+			currentVersion = 7A27ED3D1818497B00AA91AE /* EvoCapper.xcdatamodel */;
+			name = EvoCapper.xcdatamodeld;
+			path = "Data Model/EvoCapper.xcdatamodeld";
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
