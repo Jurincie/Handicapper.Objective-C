@@ -10,13 +10,15 @@
 
 @implementation ECAppDelegate
 
-@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-@synthesize managedObjectModel = _managedObjectModel;
-@synthesize managedObjectContext = _managedObjectContext;
+@synthesize persistentStoreCoordinator  = _persistentStoreCoordinator;
+@synthesize managedObjectModel          = _managedObjectModel;
+@synthesize managedObjectContext        = _managedObjectContext;
+@synthesize evolutionManager            = _evolutionManager;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     // Insert code here to initialize your application
+    self.evolutionManager = [[ECEvolutionManager alloc] init];
 }
 
 // Returns the directory the application uses to store the Core Data store file.
@@ -245,11 +247,15 @@
 - (IBAction)createNewPopulationButtonTapped:(id)sender
 {
     NSLog(@"Create New Population Button Tapped");
+    
+    [self.evolutionManager createNewPopoulation];
 }
 
 - (IBAction)trainPopulationButtonTapped:(id)sender
 {
     NSLog(@"Train Population Button Tapped");
+    
+    [self.evolutionManager trainPopulation];
 }
 
 @end

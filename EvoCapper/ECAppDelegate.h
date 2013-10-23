@@ -17,6 +17,8 @@
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
+@property (strong, nonatomic) ECEvolutionManager *evolutionManager;
+
 - (IBAction)saveAction:(id)sender;
 
 - (IBAction)createNewPopulationButtonTapped:(id)sender;

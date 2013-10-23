@@ -10,9 +10,9 @@
 
 @interface ECEvolutionManager : NSObject
 
-
 - (BOOL)createNewPopoulation;
-- (void)trainPopulation:(id)handicappersPopulation
-    thisManyGenerations:(NSUInteger)numberGenerations;
+- (void)trainPopulation;
+
++ (id)sharedManager;
 
 @end
