@@ -10,6 +10,10 @@
 		7A27ED391818221400AA91AE /* evocappLogo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7A27ED381818221400AA91AE /* evocappLogo.jpg */; };
 		7A27ED3E1818497B00AA91AE /* EvoCapper.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7A27ED3C1818497B00AA91AE /* EvoCapper.xcdatamodeld */; };
 		7A27ED4118184CEE00AA91AE /* ECEvolutionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A27ED4018184CEE00AA91AE /* ECEvolutionManager.m */; };
+		7A27ED441818608200AA91AE /* Entry.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A27ED431818608200AA91AE /* Entry.m */; };
+		7A27ED471818608300AA91AE /* Population.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A27ED461818608300AA91AE /* Population.m */; };
+		7A27ED4A1818608300AA91AE /* ClassStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A27ED491818608300AA91AE /* ClassStats.m */; };
+		7A27ED4D1818608300AA91AE /* Handicapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A27ED4C1818608300AA91AE /* Handicapper.m */; };
 		7A98B3BA18170ECD0013F43D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A98B3B918170ECD0013F43D /* Cocoa.framework */; };
 		7A98B3C418170ECD0013F43D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A98B3C218170ECD0013F43D /* InfoPlist.strings */; };
 		7A98B3C618170ECD0013F43D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A98B3C518170ECD0013F43D /* main.m */; };
@@ -38,6 +42,14 @@
 		7A27ED3D1818497B00AA91AE /* EvoCapper.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = EvoCapper.xcdatamodel; sourceTree = "<group>"; };
 		7A27ED3F18184CEE00AA91AE /* ECEvolutionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECEvolutionManager.h; path = MVC/Controllers/ECEvolutionManager.h; sourceTree = "<group>"; };
 		7A27ED4018184CEE00AA91AE /* ECEvolutionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECEvolutionManager.m; path = MVC/Controllers/ECEvolutionManager.m; sourceTree = "<group>"; };
+		7A27ED421818608200AA91AE /* Entry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Entry.h; path = MVC/Controllers/Entry.h; sourceTree = "<group>"; };
+		7A27ED431818608200AA91AE /* Entry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Entry.m; path = MVC/Controllers/Entry.m; sourceTree = "<group>"; };
+		7A27ED451818608300AA91AE /* Population.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Population.h; path = MVC/Controllers/Population.h; sourceTree = "<group>"; };
+		7A27ED461818608300AA91AE /* Population.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Population.m; path = MVC/Controllers/Population.m; sourceTree = "<group>"; };
+		7A27ED481818608300AA91AE /* ClassStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClassStats.h; path = MVC/Controllers/ClassStats.h; sourceTree = "<group>"; };
+		7A27ED491818608300AA91AE /* ClassStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClassStats.m; path = MVC/Controllers/ClassStats.m; sourceTree = "<group>"; };
+		7A27ED4B1818608300AA91AE /* Handicapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Handicapper.h; path = MVC/Controllers/Handicapper.h; sourceTree = "<group>"; };
+		7A27ED4C1818608300AA91AE /* Handicapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Handicapper.m; path = MVC/Controllers/Handicapper.m; sourceTree = "<group>"; };
 		7A98B3B618170ECD0013F43D /* EvoCapper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EvoCapper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A98B3B918170ECD0013F43D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7A98B3BC18170ECD0013F43D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -111,6 +123,14 @@
 			children = (
 				7A27ED3F18184CEE00AA91AE /* ECEvolutionManager.h */,
 				7A27ED4018184CEE00AA91AE /* ECEvolutionManager.m */,
+				7A27ED4B1818608300AA91AE /* Handicapper.h */,
+				7A27ED4C1818608300AA91AE /* Handicapper.m */,
+				7A27ED481818608300AA91AE /* ClassStats.h */,
+				7A27ED491818608300AA91AE /* ClassStats.m */,
+				7A27ED451818608300AA91AE /* Population.h */,
+				7A27ED461818608300AA91AE /* Population.m */,
+				7A27ED421818608200AA91AE /* Entry.h */,
+				7A27ED431818608200AA91AE /* Entry.m */,
 			);
 			name = "C-Controllers";
 			sourceTree = "<group>";
@@ -309,9 +329,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A98B3CD18170ECD0013F43D /* ECAppDelegate.m in Sources */,
+				7A27ED441818608200AA91AE /* Entry.m in Sources */,
+				7A27ED4A1818608300AA91AE /* ClassStats.m in Sources */,
 				7A98B3C618170ECD0013F43D /* main.m in Sources */,
 				7A27ED3E1818497B00AA91AE /* EvoCapper.xcdatamodeld in Sources */,
+				7A27ED471818608300AA91AE /* Population.m in Sources */,
 				7A27ED4118184CEE00AA91AE /* ECEvolutionManager.m in Sources */,
+				7A27ED4D1818608300AA91AE /* Handicapper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
