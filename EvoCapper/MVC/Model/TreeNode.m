@@ -1,0 +1,213 @@
+//
+//  TreeNode.m
+//  GreVolution
+//
+//  Created by Ron Jurincie on 7/1/13.
+//  Copyright (c) 2013 Ron Jurincie. All rights reserved.
+//
+
+#import "TreeNode.h"
+
+@implementation TreeNode
+
+#define RAND_01 random() * 1000000 / 1000000.0;
+#define NOT_AN_INDEX 999
+#define NOT_A_CONSTANT 0.0
+
+@synthesize leafConstant        = _leafConstant;
+@synthesize functionPtr         = _functionPtr;
+@synthesize leftChild           = _leftChild;
+@synthesize leafVariableIndex   = _leafVariableIndex;
+@synthesize functionIndex       = _functionIndex;
+@synthesize rightChild          = _rightChild;
+@synthesize conditionTest       = _conditionTest;
+@synthesize functionName        = _functionName;
+
+- (id) initWithFunctionPointerIndex:(NSUInteger)funcPtrIndex
+{
+    if(self = [super init])
+    {
+        self.leafVariableIndex  = NOT_AN_INDEX;
+        self.leafConstant       = NOT_A_CONSTANT;
+        self.functionPtr        = nil;
+        self.leftChild          = nil;
+        self.rightChild         = nil;
+        self.functionIndex      = funcPtrIndex;
+        
+        switch (funcPtrIndex)
+        {
+            case 0:
+                self.functionPtr    = add;
+                self.functionName   = @"add";
+                break;
+                
+            case 1:
+                self.functionPtr    = subtract;
+                self.functionName   = @"subtract";
+                break;
+                
+            case 2:
+                self.functionPtr    = multiply;
+                self.functionName   = @"multiply";
+                break;
+                
+            case 3:
+                self.functionPtr    = divide;
+                self.functionName   = @"divide";
+                break;
+                
+            case 4:
+                self.functionPtr    = squareRoot;
+                self.functionName   = @"squareRoot";
+                break;
+                
+            case 5:
+                self.functionPtr    = square;
+                self.functionName   = @"square";
+                break;
+                
+            case 6:
+                self.functionPtr    = naturalLog;
+                self.functionName   = @"naturalLog";
+                break;
+                
+            case 7:
+                self.functionPtr    = reciprocal;
+                self.functionName   = @"reciprocal";
+                break;
+                
+            default:
+                break;
+        }
+    }
+    
+    return self;
+}
+
+- (id) initWithConstantValue:(long double)nodeConstant
+{
+    if(self = [super init])
+    {
+        self.leafConstant       = nodeConstant;
+        self.leafVariableIndex  = NOT_AN_INDEX;
+        self.functionIndex      = NOT_AN_INDEX;
+        self.functionPtr        = nil;
+        self.functionName       = nil;
+        self.leftChild          = nil;
+        self.rightChild         = nil;
+    }
+    
+    return self;
+}
+
+- (id) initWithRaceVariable:(NSUInteger)raceVariableIndex
+{
+    if(self = [super init])
+    {
+        self.leafVariableIndex  = raceVariableIndex;
+        self.leafConstant       = NOT_A_CONSTANT;
+        self.functionIndex      = NOT_AN_INDEX;
+        self.functionPtr        = nil;
+        self.functionName       = nil;
+        self.leftChild          = nil;
+        self.rightChild         = nil;
+    }
+    
+    return self;
+}
+
+/**********************************************************/
+
+// overflow, underflow and division by zero are ignored here
+// to be trapped in evalTree method
+
+double getRand(int max, int granularity)
+{
+    double dv   = 1.0 * granularity;
+    double val  = ((rand() % 1000) / dv) * max;
+    
+    return val;
+}
+
+/***************/
+/* c functions */
+/***************/
+//
+// overflow and underflow are ignored here
+// to be trapped in evalTree method
+
+long double add(double a, double b)
+{
+    return a + b;
+}
+
+long double subtract(double a, double b)
+{
+	return a - b;
+}
+
+long double multiply(double a, double b)
+{
+	return a * b;
+}
+
+long double divide(double a, double b)
+{
+  	long double answer = a / b;
+    
+	return answer;
+}
+
+long double squareRoot(double a)
+{
+    long double answer = 0.0;
+    
+	if(a < 0.0)
+	{
+		a       *= -1;
+		answer  = pow(a, .5);
+		answer  *= -1;
+	}
+	else
+	{
+		answer = pow(a, .5);
+	}
+    
+	return answer;
+}
+
+long double square(double a)
+{
+    return a * a;
+}
+
+long double naturalLog(double a)
+{
+    // to use negative values
+    // multiply by -1 => calculate ln => multiply back by -1
+	long double answer = 0.0;
+    
+    if(a < 0)
+    {
+        a       *= -1;
+        answer  = log(a);
+        answer  *= -1;
+    }
+    else
+    {
+        answer = log(a);
+    }
+    
+	return answer;
+}
+
+long double reciprocal(double a)
+{
+    long double answer = 1.0 / a;
+    
+    return answer;
+}
+
+
+
+@end

@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "ECEvolutionManager.h"
+#import "Population.h"
 
 @interface ECAppDelegate : NSObject <NSApplicationDelegate>
 
@@ -17,7 +18,8 @@
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
-@property (strong, nonatomic) ECEvolutionManager *evolutionManager;
+@property (strong, nonatomic) ECEvolutionManager    *evolutionManager;
+@property (strong, nonatomic) Population            *currentPopulation;
 
 - (IBAction)saveAction:(id)sender;
 

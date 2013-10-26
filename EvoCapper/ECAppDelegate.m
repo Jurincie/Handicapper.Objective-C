@@ -14,6 +14,7 @@
 @synthesize managedObjectModel          = _managedObjectModel;
 @synthesize managedObjectContext        = _managedObjectContext;
 @synthesize evolutionManager            = _evolutionManager;
+@synthesize currentPopulation           = _currentPopulation;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
@@ -248,14 +249,26 @@
 {
     NSLog(@"Create New Population Button Tapped");
     
-    [self.evolutionManager createNewPopoulation];
+    // resent a modal window to get user input for new population values
+    
+    [self.evolutionManager createNewPopoulationWithName:@"Test Name"
+                                            initialSize:124
+                                           maxTreeDepth:9
+                                           minTreeDepth:3
+                                           mutationRate:.01
+                                               comments:@"Initial Population TEST 1.0.0"];
+    
+    self.currentPopulation = self.evolutionManager.population;
+    
+    // now add this new population to the coreData database
 }
 
 - (IBAction)trainPopulationButtonTapped:(id)sender
 {
     NSLog(@"Train Population Button Tapped");
     
-    [self.evolutionManager trainPopulation];
+    [self.evolutionManager trainPopulation:self.currentPopulation
+                            forGenerations:0];
 }
 
 @end
