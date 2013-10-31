@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Constants.h"
 
 @interface TreeNode : NSObject
 
@@ -23,11 +24,6 @@
 - (id) initWithFunctionPointerIndex:(NSUInteger)funcPtrIndex;
 - (id) initWithConstantValue:(long double)c;
 - (id) initWithRaceVariable:(NSUInteger)raceVariableIndex;
-
-// overflow, underflow and division by zero are ignored here
-// to be trapped in evalTree method
-
-double getRand(int max, int granularity);
 
 /***************/
 /* c functions */

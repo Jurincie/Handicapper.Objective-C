@@ -17,7 +17,7 @@
 @synthesize population                      = _population;
 @synthesize generationsAlreadyEvolved       = _generationsAlreadyEvolved;
 @synthesize trainingGenerationsThisCycle    = _trainingGenerationsThisCycle;
-
+@synthesize workingPopulationMembersDna     = _workingPopulationMembersDna;
 
 - (void)createNewPopoulationWithName:(NSString*)name
                                 initialSize:(NSUInteger)initialSize
@@ -41,39 +41,535 @@
         self.population.genesisDate     = [NSDate date];
         self.population.mutationRate    = [NSNumber numberWithFloat:mutationRate];
         
-        self.population.individualHandicappers = [self createNewHandicappers:initialSize];
+        [self createNewHandicappers:initialSize];
+        
+        // fill the workingPopulationMembersDna with
+        // arrays of each members trees created from their string form
+        self.workingPopulationMembersDna    = [NSMutableArray new];
+        TreeNode *dnaTreeFromString         = nil;
+        Handicapper *tempHandicapper        = nil;
+        
+        for(int popIndex = 0; popIndex < initialSize; popIndex++)
+        {
+            tempHandicapper = [self getHandicapperWithPopIndex:popIndex];
+            
+            NSMutableArray *thisMembersDnaTrees = [NSMutableArray new];
+            
+            dnaTreeFromString = [self recoverTreeFromString:tempHandicapper.breakPositionTree];
+            [thisMembersDnaTrees addObject:dnaTreeFromString];
+            
+            dnaTreeFromString = [self recoverTreeFromString:tempHandicapper.breakSpeedTree];
+            [thisMembersDnaTrees addObject:dnaTreeFromString];
+            
+            dnaTreeFromString = [self recoverTreeFromString:tempHandicapper.earlySpeedTree];
+            [thisMembersDnaTrees addObject:dnaTreeFromString];
+           
+            dnaTreeFromString = [self recoverTreeFromString:tempHandicapper.topSpeedTree];
+            [thisMembersDnaTrees addObject:dnaTreeFromString];
+           
+            dnaTreeFromString = [self recoverTreeFromString:tempHandicapper.lateSpeedTree];
+            [thisMembersDnaTrees addObject:dnaTreeFromString];
+          
+            dnaTreeFromString = [self recoverTreeFromString:tempHandicapper.recentClassTree];
+            [thisMembersDnaTrees addObject:dnaTreeFromString];
+            
+            dnaTreeFromString = [self recoverTreeFromString:tempHandicapper.earlySpeedRelevanceTree];
+            [thisMembersDnaTrees addObject:dnaTreeFromString];
+            
+            dnaTreeFromString = [self recoverTreeFromString:tempHandicapper.otherRelevanceTree];
+            [thisMembersDnaTrees addObject:dnaTreeFromString];
+        
+            [self.workingPopulationMembersDna addObject:thisMembersDnaTrees];
+        }
     }
 }
 
-- (NSSet*)createNewHandicappers:(NSUInteger)initialPopSize
+- (Handicapper*)getHandicapperWithPopIndex:(NSUInteger)popIndex
 {
-    NSMutableSet *handicappers = [NSMutableSet new];
+    BOOL foundHandicapperWithMatchingIndex  = FALSE;
+    NSEnumerator *enumerator                = [self.population.individualHandicappers objectEnumerator];
+    Handicapper *tempHandicapper;
+
+    while ((tempHandicapper = [enumerator nextObject]))
+    {
+        if([tempHandicapper.populationIndex integerValue] == popIndex)
+        {
+            foundHandicapperWithMatchingIndex = YES;
+            break;
+        }
+    }
+    
+    if(foundHandicapperWithMatchingIndex == FALSE)
+    {
+        NSLog(@"error traversing handicappers set");
+        exit(1);
+    }
+
+    return tempHandicapper;
+}
+
+- (void)trainPopulationForGenerations:(NSUInteger)numberGenerations
+{
+    NSLog(@"trainPopulation called in ECEvolutionManager");
+    
+    for(NSUInteger localGenNumber = 0; localGenNumber < numberGenerations; localGenNumber++)
+    {
+        NSArray *fitnessValues = [self testUsingResultFilesAtPath:@"TEST"];
+        
+        [self createNextGenerationFromFitnessValues:fitnessValues];
+    }
+    
+    [self updateAndSaveData];
+}
+
+- (NSArray*)testUsingResultFilesAtPath:(NSString*)path
+{
+    // FIX: actually test
+    // for now just assign fitness values
+    NSArray *fitnessValues = nil;
+    
+    return fitnessValues;
+}
+
+- (void)createNextGenerationFromFitnessValues:(NSArray*)fitnessArray
+{
+    [self killBottomHalfOfPopulation];
+    
+    [self createChildren];
+    
+    [self mutatePopulation];
+}
+
+- (void)killBottomHalfOfPopulation
+{
+    
+}
+
+- (void)createChildren
+{
+    
+}
+
+- (void)mutatePopulation
+{
+    
+}
+
+- (void)crossoverMember:(Handicapper*)parent1
+             withMember:(Handicapper*)parent2
+             forChild1:(Handicapper*)child1
+              andChild2:(Handicapper*)child2
+{
+	// this popMember and sibling are the two children of mother and father
+	NSUInteger parent1Index     = [parent1.populationIndex integerValue];
+	NSUInteger parent2Index     = [parent2.populationIndex integerValue];
+    NSUInteger child1Index      = [child1.populationIndex integerValue];
+    NSUInteger child2Index      = [child2.populationIndex integerValue];
+    TreeNode *parent1Root       = nil;
+    TreeNode *parent2Root       = nil;
+    TreeNode *child1Root        = nil;
+    TreeNode *child2Root        = nil;
+    TreeNode *parent1Crossover  = nil;
+    TreeNode *parent2Crossover  = nil;
+    TreeNode *grandparent1      = nil;
+    TreeNode *grandparent2      = nil;
+    NSUInteger parent1Level;
+    NSUInteger parent2Level;
+	NSUInteger traverseMoves;
+    BOOL grandparent1UsingRightChild;
+    BOOL grandparent2UsingRightChild;
+    
+    [self removeOldDnaTreesForChildWithIndex:child1Index];
+    [self removeOldDnaTreesForChildWithIndex:child2Index];
+    
+	for(NSUInteger strandNumber = 0; strandNumber < kNumberDnaStrands; strandNumber++)
+	{
+		// identify motherCrossoverNode
+		traverseMoves   = rand() % ([self.population.maxTreeDepth integerValue] * 2);
+        if(traverseMoves < 2)
+        {
+            traverseMoves = 2;
+        }
+        
+		parent1Level    = 0;
+        parent1Root     = self.workingPopulationMembersDna[parent1Index][strandNumber];
+        parent2Root     = self.workingPopulationMembersDna[parent2Index][strandNumber];
+        child1Root      = self.workingPopulationMembersDna[child1Index][strandNumber];
+        child2Root      = self.workingPopulationMembersDna[child2Index][strandNumber];
+		
+        // randomly traverse tree
+        // identifing mother crossover node
+        grandparent1 = nil;
+        
+        for(NSUInteger moveNumber = 0; moveNumber < traverseMoves; moveNumber++)
+		{
+			if(parent1Crossover.rightChild && rand() % 2)
+			{
+				parent1Level++;
+                grandparent1                = parent1Crossover;
+				parent1Crossover            = parent1Crossover.rightChild;
+                grandparent1UsingRightChild = YES;
+			}
+			else if(parent1Crossover.leftChild)
+			{
+				parent1Level++;
+                grandparent1                = parent1Crossover;
+				parent1Crossover            = parent1Crossover.leftChild;
+                grandparent1UsingRightChild = NO;
+			}
+			else	// reached a leaf --> goto root
+			{
+                parent1Level        = 0;
+				parent1Crossover    = parent1Root;
+                grandparent1        = nil;
+			}
+		}
+        
+        if(parent1Level == 0)
+		{
+            grandparent1                = parent1Root;
+			parent1Crossover            = parent1Crossover.leftChild;
+            grandparent1UsingRightChild = NO;
+            parent1Level                       = 1;
+        }
+        
+		if(parent1Level == 1)
+		{
+            grandparent1                = parent1Crossover;
+			parent1Crossover            = parent1Crossover.leftChild;
+            grandparent1UsingRightChild = NO;
+            parent1Level                       = 2;
+		}
+		
+		if(nil == parent1Crossover)
+		{
+			NSLog(@"crossover error alpha1");
+			exit(1);
+		}
+        
+		// identify father crossover node
+		parent2Crossover = parent2Root;
+		
+        // randomly traverse tree
+        grandparent2 = nil;
+        parent2Level = 0;
+        
+        while(parent2Level != parent1Level)
+		{
+			if(parent2Crossover.rightChild && rand() % 2)    // identify father crossover node
+			{
+				parent2Level++;
+                grandparent2                = parent2Crossover;
+				parent2Crossover            = parent2Crossover.rightChild;
+                grandparent2UsingRightChild = YES;
+			}
+			else if(parent2Crossover.leftChild)
+			{
+                parent2Level++;
+                grandparent2                = parent2Crossover;
+				parent2Crossover            = parent2Crossover.leftChild;
+                grandparent2UsingRightChild = NO;
+			}
+			else	// reached a leaf --> goto root
+			{
+				parent2Crossover    = parent2Root;
+                parent2Level        = 0;
+			}
+		}
+		
+		if(nil == parent2Crossover)
+		{
+			NSLog(@"crossover error alpha2");
+			exit(1);
+		}
+		      
+        // create danStrand for child 1 //
+        
+        // copy motherRoot tree into child1Root tree without copying motherCrossover node and below
+		self.workingPopulationMembersDna[child1Index][strandNumber] = [self copyTree:parent1Root
+                                                                             without:parent1Crossover];
+        
+        // now copy parent2 crossover node to mothersParentNode's appropriate child
+        if(grandparent1UsingRightChild == YES)
+        {
+            grandparent1.rightChild = [self copyTree:parent2Crossover
+                                             without:nil];
+        }
+        else
+        {
+            grandparent1.leftChild  = [self copyTree:parent2Crossover
+                                             without:nil];
+        }
+		
+        // create danStrand for child 2 //
+        
+        // copy motherRoot tree into child1Root tree without copying motherCrossover node and below
+		self.workingPopulationMembersDna[child2Index][strandNumber] = [self copyTree:parent2Root
+                                                                             without:parent2Crossover];
+        
+        // now copy parent2 crossover node to mothersParentNode's appropriate child
+        if(grandparent2UsingRightChild == YES)
+        {
+            grandparent2.rightChild = [self copyTree:parent1Crossover
+                                             without:nil];
+        }
+        else
+        {
+            grandparent2.leftChild  = [self copyTree:parent1Crossover
+                                             without:nil];
+        }
+        
+        // now replace the appropriate dnaString in Handicapper class
+        [self replaceOldDnaStringsForChildWithIndex:child1Index];
+        [self replaceOldDnaStringsForChildWithIndex:child2Index];
+	}
+}
+
+- (void)replaceOldDnaStringsForChildWithIndex:(NSUInteger)popIndex
+{
+    
+}
+
+
+- (void)removeOldDnaTreesForChildWithIndex:(NSUInteger)popIndex
+{
+    
+}
+
+- (TreeNode*)copyTree:(TreeNode*)parentRoot
+              without:(TreeNode*)doNotCopyNode
+{
+	TreeNode *newTree   = nil;
+    TreeNode *tempNode  = parentRoot;
+	
+	if(tempNode.functionPtr &&
+       tempNode.leafVariableIndex == NOT_AN_INDEX &&
+       tempNode.leafConstant == NOT_A_CONSTANT)
+	{
+		newTree = [[TreeNode alloc] initWithFunctionPointerIndex:tempNode.functionIndex];
+        
+		if(tempNode.leftChild == doNotCopyNode)
+		{
+			newTree.leftChild = nil;
+		}
+        else
+        {
+            newTree.leftChild = [self copyTree:tempNode.leftChild
+                                       without:doNotCopyNode];
+        }
+        
+		if(tempNode.rightChild)
+		{
+			if(tempNode.rightChild == doNotCopyNode)
+            {
+                newTree.rightChild = nil;
+            }
+            else
+            {
+                newTree.rightChild = [self copyTree:tempNode.rightChild
+                                            without:doNotCopyNode];
+            }
+		}
+	}
+	else if(tempNode.leafConstant != NOT_A_CONSTANT)
+	{
+		newTree = [[TreeNode alloc] initWithConstantValue:tempNode.leafConstant];
+	}
+	else if(tempNode.leafVariableIndex != NOT_AN_INDEX)
+	{
+		newTree = [[TreeNode alloc] initWithRaceVariable:tempNode.leafVariableIndex];
+	}
+    else
+    {
+        NSLog(@"copy tree error");
+        exit(1);
+    }
+	
+	return newTree;
+}
+
+
+- (void)createNewHandicappers:(NSUInteger)initialPopSize
+{
+    NSMutableSet *handicappersSet = [NSMutableSet new];
     
     // create initial population
     for(int i = 0; i < initialPopSize; i++)
     {
+        Handicapper *newbie = [NSEntityDescription insertNewObjectForEntityForName:@"IndividualHandicapper"
+                                                            inManagedObjectContext: [[NSApp delegate] managedObjectContext]];
+        NSLog(@"Population member %i adding strands:", i);
+       
         // iterate through dnaStrands
         for(int j = 0; j < kNumberDnaStrands; j++)
         {
             // iterate through dnaStrands
-            NSString *tempDnaStrand = [self createRandomDnaStrandForStrand:j];
+            int rootLevel = 0;
             
-            [handicappers addObject:tempDnaStrand];
+            if(j == 6)
+            {
+                rootLevel = 1;
+            }
+            else if(j == 7)
+            {
+                rootLevel = 3;
+            }
+            
+            // don't worry about trees, will rebuild trees later from the strings below
+            NSString *dnaString = [self saveTreeToString:[self createTreeForStrand:j
+                                                                           atLevel:rootLevel]];
+            switch (j)
+            {
+                case kBreakPosition:
+                    newbie.breakPositionTree = dnaString;
+                    break;
+                    
+                case kBreakSpeed:
+                    newbie.breakSpeedTree = dnaString;
+                    break;
+                    
+                case kEarlySpeed:
+                    newbie.earlySpeedTree = dnaString;
+                    break;
+                    
+                case kTopSpeedStrand:
+                    newbie.topSpeedTree = dnaString;
+                    break;
+                    
+                case kLateSpeedStrand:
+                    newbie.lateSpeedTree = dnaString;
+                    break;
+                    
+                case kRecentClassStrand:
+                    newbie.recentClassTree = dnaString;
+                    break;
+                    
+                case kEarlySpeedRelevanceStrand:
+                    newbie.earlySpeedRelevanceTree = dnaString;
+                    break;
+                    
+                case kOtherRelevanceStrand:
+                    newbie.otherRelevanceTree = dnaString;
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            NSLog(@"%i: %@", j, dnaString);
         }
         
-        NSLog(@"Population member %i added %i strands", i, kNumberDnaStrands);
+        newbie.birthGeneration  = self.population.generationNumber;
+        newbie.populationIndex  = [NSNumber numberWithInteger:i];
+        
+        [handicappersSet addObject:newbie];
+        NSLog(@"-------");  // forces cr
     }
     
-    // note: returning makes immutable copy to fit return parameter type
-    return handicappers;
+    [self.population addIndividualHandicappers:[handicappersSet copy]];
 }
 
-- (NSString*)createRandomDnaStrandForStrand:(NSUInteger)strandNumber
+- (TreeNode*)createTreeForStrand:(NSUInteger)dnaStrand
+                         atLevel:(NSUInteger)level
 {
-    TreeNode *tempNode = [self createTreeForStrand:strandNumber
-                                           atLevel:0];
+	// tree is made of TreeNodes
+	// as we get deeper into the tree increase probability of leaf node
+    level++;
     
-    return [self saveTreeToString:tempNode];
+    TreeNode *newNode   = nil;
+	NSUInteger nodeType = [self getTreeNodeTypeAtLevel:level];
+    
+    switch (nodeType)
+    {
+        case kFunctionNode:
+        {
+            NSUInteger functionNumber = rand() % kNumberFunctions;
+            
+            // FIX: for now do NOT use quadratic nodes
+            // make 9% of function nodes quadratic Iff they are low enough in tree
+            // if(rand() % 11 == 10 && level < [[self.population maxTreeDepth] integerValue] - 2)
+            if(0)
+            {
+                newNode = [self getQuadraticNodeAtLevel:level
+                                              forStrand:dnaStrand];
+            }
+            else
+            {
+                newNode = [[TreeNode alloc] initWithFunctionPointerIndex:functionNumber];
+            }
+            
+            newNode.rightChild  = nil;
+            newNode.leftChild   = nil;
+            
+            if(functionNumber < kNumberTwoArgFuncs)
+            {
+                newNode.rightChild = [self createTreeForStrand:dnaStrand
+                                                       atLevel:level];
+            }
+            
+            // Always make left child
+            newNode.leftChild = [self createTreeForStrand:dnaStrand
+                                                  atLevel:level];
+            
+            break;
+        }
+            
+        case kVariableNode:
+        {
+            NSUInteger arrayIndex   = [self getPastLineVariableForDnaStrand:dnaStrand];
+            newNode                 = [[TreeNode alloc] initWithRaceVariable:arrayIndex];
+            
+            break;
+        }
+        case kConstantNode:
+        {
+            double c    = getRand(kRandomRange, kRandomGranularity);
+            newNode     = [[TreeNode alloc] initWithConstantValue:c];
+            
+            break;
+        }
+            
+        case kUndefinedNode:
+        {
+            NSLog(@"Node definition error");
+            
+            break;
+        }
+    }
+    
+	return newNode;
+}
+
+
+- (NSUInteger)getTreeNodeTypeAtLevel:(NSUInteger)level
+{
+    NSUInteger nodeType = kUndefinedNode;
+    
+    if(level < [self.population.minTreeDepth intValue])
+	{
+		nodeType = kFunctionNode;
+	}
+	else
+    {
+        if(rand() % 3 > 1)  // 1/3 of remaining nodes are functions
+        {
+            nodeType = kFunctionNode;
+        }
+        else
+        {
+            // other 2/3 split evenly between constants and variables
+            if(rand() % 2)
+            {
+                nodeType = kConstantNode;
+            }
+            else
+            {
+                nodeType = kVariableNode;
+            }
+        }
+    }
+    
+    return nodeType;
 }
 
 - (NSString*)saveTreeToString:(TreeNode*)tree
@@ -86,38 +582,40 @@
 		[treeString appendString:tree.functionName];
 		[treeString appendString:@"("];
 		
-		[self saveTreeToString:tree.leftChild];
+		[treeString appendString:[self saveTreeToString:tree.leftChild]];
 		
-		if(tree.rightChild != nil)
+		if(nil != tree.rightChild)
 		{
 			[treeString appendString:@","];
-			[self saveTreeToString:tree.rightChild];
+			[treeString appendString:[self saveTreeToString:tree.rightChild]];
 		}
 		
 		[treeString appendString:@")"];
 		
 	}
-	else if(tree.leafVariableIndex != -1)
+	else if(tree.leafVariableIndex != NOT_AN_INDEX)
 	{
 		// append index in brackets[]
 		[treeString appendString:[NSString stringWithFormat:@"%ld", (unsigned long)tree.leafVariableIndex]];
 	}
 	else
 	{
-		if(tree.leafConstant == 0.0)
+		if(tree.leafConstant == NOT_A_CONSTANT)
 		{
 			NSLog(@"save tree error");
 		}
 		
 		// append constant value
-		[treeString appendString:[NSString stringWithFormat:@"%Lf", tree.leafConstant]];
+        NSString *constantAsString = [NSString stringWithFormat:@"%Lf", tree.leafConstant];
+		
+        [treeString appendString:constantAsString];
 	}
     
     
     return treeString;
 }
 
-- (TreeNode*) recoverTreeFromString:(NSString*)inString
+- (TreeNode*)recoverTreeFromString:(NSString*)inString
 {
     TreeNode *newTree           = nil;
 	NSString *newString         = nil;
@@ -125,40 +623,23 @@
     NSString *token             = nil;
     NSString *arg1String        = nil;
     NSString *arg2String        = nil;
-	NSUInteger numOpenParens    = 0;
-    NSUInteger numClosedParens  = 0;
 	NSUInteger commaIndex       = 0;
     NSUInteger parenIndex       = 0;
     NSUInteger numArgs          = 0;
     NSUInteger i                = 0;
     char letter                 = '$';
 	BOOL gotFunction            = FALSE;
-    NSUInteger myLength         = [inString length];
-	
-	// first errorcheck string: equalnumber open and closed parens
-	while(i < myLength)
-	{
-		letter = [inString characterAtIndex:i++];
-		
-		if(letter == '(')
-		{
-			numOpenParens++;
-		}
-		else if(letter == ')')
-		{
-			numClosedParens++;
-		}
-	}
 	
 	i = 0;
-	while(i < myLength)
+    
+	while(i < [inString length])
 	{
 		letter = [inString characterAtIndex:i++];
 		
 		if(letter == '(')
 		{
 			gotFunction = TRUE;
-			token = [inString substringToIndex:i-1];
+			token       = [inString substringToIndex:i-1];
 			break;
 		}
 	}
@@ -187,7 +668,7 @@
 			newTree =[[TreeNode alloc] initWithFunctionPointerIndex:kDivisionIndex];
 			numArgs = 2;
 		}
-		else if([token isEqualToString:@"sqrt"])
+		else if([token isEqualToString:@"squareRoot"])
 		{
 			newTree = [[TreeNode alloc] initWithFunctionPointerIndex:kSquareRootIndex];
 			numArgs = 1;
@@ -255,7 +736,7 @@
 		// or a doulbe
 		if(inString.length <= 2)
 		{
-			newTree = [[TreeNode alloc] initWithFunctionPointerIndex:[inString intValue]];
+			newTree = [[TreeNode alloc] initWithRaceVariable:[inString intValue]];
 		}
 		else
 		{
@@ -325,7 +806,7 @@
 	return commaIndex;
 }
 
-- (NSUInteger) getIndexOfClosedParen:(NSString*)inString
+- (NSUInteger)getIndexOfClosedParen:(NSString*)inString
 {
     NSUInteger closedParenIndex = 0;
     NSInteger level             = 0;
@@ -361,105 +842,6 @@
 }
 
 
-- (TreeNode*)createTreeForStrand:(NSUInteger)dnaStrand
-                         atLevel:(NSUInteger)level
-{
-	// tree is made of TreeNodes
-	// as we get deeper into the tree increase probability of leaf node
-	
-    TreeNode *newTreeNode       = nil;
-	double val                  = 0.0;
-	double probabilityOfFunc    = 0.0;
-	NSInteger numArgs           = 0;
-	double randVal              = 0.0;
-	NSUInteger funcIndex        = 0;
-	NSUInteger minTreeDepth     = [self.population.minTreeDepth intValue];
-	NSUInteger maxTreeDepth     = [self.population.maxTreeDepth intValue];
-    int quadraticProbability    = .075;
-    
-	val = rand() % 100;
-	
-	level++;
-    
-	if(level < minTreeDepth)
-	{
-		probabilityOfFunc = 100.0;
-	}
-	else if(level >= maxTreeDepth)
-	{
-		probabilityOfFunc = 0.0;
-    }
-	else
-	{
-		probabilityOfFunc = 100.0 * (1.0 - ((double)(level - minTreeDepth) /
-                                            (maxTreeDepth - minTreeDepth)));
-	}
-	
-	if(val < probabilityOfFunc)	// get a random function node
-	{
-		if(getRand(1, kRandomGranularity) < quadraticProbability)
-		{
-			newTreeNode = [self getQuadraticNodeAtLevel:level
-                                              forStrand:dnaStrand];
-		}
-		else
-		{
-			if(level < minTreeDepth)
-			{
-				funcIndex = rand() % kNumberFunctions;
-                
-                if(funcIndex < kNumberTwoArgFuncs) // 2 arg funcs at front of array
-                {
-                    numArgs = 2;
-                }
-                else
-                {
-                    numArgs = 1;
-                }
-			}
-            
-			newTreeNode = [[TreeNode alloc] initWithRaceVariable:funcIndex];
-			
-			switch(numArgs)
-			{
-				case 1:
-                    newTreeNode.rightChild  = nil;
-                    newTreeNode.leftChild   = [self createTreeForStrand:dnaStrand
-                                                                atLevel:level];
-                    break;
-                    
-				case 2:
-                    newTreeNode.leftChild   = [self createTreeForStrand:dnaStrand
-                                                                atLevel:level];
-                    newTreeNode.rightChild  = [self createTreeForStrand:dnaStrand
-                                                                atLevel:level];
-			}
-		}
-	}
-	else if(val < .66667) // get coresponding variable node aprox 2/3 of the time
-	{
-		// get Positive int value above kLTV
-		while((randVal = getRand(kRandomRange, kRandomGranularity)) < kLowestTolerableValue)
-            
-            // comment out next 4 lines to keep all constants positive
-            //        if(rand()%2)
-            //        {
-            //            randVal *= -1;
-            //        }
-            
-            // assign as double value
-            newTreeNode = [[TreeNode alloc] initWithConstantValue:randVal];
-	}
-	else
-	{
-        // in this situation, insert a pastLine variable into leaf node
-		NSUInteger variableIndex    = [self getPastLineVariableForDnaStrand:dnaStrand];
-		newTreeNode                 = [[TreeNode alloc] initWithRaceVariable:variableIndex];
-	}
-    
-	return newTreeNode;
-}
-
 - (NSUInteger)getPastLineVariableForDnaStrand:(NSUInteger)dnaStrand
 {
     // since each dnaStrand uses a subset of all raceLine variables
@@ -490,58 +872,62 @@
     
     // dna variables by strand
     //
-    // 0: break speed strength
+    
+    // 0: break position
     //      2:  race class
-    //      5:  raceDate (used to calculate "days ago")
     //      6:  number of entrys
     //      8:  position at break
     //      9:  winning time
     
-    
-    // 1: early speed
+    // 1: break speed
     //      2:  race class
-    //      5:  raceDate (used to calculate "days ago")
+    //      6:  number of entrys
+    //      8:  position at break
+    //      9:  winning time
+    
+    // 2: early speed
+    //      2:  race class
     //      8:  position at break
     //      9:  winning time
     //      13: lead by lengths 1
     //      16: delta 1
     
-    // 2: top speed
-    //      5:  raceDate (used to calculate "days ago")
+    // 3: top speed
     //      9:  winning time
     //      12: entry time
     //      16: delta 1
     //      17: delta 2
     //      18: delta 3
     
-    
-    // 3: late speed
+    // 4: late speed
     //      2:  race class
-    //      5:  raceDate (used to calculate "days ago")
     //      8:  position at break
     //      9:  winning time
     //      13: lead by lengths 1
     //      16: delta 3
-    
-    // 4: inside or outside preference
-    //      20: comments
-    
-    
-    // 5: class
+
+    // 5: recent class
     //      2:  race class
-    //      5:  raceDate (used to calculate "days ago")
-    //      6:  number of entries
     //      9:  winning time
     //      11: position at finish
     //      12: entry time
     
-    NSUInteger pastLineVariableIndex = 0;
+    // 6: early speed relevance
+    //      2:  race class
+    //      5:  raceDate (used to calculate "days ago")
+    //      7:  post number (used to calculate delta post)
+
+    // 7: other relevance
+    //      2:  race class
+    //      5:  raceDate (used to calculate "days ago")
+    
+    NSUInteger pastLineVariableIndex = 999;
     
     switch (dnaStrand)
     {
-        case 0:
+        case 0: // break position
         {
-            NSUInteger varIndex = rand() % 5;
+            NSUInteger varIndex = rand() % 4;
             
             switch (varIndex)
             {
@@ -554,27 +940,23 @@
                     break;
                     
                 case 2:
-                    pastLineVariableIndex = 5;
-                    break;
-                    
-                case 3:
                     pastLineVariableIndex = 8;
                     break;
                     
-                case 4:
+                case 3:
                     pastLineVariableIndex = 9;
                     break;
                     
                 default:
                     break;
             }
-        }
             
             break;
+        }
             
-        case 1:
+        case 1: // break speed
         {
-            NSUInteger varIndex = rand() % 6;
+            NSUInteger varIndex = rand() % 5;
             
             switch (varIndex)
             {
@@ -583,22 +965,18 @@
                     break;
                     
                 case 1:
-                    pastLineVariableIndex = 5;
-                    break;
-                    
-                case 2:
                     pastLineVariableIndex = 8;
                     break;
                     
-                case 3:
+                case 2:
                     pastLineVariableIndex = 9;
                     break;
                     
-                case 4:
+                case 3:
                     pastLineVariableIndex = 13;
                     break;
                     
-                case 5:
+                case 4:
                     pastLineVariableIndex = 16;
                     break;
                     
@@ -609,33 +987,29 @@
             break;
         }
             
-        case 2:
+        case 2:  // early speed
         {
-            NSUInteger varIndex = rand() % 6;
+            NSUInteger varIndex = rand() % 5;
             
             switch (varIndex)
             {
                 case 0:
-                    pastLineVariableIndex = 5;
-                    break;
-                    
-                case 1:
                     pastLineVariableIndex = 9;
                     break;
                     
-                case 2:
+                case 1:
                     pastLineVariableIndex = 12;
                     break;
                     
-                case 3:
+                case 2:
                     pastLineVariableIndex = 16;
                     break;
                     
-                case 4:
+                case 3:
                     pastLineVariableIndex = 17;
                     break;
                     
-                case 5:
+                case 4:
                     pastLineVariableIndex = 18;
                     break;
                     
@@ -646,9 +1020,9 @@
             break;
         }
             
-        case 3:
+        case 3: // top speed
         {
-            NSUInteger varIndex = rand() % 6;
+            NSUInteger varIndex = rand() % 5;
             
             switch (varIndex)
             {
@@ -657,22 +1031,18 @@
                     break;
                     
                 case 1:
-                    pastLineVariableIndex = 5;
-                    break;
-                    
-                case 2:
                     pastLineVariableIndex = 8;
                     break;
                     
-                case 3:
+                case 2:
                     pastLineVariableIndex = 9;
                     break;
                     
-                case 4:
+                case 3:
                     pastLineVariableIndex = 13;
                     break;
                     
-                case 5:
+                case 4:
                     pastLineVariableIndex = 16;
                     break;
                     
@@ -683,13 +1053,71 @@
             break;
         }
             
-        case 4:
-            pastLineVariableIndex = 20;
-            break;
-            
-        case 5:
+        case 4:  // late speed
         {
-            NSUInteger varIndex = rand() % 6;
+            NSUInteger varIndex = rand() % 5;
+            
+            switch (varIndex)
+            {
+                case 0:
+                    pastLineVariableIndex = 2;
+                    break;
+                    
+                case 1:
+                    pastLineVariableIndex = 6;
+                    break;
+                    
+                case 2:
+                    pastLineVariableIndex = 9;
+                    break;
+                    
+                case 3:
+                    pastLineVariableIndex = 11;
+                    break;
+                    
+                case 4:
+                    pastLineVariableIndex = 12;
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+        }
+       
+        case 5:  // recent class
+        {
+            NSUInteger varIndex = rand() % 4;
+            
+            switch (varIndex)
+            {
+                case 0:
+                    pastLineVariableIndex = 2;
+                    break;
+                    
+                case 1:
+                    pastLineVariableIndex = 9;
+                    break;
+                    
+                case 2:
+                    pastLineVariableIndex = 11;
+                    break;
+                    
+                case 3:
+                    pastLineVariableIndex = 12;
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            break;
+        }
+     
+        case 6:  // early speed relevance
+        {
+            NSUInteger varIndex = rand() % 3;
             
             switch (varIndex)
             {
@@ -702,19 +1130,28 @@
                     break;
                     
                 case 2:
-                    pastLineVariableIndex = 6;
+                    pastLineVariableIndex = 7;
                     break;
                     
-                case 3:
-                    pastLineVariableIndex = 9;
+                default:
+                    break;
+            }
+            
+            break;
+        }
+      
+        case 7:  // other relevance
+        {
+            NSUInteger varIndex = rand() % 2;
+            
+            switch (varIndex)
+            {
+                case 0:
+                    pastLineVariableIndex = 2;
                     break;
                     
-                case 4:
-                    pastLineVariableIndex = 11;
-                    break;
-                    
-                case 5:
-                    pastLineVariableIndex = 12;
+                case 1:
+                    pastLineVariableIndex = 5;
                     break;
                     
                 default:
@@ -728,7 +1165,28 @@
             break;
     }
     
+    if(pastLineVariableIndex == 999)
+    {
+        NSLog(@"error in getPastLineRaceVariable");
+        exit(1);
+    }
+    
     return pastLineVariableIndex;
+}
+
+// overflow, underflow and division by zero are ignored here
+// to be trapped in evalTree method
+
+double getRand(int max, int granularity)
+{
+    double val  = ((rand() % 10000) / 10000.0) * max;
+    
+    if(rand() % 2)
+    {
+        val *= -1;
+    }
+    
+    return val;
 }
 
 
@@ -759,21 +1217,6 @@
 	quadTree.rightChild.rightChild              = [self createTreeForStrand:dnaStrand
                                                                     atLevel:level];                                     // 'c' branch
 	return quadTree;
-}
-
-
-
-- (void)trainPopulation:(Population*)poplation
-         forGenerations:(NSUInteger)numberGenerationsToTrain
-{
-    NSLog(@"trainPopulation called in ECEvolutionManager");
-    
-    for(NSUInteger localGenNumber = 0; localGenNumber < numberGenerationsToTrain; localGenNumber++)
-    {
-        
-    }
-        
-    [self updateAndSaveData];
 }
 
 - (void)updateAndSaveData

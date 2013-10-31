@@ -2,7 +2,7 @@
 //  Handicapper.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 10/25/13.
+//  Created by Ron Jurincie on 10/29/13.
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
@@ -18,10 +18,14 @@
 @property (nonatomic, retain) NSString      *earlySpeedTree;
 @property (nonatomic, retain) NSString      *lateSpeedTree;
 @property (nonatomic, retain) NSString      *recentClassTree;
-@property (nonatomic, retain) NSString      *relevanceTree;
+@property (nonatomic, retain) NSString      *earlySpeedRelevanceTree;
 @property (nonatomic, retain) NSString      *topSpeedTree;
+@property (nonatomic, retain) NSString      *otherRelevanceTree;
+@property (nonatomic, retain) NSNumber      *populationIndex;
+@property (nonatomic, retain) NSNumber      *birthGeneration;
 @property (nonatomic, retain) NSSet         *fitnessStats;
 @property (nonatomic, retain) Population    *handicapperPopulation;
+
 @end
 
 @interface Handicapper (CoreDataGeneratedAccessors)

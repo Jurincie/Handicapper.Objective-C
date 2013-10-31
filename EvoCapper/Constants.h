@@ -9,12 +9,11 @@
 #ifndef EvoCapper_Constants_h
 #define EvoCapper_Constants_h
 
-
 #define kRandomRange 2.0
 #define kRandomGranularity 8
 #define kLowestTolerableValue 1.0 / pow(10,kRandomGranularity)
 
-#define kNumberDnaStrands 6
+#define kNumberDnaStrands 8
 #define kNumberFunctions 8
 #define kNumberTwoArgFuncs 4
 
@@ -24,6 +23,8 @@
 #define kTopSpeedStrand 3
 #define kLateSpeedStrand 4
 #define kRecentClassStrand 5
+#define kEarlySpeedRelevanceStrand 6
+#define kOtherRelevanceStrand 7
 
 #define kTreeRoot 0
 
@@ -36,5 +37,17 @@
 #define kNaturalLogIndex 6
 #define kReciprocalIndex 7
 
+// tree helpers
+#define kFunctionNode 0
+#define kVariableNode 1
+#define kConstantNode 2
+#define kUndefinedNode 999
+
+// Rrlevance Tree vals
+#define kMinLevelForRelevanceTrees 3
+#define kMaxLevelForRelevanceTrees 4
+
+#define NOT_AN_INDEX 999999
+#define NOT_A_CONSTANT 0.0
 
 #endif

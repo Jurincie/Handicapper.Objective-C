@@ -40,20 +40,23 @@
         <relationship name="individualHandicappers" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="IndividualHandicapper" inverseName="handicapperPopulation" inverseEntity="IndividualHandicapper" syncable="YES"/>
     </entity>
     <entity name="IndividualHandicapper" representedClassName="Handicapper" syncable="YES">
+        <attribute name="birthGeneration" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="breakPositionTree" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="breakSpeedTree" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="earlySpeedRelevanceTree" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="earlySpeedTree" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lateSpeedTree" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="otherRelevanceTree" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="populationIndex" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="recentClassTree" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="relevanceTree" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="topSpeedTree" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="fitnessStats" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FitnessStats" inverseName="individualHandicapper" inverseEntity="FitnessStats" syncable="YES"/>
         <relationship name="handicapperPopulation" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="HandicapperPopulation" inverseName="individualHandicappers" inverseEntity="HandicapperPopulation" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Entry" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="FitnessStats" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="HandicapperPopulation" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="IndividualHandicapper" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Entry" positionX="0" positionY="0" width="128" height="119"/>
+        <element name="FitnessStats" positionX="-432" positionY="27" width="128" height="300"/>
+        <element name="HandicapperPopulation" positionX="-596" positionY="-162" width="128" height="195"/>
+        <element name="IndividualHandicapper" positionX="-983" positionY="27" width="128" height="28"/>
     </elements>
 </model>

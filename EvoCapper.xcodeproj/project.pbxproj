@@ -24,8 +24,8 @@
 		7AB9FD0E181ADF1600C17A46 /* ClassStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD0D181ADF1600C17A46 /* ClassStats.m */; };
 		7AB9FD11181ADF1700C17A46 /* Population.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD10181ADF1700C17A46 /* Population.m */; };
 		7AB9FD14181ADF1700C17A46 /* Entry.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD13181ADF1700C17A46 /* Entry.m */; };
-		7AB9FD17181ADF1700C17A46 /* Handicapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD16181ADF1700C17A46 /* Handicapper.m */; };
 		7AB9FD1A181AFF8300C17A46 /* TreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD19181AFF8300C17A46 /* TreeNode.m */; };
+		7AB9FD211820B91600C17A46 /* Handicapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD201820B91600C17A46 /* Handicapper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,11 +69,11 @@
 		7AB9FD10181ADF1700C17A46 /* Population.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Population.m; path = MVC/Model/Population.m; sourceTree = "<group>"; };
 		7AB9FD12181ADF1700C17A46 /* Entry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Entry.h; path = MVC/Model/Entry.h; sourceTree = "<group>"; };
 		7AB9FD13181ADF1700C17A46 /* Entry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Entry.m; path = MVC/Model/Entry.m; sourceTree = "<group>"; };
-		7AB9FD15181ADF1700C17A46 /* Handicapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Handicapper.h; path = MVC/Model/Handicapper.h; sourceTree = "<group>"; };
-		7AB9FD16181ADF1700C17A46 /* Handicapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Handicapper.m; path = MVC/Model/Handicapper.m; sourceTree = "<group>"; };
 		7AB9FD18181AFF8300C17A46 /* TreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TreeNode.h; path = MVC/Model/TreeNode.h; sourceTree = "<group>"; };
 		7AB9FD19181AFF8300C17A46 /* TreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TreeNode.m; path = MVC/Model/TreeNode.m; sourceTree = "<group>"; };
 		7AB9FD1B181C2C4F00C17A46 /* General.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = General.h; sourceTree = "<group>"; };
+		7AB9FD1F1820B91600C17A46 /* Handicapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Handicapper.h; path = MVC/Model/Handicapper.h; sourceTree = "<group>"; };
+		7AB9FD201820B91600C17A46 /* Handicapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Handicapper.m; path = MVC/Model/Handicapper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,8 +119,6 @@
 		7A27ED3A1818221C00AA91AE /* M-Model */ = {
 			isa = PBXGroup;
 			children = (
-				7AB9FD15181ADF1700C17A46 /* Handicapper.h */,
-				7AB9FD16181ADF1700C17A46 /* Handicapper.m */,
 				7AB9FD12181ADF1700C17A46 /* Entry.h */,
 				7AB9FD13181ADF1700C17A46 /* Entry.m */,
 				7AB9FD0F181ADF1700C17A46 /* Population.h */,
@@ -129,6 +127,8 @@
 				7AB9FD0D181ADF1600C17A46 /* ClassStats.m */,
 				7AB9FD18181AFF8300C17A46 /* TreeNode.h */,
 				7AB9FD19181AFF8300C17A46 /* TreeNode.m */,
+				7AB9FD1F1820B91600C17A46 /* Handicapper.h */,
+				7AB9FD201820B91600C17A46 /* Handicapper.m */,
 			);
 			name = "M-Model";
 			sourceTree = "<group>";
@@ -138,7 +138,6 @@
 			children = (
 				7A27ED3F18184CEE00AA91AE /* ECEvolutionManager.h */,
 				7A27ED4018184CEE00AA91AE /* ECEvolutionManager.m */,
-				7AB9FD05181AC6C500C17A46 /* Constants.h */,
 			);
 			name = "C-Controllers";
 			sourceTree = "<group>";
@@ -185,6 +184,7 @@
 		7A98B3BF18170ECD0013F43D /* EvoCapper */ = {
 			isa = PBXGroup;
 			children = (
+				7AB9FD05181AC6C500C17A46 /* Constants.h */,
 				7AB9FD1B181C2C4F00C17A46 /* General.h */,
 				7A98B3CB18170ECD0013F43D /* ECAppDelegate.h */,
 				7A98B3CC18170ECD0013F43D /* ECAppDelegate.m */,
@@ -343,8 +343,8 @@
 				7AB9FD0E181ADF1600C17A46 /* ClassStats.m in Sources */,
 				7A98B3C618170ECD0013F43D /* main.m in Sources */,
 				7AB9FD11181ADF1700C17A46 /* Population.m in Sources */,
+				7AB9FD211820B91600C17A46 /* Handicapper.m in Sources */,
 				7A27ED4118184CEE00AA91AE /* ECEvolutionManager.m in Sources */,
-				7AB9FD17181ADF1700C17A46 /* Handicapper.m in Sources */,
 				7AB9FD1A181AFF8300C17A46 /* TreeNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

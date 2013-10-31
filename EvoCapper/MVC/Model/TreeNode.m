@@ -10,10 +10,6 @@
 
 @implementation TreeNode
 
-#define RAND_01 random() * 1000000 / 1000000.0;
-#define NOT_AN_INDEX 999
-#define NOT_A_CONSTANT 0.0
-
 @synthesize leafConstant        = _leafConstant;
 @synthesize functionPtr         = _functionPtr;
 @synthesize leftChild           = _leftChild;
@@ -84,11 +80,11 @@
     return self;
 }
 
-- (id) initWithConstantValue:(long double)nodeConstant
+- (id) initWithConstantValue:(long double)c
 {
     if(self = [super init])
     {
-        self.leafConstant       = nodeConstant;
+        self.leafConstant       = c;
         self.leafVariableIndex  = NOT_AN_INDEX;
         self.functionIndex      = NOT_AN_INDEX;
         self.functionPtr        = nil;
@@ -118,16 +114,6 @@
 
 /**********************************************************/
 
-// overflow, underflow and division by zero are ignored here
-// to be trapped in evalTree method
-
-double getRand(int max, int granularity)
-{
-    double dv   = 1.0 * granularity;
-    double val  = ((rand() % 1000) / dv) * max;
-    
-    return val;
-}
 
 /***************/
 /* c functions */

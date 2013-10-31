@@ -2,7 +2,7 @@
 //  Handicapper.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 10/25/13.
+//  Created by Ron Jurincie on 10/29/13.
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
@@ -18,8 +18,11 @@
 @dynamic earlySpeedTree;
 @dynamic lateSpeedTree;
 @dynamic recentClassTree;
-@dynamic relevanceTree;
+@dynamic earlySpeedRelevanceTree;
 @dynamic topSpeedTree;
+@dynamic otherRelevanceTree;
+@dynamic populationIndex;
+@dynamic birthGeneration;
 @dynamic fitnessStats;
 @dynamic handicapperPopulation;
 
