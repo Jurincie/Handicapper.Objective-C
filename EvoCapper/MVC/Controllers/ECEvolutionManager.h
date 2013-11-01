@@ -12,6 +12,7 @@
 #import "Constants.h"
 #import "TreeNode.h"
 #import "Handicapper.h"
+#import "ClassStats.h
 
 @interface ECEvolutionManager : NSObject
 

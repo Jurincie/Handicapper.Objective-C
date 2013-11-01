@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A173E36182452550095DA1F /* Handicapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A173E35182452550095DA1F /* Handicapper.m */; };
 		7A27ED391818221400AA91AE /* evocappLogo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7A27ED381818221400AA91AE /* evocappLogo.jpg */; };
 		7A27ED4118184CEE00AA91AE /* ECEvolutionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A27ED4018184CEE00AA91AE /* ECEvolutionManager.m */; };
 		7A98B3BA18170ECD0013F43D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A98B3B918170ECD0013F43D /* Cocoa.framework */; };
@@ -21,11 +22,9 @@
 		7A98B3E518170ECE0013F43D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A98B3E318170ECE0013F43D /* InfoPlist.strings */; };
 		7A98B3E718170ECE0013F43D /* EvoCapperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A98B3E618170ECE0013F43D /* EvoCapperTests.m */; };
 		7AB9FD0B181ADCED00C17A46 /* EvoCapper.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD09181ADCED00C17A46 /* EvoCapper.xcdatamodeld */; };
-		7AB9FD0E181ADF1600C17A46 /* ClassStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD0D181ADF1600C17A46 /* ClassStats.m */; };
 		7AB9FD11181ADF1700C17A46 /* Population.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD10181ADF1700C17A46 /* Population.m */; };
 		7AB9FD14181ADF1700C17A46 /* Entry.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD13181ADF1700C17A46 /* Entry.m */; };
 		7AB9FD1A181AFF8300C17A46 /* TreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD19181AFF8300C17A46 /* TreeNode.m */; };
-		7AB9FD211820B91600C17A46 /* Handicapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD201820B91600C17A46 /* Handicapper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7A173E34182452550095DA1F /* Handicapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Handicapper.h; path = MVC/Model/Handicapper.h; sourceTree = "<group>"; };
+		7A173E35182452550095DA1F /* Handicapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Handicapper.m; path = MVC/Model/Handicapper.m; sourceTree = "<group>"; };
 		7A27ED381818221400AA91AE /* evocappLogo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = evocappLogo.jpg; path = MVC/Views/Images/evocappLogo.jpg; sourceTree = "<group>"; };
 		7A27ED3F18184CEE00AA91AE /* ECEvolutionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECEvolutionManager.h; path = MVC/Controllers/ECEvolutionManager.h; sourceTree = "<group>"; };
 		7A27ED4018184CEE00AA91AE /* ECEvolutionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECEvolutionManager.m; path = MVC/Controllers/ECEvolutionManager.m; sourceTree = "<group>"; };
@@ -63,8 +64,6 @@
 		7A98B3E618170ECE0013F43D /* EvoCapperTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EvoCapperTests.m; sourceTree = "<group>"; };
 		7AB9FD05181AC6C500C17A46 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		7AB9FD0A181ADCED00C17A46 /* EvoCapper.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = EvoCapper.xcdatamodel; sourceTree = "<group>"; };
-		7AB9FD0C181ADF1600C17A46 /* ClassStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClassStats.h; path = MVC/Model/ClassStats.h; sourceTree = "<group>"; };
-		7AB9FD0D181ADF1600C17A46 /* ClassStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClassStats.m; path = MVC/Model/ClassStats.m; sourceTree = "<group>"; };
 		7AB9FD0F181ADF1700C17A46 /* Population.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Population.h; path = MVC/Model/Population.h; sourceTree = "<group>"; };
 		7AB9FD10181ADF1700C17A46 /* Population.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Population.m; path = MVC/Model/Population.m; sourceTree = "<group>"; };
 		7AB9FD12181ADF1700C17A46 /* Entry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Entry.h; path = MVC/Model/Entry.h; sourceTree = "<group>"; };
@@ -72,8 +71,6 @@
 		7AB9FD18181AFF8300C17A46 /* TreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TreeNode.h; path = MVC/Model/TreeNode.h; sourceTree = "<group>"; };
 		7AB9FD19181AFF8300C17A46 /* TreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TreeNode.m; path = MVC/Model/TreeNode.m; sourceTree = "<group>"; };
 		7AB9FD1B181C2C4F00C17A46 /* General.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = General.h; sourceTree = "<group>"; };
-		7AB9FD1F1820B91600C17A46 /* Handicapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Handicapper.h; path = MVC/Model/Handicapper.h; sourceTree = "<group>"; };
-		7AB9FD201820B91600C17A46 /* Handicapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Handicapper.m; path = MVC/Model/Handicapper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,12 +120,10 @@
 				7AB9FD13181ADF1700C17A46 /* Entry.m */,
 				7AB9FD0F181ADF1700C17A46 /* Population.h */,
 				7AB9FD10181ADF1700C17A46 /* Population.m */,
-				7AB9FD0C181ADF1600C17A46 /* ClassStats.h */,
-				7AB9FD0D181ADF1600C17A46 /* ClassStats.m */,
 				7AB9FD18181AFF8300C17A46 /* TreeNode.h */,
 				7AB9FD19181AFF8300C17A46 /* TreeNode.m */,
-				7AB9FD1F1820B91600C17A46 /* Handicapper.h */,
-				7AB9FD201820B91600C17A46 /* Handicapper.m */,
+				7A173E34182452550095DA1F /* Handicapper.h */,
+				7A173E35182452550095DA1F /* Handicapper.m */,
 			);
 			name = "M-Model";
 			sourceTree = "<group>";
@@ -136,8 +131,8 @@
 		7A27ED3B1818222600AA91AE /* C-Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				7A27ED4018184CEE00AA91AE /* ECEvolutionManager.m */,
 				7A27ED3F18184CEE00AA91AE /* ECEvolutionManager.h */,
+				7A27ED4018184CEE00AA91AE /* ECEvolutionManager.m */,
 			);
 			name = "C-Controllers";
 			sourceTree = "<group>";
@@ -340,12 +335,11 @@
 				7A98B3CD18170ECD0013F43D /* ECAppDelegate.m in Sources */,
 				7AB9FD0B181ADCED00C17A46 /* EvoCapper.xcdatamodeld in Sources */,
 				7AB9FD14181ADF1700C17A46 /* Entry.m in Sources */,
-				7AB9FD0E181ADF1600C17A46 /* ClassStats.m in Sources */,
 				7A98B3C618170ECD0013F43D /* main.m in Sources */,
 				7AB9FD11181ADF1700C17A46 /* Population.m in Sources */,
-				7AB9FD211820B91600C17A46 /* Handicapper.m in Sources */,
 				7A27ED4118184CEE00AA91AE /* ECEvolutionManager.m in Sources */,
 				7AB9FD1A181AFF8300C17A46 /* TreeNode.m in Sources */,
+				7A173E36182452550095DA1F /* Handicapper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

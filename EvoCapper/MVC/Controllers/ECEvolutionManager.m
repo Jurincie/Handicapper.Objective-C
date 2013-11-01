@@ -12,7 +12,7 @@
 #import "ECEvolutionManager.h"
 #import "Population.h"
 
-#define MOC [[NSApp delegate]managedObjectContext]]
+#define MOC [[NSApp delegate]managedObjectContext]
 
 @implementation ECEvolutionManager
 
@@ -69,7 +69,7 @@
     NSLog(@"createNewPopulation called in ECEvolutionManager");
     
     self.population = [NSEntityDescription insertNewObjectForEntityForName:@"HandicapperPopulation"
-                                                    inManagedObjectContext:MOC;
+                                                    inManagedObjectContext:MOC];
     if(self.population)
     {
         NSArray *unsortedArray = [NSArray arrayWithObjects:[self.population.individualHandicappers allObjects], nil];
@@ -131,10 +131,12 @@
     for(NSUInteger localGenNumber = 0; localGenNumber < numberGenerations; localGenNumber++)
     {
         [self testPopulation:self.population
-   usingChildrenOnly:YES
-      withResultFilesAtPath:nil];
+		   usingChildrenOnly:localGenNumber > 0 ? YES : NO
+	   withResultFilesAtPath:nil];
     
         [self createNextGenerationForPopulation:self.population];
+		
+	    [self mutatePopulation];
     }
     
     [self updateAndSaveData];
@@ -146,7 +148,8 @@
      usingChildrenOnly:(BOOL)testChildrenOnly
  withResultFilesAtPath:(NSString *)path
 {
-       
+	// self.workingPopulation array MUST be sorted at this point with:
+	//	chldren occupying BOTTOM HALF of array with their indices
 
     // FIX: actually test
     // for now assuming 100 races are run
@@ -160,24 +163,30 @@
     //          class of race
     //          distance of race
     
-    NSUInteger startIndex   = testChildrenOnly == TRUE ? [testPopulation.initialSize integerValue] : 0;
-    NSString *pathToFile    = nil;  /// FIX:
-    
-    while(pathToFile)
-    {
-        for(NSUInteger index = startIndex; index < [testPopulation.initialSize integerValue]; index++)
-        {
-            // use information above to simulate race to:
-            //  get predicted winner from EVERY UNTESTED handicapper
-            //  track these picks to accumulate:
-            //      bets made and bets won
-        
-        }
-    }
+//    NSUInteger startIndex   = testChildrenOnly == TRUE ? [testPopulation.initialSize integerValue] : 0;
+//    NSString *pathToFile    = nil;  /// FIX:
+//    
+//    while(pathToFile)
+//    {
+//        for(NSUInteger index = startIndex; index < [testPopulation.initialSize integerValue]; index++)
+//        {
+//            // use information above to simulate race to:
+//            //  get predicted winner from EVERY UNTESTED handicapper
+//            //  track these picks to accumulate:
+//            //      bets made and bets won
+//        
+//        }
+//    }
+
+	NSUInteger startIndex = testChildrenOnly == TRUE ? [testPopulation.initialSize integerValue] / 2: 0;
     
     for(NSUInteger index = startIndex; index < [testPopulation.initialSize integerValue]; index++)
     {
-    
+		// FIX: for now just assign 100 for numberWinBets and rand() % 50 for numberWinBetWinners
+		Handicapper *tempHandicapper = [self.workingPopulationMembersDna objectAtIndex:index];
+		
+		tempHandicapper.fitnessStats.numberWinBets			= [NSNumber numberWithInteger:100];
+		tempHandicapper.fitnessStats.numberWinBetWinners	= [NSNumber numberWithInteger:rand() % 50];
     }
 }
 
@@ -187,8 +196,6 @@
     [self sortWorkingPopulationUsingIndividualsFitnessValues];
 
     [self replaceBottomHalfOfPopulationWithNewChildren];
-    
-    [self mutatePopulation];
 }
 
 - (void)replaceBottomHalfOfPopulationWithNewChildren
@@ -447,9 +454,13 @@
     for(int i = 0; i < initialPopSize; i++)
     {
         Handicapper *newbie = [NSEntityDescription insertNewObjectForEntityForName:@"IndividualHandicapper"
-                                                            inManagedObjectContext: [[NSApp delegate] managedObjectContext]];
-        NSLog(@"Population member %i adding strands:", i);
-       
+                                                            inManagedObjectContext: MOC];
+		
+		// add a FitnessStats instance to each handicapper
+		newbie.fitnessStats = [NSEntityDescription insertNewObjectForEntityForName:@"FitnessStats"
+                                                            inManagedObjectContext: MOC];
+        NSLog(@"Population Index:%i:", i);
+    
         // iterate through dnaStrands
         for(int j = 0; j < kNumberDnaStrands; j++)
         {
