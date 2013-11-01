@@ -136,8 +136,8 @@
 		7A27ED3B1818222600AA91AE /* C-Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				7A27ED3F18184CEE00AA91AE /* ECEvolutionManager.h */,
 				7A27ED4018184CEE00AA91AE /* ECEvolutionManager.m */,
+				7A27ED3F18184CEE00AA91AE /* ECEvolutionManager.h */,
 			);
 			name = "C-Controllers";
 			sourceTree = "<group>";

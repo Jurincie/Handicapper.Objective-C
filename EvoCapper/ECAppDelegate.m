@@ -56,21 +56,21 @@
     {
         return _persistentStoreCoordinator;
     }
-    
+
     NSManagedObjectModel *mom = [self managedObjectModel];
-    
+
     if (!mom)
     {
         NSLog(@"%@:%@ No model to generate a store from", [self class], NSStringFromSelector(_cmd));
         return nil;
     }
-    
+
     NSFileManager *fileManager          = [NSFileManager defaultManager];
     NSURL *applicationFilesDirectory    = [self applicationFilesDirectory];
     NSError *error                      = nil;
     NSDictionary *properties            = [applicationFilesDirectory resourceValuesForKeys:@[NSURLIsDirectoryKey]
                                                                                      error:&error];
-    
+
     if (!properties)
     {
         BOOL ok = NO;
@@ -108,22 +108,22 @@
             return nil;
         }
     }
-    
-    NSURL *url                                  = [applicationFilesDirectory URLByAppendingPathComponent:@"EvoCapper.storedata"];
-    NSPersistentStoreCoordinator *coordinator   = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
-   
-    if (![coordinator addPersistentStoreWithType:NSXMLStoreType
-                                   configuration:nil
-                                             URL:url
-                                         options:nil
-                                           error:&error])
+
+    NSURL *url                          = [applicationFilesDirectory URLByAppendingPathComponent:@"EvoCapper.storedata"];
+    NSPersistentStoreCoordinator *crdr  = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
+
+    if (![crdr addPersistentStoreWithType:NSXMLStoreType
+                            configuration:nil
+                                      URL:url
+                                  options:nil
+                                    error:&error])
     {
         [[NSApplication sharedApplication] presentError:error];
         return nil;
     }
-   
-    _persistentStoreCoordinator = coordinator;
-    
+
+    _persistentStoreCoordinator = crdr;
+
     return _persistentStoreCoordinator;
 }
 
@@ -134,9 +134,9 @@
     {
         return _managedObjectContext;
     }
-    
+
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-   
+
     if (!coordinator)
     {
         NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -154,9 +154,9 @@
         
         return nil;
     }
-    
+
     _managedObjectContext = [[NSManagedObjectContext alloc] init];
-    
+
     [_managedObjectContext setPersistentStoreCoordinator:coordinator];
 
     return _managedObjectContext;
@@ -174,14 +174,14 @@
 - (IBAction)saveAction:(id)sender
 {
     NSLog(@"Stop / Save Button Tapped");
-    
+
     NSError *error = nil;
-    
+
     if (![[self managedObjectContext] commitEditing])
     {
         NSLog(@"%@:%@ unable to commit editing before saving", [self class], NSStringFromSelector(_cmd));
     }
-    
+
     if (![[self managedObjectContext] save:&error])
     {
         [[NSApplication sharedApplication] presentError:error];
@@ -191,23 +191,23 @@
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
     // Save changes in the application's managed object context before the application terminates.
-    
+
     if (!_managedObjectContext)
     {
         return NSTerminateNow;
     }
-    
+
     if (![[self managedObjectContext] commitEditing])
     {
         NSLog(@"%@:%@ unable to commit editing to terminate", [self class], NSStringFromSelector(_cmd));
         return NSTerminateCancel;
     }
-    
+
     if (![[self managedObjectContext] hasChanges])
     {
         return NSTerminateNow;
     }
-    
+
     NSError *error = nil;
     if (![[self managedObjectContext] save:&error])
     {
@@ -218,15 +218,15 @@
         {
             return NSTerminateCancel;
         }
-
+        
+        NSAlert *alert          = [[NSAlert alloc] init];
         NSString *question      = NSLocalizedString(@"Could not save changes while quitting. Quit anyway?",
                                                     @"Quit without saves error question message");
         NSString *info          = NSLocalizedString(@"Quitting now will lose any changes you have made since the last successful save",
                                                     @"Quit without saves error question info");
         NSString *quitButton    = NSLocalizedString(@"Quit anyway", @"Quit anyway button title");
         NSString *cancelButton  = NSLocalizedString(@"Cancel", @"Cancel button title");
-        NSAlert *alert          = [[NSAlert alloc] init];
-        
+       
         [alert setMessageText:question];
         [alert setInformativeText:info];
         [alert addButtonWithTitle:quitButton];
@@ -243,30 +243,31 @@
     return NSTerminateNow;
 }
 
+
 // Custon code
 
 - (IBAction)createNewPopulationButtonTapped:(id)sender
 {
     NSLog(@"Create New Population Button Tapped");
-    
+
     // resent a modal window to get user input for new population values
-    
+
     [self.evolutionManager createNewPopoulationWithName:@"Test Name"
                                             initialSize:8
                                            maxTreeDepth:4
                                            minTreeDepth:8
                                            mutationRate:.01
                                                comments:@"Initial Population TEST 1.0.0"];
-    
+
     self.currentPopulation = self.evolutionManager.population;
-    
+
     // FIX: now add this new population to the coreData database
 }
 
 - (IBAction)trainPopulationButtonTapped:(id)sender
 {
     NSLog(@"Train Population Button Tapped");
-    
+
     [self.evolutionManager trainPopulationForGenerations:2];
 }
 

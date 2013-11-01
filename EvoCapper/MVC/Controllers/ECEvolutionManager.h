@@ -20,6 +20,10 @@
 @property (nonatomic, strong)   NSString        *trainingSetPath;
 @property (nonatomic, strong)   Population      *population;
 @property (nonatomic, strong)   NSMutableArray  *workingPopulationMembersDna;
+@property (nonatomic, strong)   NSArray         *sortedArrayOfHandicapperSet;
+
++ (id)sharedManager;
+- (void)updateAndSaveData;
 
 - (void)createNewPopoulationWithName:(NSString*)name
                          initialSize:(NSUInteger)initialSize
@@ -29,22 +33,24 @@
                             comments:(NSString*)comments;
 
 - (void)createNewHandicappers:(NSUInteger)initialPopSize;
-- (Handicapper*)getHandicapperWithPopIndex:(NSUInteger)popIndex;
 - (void)trainPopulationForGenerations:(NSUInteger)numberGenerations;
-- (NSArray*)testUsingResultFilesAtPath:(NSString*)path;
+- (void)testPopulation:(Population*)testPopulation
+         usingChildrenOnly:(BOOL)testChildrenOnly
+     withResultFilesAtPath:(NSString*)path;
 
+- (void)fillWorkingPopulationArray;
 - (void)replaceOldDnaStringsForChildWithIndex:(NSUInteger)popIndex;
 - (void)removeOldDnaTreesForChildWithIndex:(NSUInteger)popIndex;
 
-- (void)createNextGenerationFromFitnessValues:(NSArray*)fitnessArray;
+- (void)sortWorkingPopulationUsingIndividualsFitnessValues;
+- (void)createNextGenerationForPopulation:(Population*)testPopulation;
 
 - (void)crossoverMember:(Handicapper*)mother
              withMember:(Handicapper*)father
               forChild1:(Handicapper*)child1
               andChild2:(Handicapper*)child2;
 
-- (void)killBottomHalfOfPopulation;
-- (void)createChildren;
+- (void)replaceBottomHalfOfPopulationWithNewChildren;
 - (void)mutatePopulation;
 
 - (TreeNode*)createTreeForStrand:(NSUInteger)dnaStrand
@@ -59,8 +65,6 @@
 - (NSUInteger)getIndexOfComma:(NSString*)inString;
 - (NSUInteger)getIndexOfClosedParen:(NSString*)inString;
 
-- (void)updateAndSaveData;
-+ (id)sharedManager;
 
 // overflow, underflow and division by zero are ignored here
 // to be trapped in evalTree method
