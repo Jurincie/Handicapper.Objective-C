@@ -252,15 +252,17 @@
 
     // resent a modal window to get user input for new population values
 
+	self.evolutionManager.currentPopSize = 16;
+
     [self.evolutionManager createNewPopoulationWithName:@"Test Name"
-                                            initialSize:8
+                                            initialSize:self.evolutionManager.currentPopSize
                                            maxTreeDepth:4
                                            minTreeDepth:8
                                            mutationRate:.01
                                                comments:@"Initial Population TEST 1.0.0"];
 
     self.currentPopulation = self.evolutionManager.population;
-
+	
     // FIX: now add this new population to the coreData database
 }
 

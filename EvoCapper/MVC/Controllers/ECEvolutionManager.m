@@ -16,30 +16,28 @@
 
 @implementation ECEvolutionManager
 
+@synthesize currentPopSize					= _currentPopSize;
 @synthesize population                      = _population;
-@synthesize generationsAlreadyEvolved       = _generationsAlreadyEvolved;
-@synthesize trainingGenerationsThisCycle    = _trainingGenerationsThisCycle;
+@synthesize generationsEvolved				= _generationsEvolved;
+@synthesize trainingGenerationsThisCycle	= _trainingGenerationsThisCycle;
 @synthesize workingPopulationMembersDna     = _workingPopulationMembersDna;
-@synthesize sortedArrayOfHandicapperSet     = _sortedArrayOfHandicapperSet;
+@synthesize rankedPopulation				= _rankedPopulation;
 
 #pragma mark Singleton Methods
 
 + (id)sharedManager
 {
-    static ECEvolutionManager *sharedMyManager = nil;
+    static ECEvolutionManager *sharedManager = nil;
     
     static dispatch_once_t onceToken;
     
-    dispatch_once(&onceToken, ^{
-        sharedMyManager = [[self alloc] init];
-    });
+    dispatch_once(&onceToken, ^{sharedManager = [[self alloc] init];});
     
-    return sharedMyManager;
+    return sharedManager;
 }
 
 - (id)init
 {
-    
     NSLog(@"ECEVolutionManager.init called");
     
     if (self = [super init])
@@ -48,9 +46,7 @@
         time_t seed = time(NULL);
         srand((unsigned) time(&seed));
         
-        self.population                     = nil;
-        self.generationsAlreadyEvolved      = 0;
-        self.trainingGenerationsThisCycle   = 0;
+        self.population = nil;
     }
     
     return self;
@@ -67,35 +63,25 @@
 
 {
     NSLog(@"createNewPopulation called in ECEvolutionManager");
-    
-    self.population = [NSEntityDescription insertNewObjectForEntityForName:@"HandicapperPopulation"
-                                                    inManagedObjectContext:MOC];
+	
+	self.generationsEvolved = [self.population.generationNumber integerValue];
+    self.population			= [NSEntityDescription insertNewObjectForEntityForName:@"HandicapperPopulation"
+															inManagedObjectContext:MOC];
+	self.currentPopSize		= [self.population.initialSize integerValue];
+	
     if(self.population)
     {
-        NSArray *unsortedArray = [NSArray arrayWithObjects:[self.population.individualHandicappers allObjects], nil];
-        
-        // sort unsortedArray on populationIndex into sortedArray...
-        NSSortDescriptor *popIndexDescriptor    = [[NSSortDescriptor alloc] initWithKey:@"populationIndex" ascending:YES];
-        NSArray *sortDescriptors                = @[popIndexDescriptor];
-        self.sortedArrayOfHandicapperSet        = [unsortedArray sortedArrayUsingDescriptors:sortDescriptors];
-
-
-        self.population.populationName  = @"NewPopulationTest 1.0.0.0";
+		self.population.populationName  = @"NewPopulationTest 1.0.0.0";
         self.population.initialSize     = [NSNumber numberWithInteger:initialSize];
         self.population.minTreeDepth    = [NSNumber numberWithInteger:mintreeDepth];
         self.population.maxTreeDepth    = [NSNumber numberWithInteger:maxTreeDepth];
         self.population.genesisDate     = [NSDate date];
         self.population.mutationRate    = [NSNumber numberWithFloat:mutationRate];
-        
-        [self createNewHandicappers:initialSize];
-        
+    
+		self.rankedPopulation	= [self createNewHandicappers];
+		
         [self fillWorkingPopulationArray];
     }
-}
-
-- (void)sortWorkingPopulationUsingIndividualsFitnessValues
-{
-    // iterate through fitness array
 }
 
 
@@ -103,40 +89,70 @@
 {
    // fill the workingPopulationMembersDna with
    // arrays of each members trees created from their string form
-   self.workingPopulationMembersDna    = [NSMutableArray new];
-   Handicapper *tempHandicapper        = nil;
-   
-   for(int popIndex = 0; popIndex < [self.population.initialSize integerValue]; popIndex++)
-   {
-       tempHandicapper             = self.sortedArrayOfHandicapperSet[popIndex];
-       NSMutableArray *dnaTrees    = [NSMutableArray new];
-       
-       [dnaTrees addObject:[self recoverTreeFromString:tempHandicapper.breakPositionTree]];
-       [dnaTrees addObject:[self recoverTreeFromString:tempHandicapper.breakSpeedTree]];
-       [dnaTrees addObject:[self recoverTreeFromString:tempHandicapper.earlySpeedTree]];
-       [dnaTrees addObject:[self recoverTreeFromString:tempHandicapper.topSpeedTree]];
-       [dnaTrees addObject:[self recoverTreeFromString:tempHandicapper.lateSpeedTree]];
-       [dnaTrees addObject:[self recoverTreeFromString:tempHandicapper.recentClassTree]];
-       [dnaTrees addObject:[self recoverTreeFromString:tempHandicapper.earlySpeedRelevanceTree]];
-       [dnaTrees addObject:[self recoverTreeFromString:tempHandicapper.otherRelevanceTree]];
-       
-       [self.workingPopulationMembersDna addObject:dnaTrees];
+   self.workingPopulationMembersDna	= [NSMutableArray new];
+	NSMutableArray *dnaTrees		= [NSMutableArray new];
+
+	for(int popIndex = 0; popIndex < [self.population.initialSize integerValue]; popIndex++)
+	{
+		Handicapper *tempHandicapper	= self.rankedPopulation[popIndex];
+		NSArray *thisMembersDnaTrees	= [NSArray arrayWithObjects:[self recoverTreeFromString:tempHandicapper.breakPositionTree],
+										   [self recoverTreeFromString:tempHandicapper.breakSpeedTree],
+										   [self recoverTreeFromString:tempHandicapper.earlySpeedTree],
+										   [self recoverTreeFromString:tempHandicapper.topSpeedTree],
+										   [self recoverTreeFromString:tempHandicapper.lateSpeedTree],
+										   [self recoverTreeFromString:tempHandicapper.recentClassTree],
+										   [self recoverTreeFromString:tempHandicapper.earlySpeedRelevanceTree],
+										   [self recoverTreeFromString:tempHandicapper.otherRelevanceTree], nil];
+				
+		[dnaTrees addObject:thisMembersDnaTrees];
    }
+   
+	self.workingPopulationMembersDna = [dnaTrees copy];
 }
-                       
+
 - (void)trainPopulationForGenerations:(NSUInteger)numberGenerations
 {
+	if(nil == self.population)
+	{
+		// use NSAlert to deal with this
+		NSAlert *alert          = [[NSAlert alloc] init];
+		NSString *question      = NSLocalizedString(@"Create New Population",
+													@"Cancel");
+		NSString *info			= NSLocalizedString(@"No population has been selected.",
+												@"Would you like to create new Population now?");
+		NSString *quitButton    = NSLocalizedString(@"Yes, create a new population", @"Create population button title");
+		NSString *cancelButton  = NSLocalizedString(@"No", @"Cancel button title");
+		
+		[alert setMessageText:question];
+		[alert setInformativeText:info];
+		[alert addButtonWithTitle:quitButton];
+		[alert addButtonWithTitle:cancelButton];
+		
+		NSInteger answer = [alert runModal];
+	
+		if (answer == NSAlertDefaultReturn)
+        {
+			return;
+        }
+		else
+		{
+			self.rankedPopulation = [self createNewHandicappers];
+		}
+	}
+
     NSLog(@"trainPopulation called in ECEvolutionManager");
+	
+	self.trainingGenerationsThisCycle = numberGenerations;
     
     for(NSUInteger localGenNumber = 0; localGenNumber < numberGenerations; localGenNumber++)
     {
         [self testPopulation:self.population
-		   usingChildrenOnly:localGenNumber > 0 ? YES : NO
+			includingParents:localGenNumber > 0 ? NO : YES
 	   withResultFilesAtPath:nil];
     
         [self createNextGenerationForPopulation:self.population];
 		
-	    [self mutatePopulation];
+	    [self mutatePopulation:self.population];
     }
     
     [self updateAndSaveData];
@@ -144,69 +160,136 @@
 
 
    
-- (void)testPopulation:(Population*)testPopulation
-     usingChildrenOnly:(BOOL)testChildrenOnly
+- (void)testPopulation:(Population*)population
+     includingParents:(BOOL)parentsToo
  withResultFilesAtPath:(NSString *)path
 {
 	// self.workingPopulation array MUST be sorted at this point with:
 	//	chldren occupying BOTTOM HALF of array with their indices
 
-    // FIX: actually test
-    // for now assuming 100 races are run
-    // assign to each handicappers fitnessValues
-    
-    // iterate through Result files
-    //      for each race obtain:
-    //          names of entries
-    //          post positions of entries
-    //          date of race
-    //          class of race
-    //          distance of race
-    
-//    NSUInteger startIndex   = testChildrenOnly == TRUE ? [testPopulation.initialSize integerValue] : 0;
-//    NSString *pathToFile    = nil;  /// FIX:
-//    
-//    while(pathToFile)
-//    {
-//        for(NSUInteger index = startIndex; index < [testPopulation.initialSize integerValue]; index++)
-//        {
-//            // use information above to simulate race to:
-//            //  get predicted winner from EVERY UNTESTED handicapper
-//            //  track these picks to accumulate:
-//            //      bets made and bets won
-//        
-//        }
-//    }
-
-	NSUInteger startIndex = testChildrenOnly == TRUE ? [testPopulation.initialSize integerValue] / 2: 0;
-    
-    for(NSUInteger index = startIndex; index < [testPopulation.initialSize integerValue]; index++)
-    {
-		// FIX: for now just assign 100 for numberWinBets and rand() % 50 for numberWinBetWinners
-		Handicapper *tempHandicapper = [self.workingPopulationMembersDna objectAtIndex:index];
+	NSUInteger startIndex = (parentsToo == TRUE) ? 0 : self.currentPopSize / 2;
 		
-		tempHandicapper.fitnessStats.numberWinBets			= [NSNumber numberWithInteger:100];
-		tempHandicapper.fitnessStats.numberWinBetWinners	= [NSNumber numberWithInteger:rand() % 50];
+    // iterate all subdirectories inside kResultsFolderPath
+	NSString *tempPath = nil;
+	
+    while(1)
+    {
+		if([self isThisADirectory:tempPath] == TRUE)
+		{
+			[self testPopulation:population
+			   includingParents:parentsToo
+		   withResultFilesAtPath:tempPath];
+			  
+			  return;
+		}
+		
+		NSArray *raceRecordsForThisEvent = [self getRaceRecordsForResultsFileAtPath:tempPath];
+		
+		for(RaceRecord *tempRaceRecord in raceRecordsForThisEvent)
+		{
+			NSUInteger winningPost	= [self getWinningPostFromRaceRecord:tempRaceRecord];
+			NSArray *winBetsArray	= [self getWinPredictionsFromPopulation:population
+																	forRace:tempRaceRecord
+															startingAtIndex:startIndex];
+								
+			// iterate handicappers array
+			for(NSUInteger index = startIndex; index < self.currentPopSize; index++)
+			{
+				Handicapper *tempHandicapper	= [self.workingPopulationMembersDna objectAtIndex:index];
+				int incrementedTotal			= (int)[tempHandicapper.numberWinBets integerValue] + 1;
+				tempHandicapper.numberWinBets	= [NSNumber numberWithInt:incrementedTotal];
+				
+				if(winningPost == [[winBetsArray objectAtIndex:index] integerValue])
+				{
+					int incrementedTotal				= (int)[tempHandicapper.numberWinBetWinners integerValue] + 1;
+					tempHandicapper.numberWinBetWinners	= [NSNumber numberWithInt:incrementedTotal];
+				}
+			}
+		}
     }
+}
+
+- (BOOL)isThisADirectory:(NSString*)path
+{
+	BOOL answer = NO;
+	
+	return answer;
+}
+
+- (NSUInteger)getWinningPostFromRaceRecord:(RaceRecord*)thisRaceRecord
+{
+	NSUInteger winningPost = 0;
+	
+	return winningPost;
+}
+
+- (NSArray*)getRaceRecordsForResultsFileAtPath:(NSString*)resultsFileAtPath
+{
+	NSArray *raceRecordsArray = nil;
+	
+	return raceRecordsArray;
+}
+
+- (NSArray*)getWinPredictionsFromPopulation:(Population*)population
+									forRace:(RaceRecord*)thisRaceRecord
+							startingAtIndex:(NSUInteger) startIndex
+{
+	NSMutableArray *winBetsArray = [NSMutableArray new];
+	
+	for(NSUInteger index = startIndex; index < self.currentPopSize; index++)
+	{
+		//Handicapper *tempHandicapper = [self.workingPopulationMembersDna objectAtIndex:index];
+	
+		// FIX: get actual prediction
+		int  predictedPostOfWinner = rand();
+	
+		[winBetsArray addObject:[NSNumber numberWithInt:predictedPostOfWinner]];
+    }
+	
+	return winBetsArray;
 }
 
                        
 - (void)createNextGenerationForPopulation:(Population*)testPopulation
 {
-    [self sortWorkingPopulationUsingIndividualsFitnessValues];
+    // sort rankedPopulation
 
     [self replaceBottomHalfOfPopulationWithNewChildren];
 }
 
 - (void)replaceBottomHalfOfPopulationWithNewChildren
 {
-    
+	NSInteger halfwayIndex = [self.population.initialSize integerValue];
+
+    // iterate bottom half of rankedPopulation removing all handicappers
+	for(NSInteger index = halfwayIndex - 1; index >= halfwayIndex; index--)
+	{
+		Handicapper *dyingHandicapper = [self.rankedPopulation objectAtIndex:index];
+		
+		[self.rankedPopulation removeObject:dyingHandicapper];
+	}
+	
+	if(1)
+	{
+		//Handicapper *terminatingHandicapper = [self.rankedPopulation objectAtIndex:index];
+		//NSSet *handicapperSet				= self.population.individualHandicappers;
+		
+		
+//		[handicapperSet removeObject:terminatingHandicapper];
+	}
+	
+	// create same amount of new handicappers and add to population
+	for(NSUInteger index = halfwayIndex; index < halfwayIndex * 2; index++)
+	{
+		
+	}
+
 }
 
 
-- (void)mutatePopulation
+- (void)mutatePopulation:(Population*)pop
 {
-    
+    NSLog(@"mutatePopulation: called");
 }
 - (void)crossoverMember:(Handicapper*)parent1
 			withMember:(Handicapper*)parent2
@@ -214,10 +297,10 @@
 			 andChild2:(Handicapper*)child2
 {
     // this popMember and sibling are the two children of mother and father
-    NSUInteger parent1Index     = [parent1.populationIndex integerValue];
-    NSUInteger parent2Index     = [parent2.populationIndex integerValue];
-    NSUInteger child1Index      = [child1.populationIndex integerValue];
-    NSUInteger child2Index      = [child2.populationIndex integerValue];
+    NSUInteger parent1Index     = [parent1.rank integerValue];
+    NSUInteger parent2Index     = [parent2.rank integerValue];
+    NSUInteger child1Index      = [child1.rank integerValue];
+    NSUInteger child2Index      = [child2.rank integerValue];
     TreeNode *parent1Root       = nil;
     TreeNode *parent2Root       = nil;
     TreeNode *child1Root        = nil;
@@ -446,40 +529,38 @@
 }
 
 
-- (void)createNewHandicappers:(NSUInteger)initialPopSize
+- (NSMutableArray*)createNewHandicappers
 {
-    NSMutableSet *handicappersSet = [NSMutableSet new];
-    
+    NSMutableSet *handicappersSet	= [NSMutableSet new];
+    NSArray *immutableArray			= nil;
+	
     // create initial population
-    for(int i = 0; i < initialPopSize; i++)
+    for(int popIndex = 0; popIndex < self.currentPopSize; popIndex++)
     {
         Handicapper *newbie = [NSEntityDescription insertNewObjectForEntityForName:@"IndividualHandicapper"
                                                             inManagedObjectContext: MOC];
 		
-		// add a FitnessStats instance to each handicapper
-		newbie.fitnessStats = [NSEntityDescription insertNewObjectForEntityForName:@"FitnessStats"
-                                                            inManagedObjectContext: MOC];
-        NSLog(@"Population Index:%i:", i);
+		NSLog(@"Population Index:%i:", popIndex);
     
         // iterate through dnaStrands
-        for(int j = 0; j < kNumberDnaStrands; j++)
+        for(int strandNumber = 0; strandNumber < kNumberDnaStrands; strandNumber++)
         {
             // iterate through dnaStrands
             int rootLevel = 0;
             
-            if(j == 6)
+            if(strandNumber == 6)
             {
                 rootLevel = 1;
             }
-            else if(j == 7)
+            else if(strandNumber == 7)
             {
-                rootLevel = 3;
+                rootLevel = 2;
             }
             
             // don't worry about trees, will rebuild trees later from the strings below
-            NSString *dnaString = [self saveTreeToString:[self createTreeForStrand:j
+            NSString *dnaString = [self saveTreeToString:[self createTreeForStrand:popIndex
                                                                            atLevel:rootLevel]];
-            switch (j)
+            switch (strandNumber)
             {
                 case kBreakPosition:
                     newbie.breakPositionTree = dnaString;
@@ -517,17 +598,18 @@
                     break;
             }
             
-            NSLog(@"%i: %@", j, dnaString);
+            NSLog(@"%i: %@", popIndex, dnaString);
         }
         
         newbie.birthGeneration  = self.population.generationNumber;
-        newbie.populationIndex  = [NSNumber numberWithInteger:i];
+        newbie.rank				= [NSNumber numberWithInteger:popIndex];
         
         [handicappersSet addObject:newbie];
-        NSLog(@"-------");  // forces cr
     }
     
     [self.population addIndividualHandicappers:[handicappersSet copy]];
+	
+	return [immutableArray mutableCopy];
 }
 
 - (TreeNode*)createTreeForStrand:(NSUInteger)dnaStrand

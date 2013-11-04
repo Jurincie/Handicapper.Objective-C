@@ -50,4 +50,7 @@
 #define NOT_AN_INDEX 999999
 #define NOT_A_CONSTANT 0.0
 
+#define kResultsFolderPath		@"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane"
+#define kPastLinesFoldlerPath	@"/Users/ronjurincie/Desktop/Greyhound Central/Modified Dog Histories"
+
 #endif

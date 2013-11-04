@@ -19,7 +19,7 @@
 @dynamic earlySpeedTree;
 @dynamic lateSpeedTree;
 @dynamic otherRelevanceTree;
-@dynamic populationIndex;
+@dynamic rank;
 @dynamic recentClassTree;
 @dynamic topSpeedTree;
 @dynamic numberWinBets;

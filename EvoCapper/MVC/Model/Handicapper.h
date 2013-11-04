@@ -20,7 +20,7 @@
 @property (nonatomic, retain) NSString * earlySpeedTree;
 @property (nonatomic, retain) NSString * lateSpeedTree;
 @property (nonatomic, retain) NSString * otherRelevanceTree;
-@property (nonatomic, retain) NSNumber * populationIndex;
+@property (nonatomic, retain) NSNumber * rank;
 @property (nonatomic, retain) NSString * recentClassTree;
 @property (nonatomic, retain) NSString * topSpeedTree;
 @property (nonatomic, retain) NSNumber * numberWinBets;
