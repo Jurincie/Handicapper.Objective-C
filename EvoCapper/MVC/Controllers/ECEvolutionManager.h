@@ -21,46 +21,54 @@
 @property (assign)              NSUInteger		trainingGenerationsThisCycle;
 @property (nonatomic, strong)   NSString		*trainingSetPath;
 @property (nonatomic, strong)   Population		*population;
-@property (nonatomic, strong)   NSArray			*workingPopulationMembersDna;  // an array of arrays of dnaTrees
+@property (nonatomic, strong)   NSArray			*workingPopulationDna;  // an array of arrays of dnaTrees
 @property (nonatomic, strong)   NSMutableArray	*rankedPopulation;
 
 + (id)sharedManager;
 - (void)updateAndSaveData;
 
 - (void)createNewPopoulationWithName:(NSString*)name
-                         initialSize:(NSUInteger)initialSize
-                        maxTreeDepth:(NSUInteger)maxTreeDepth
-                        minTreeDepth:(NSUInteger)mintreeDepth
-                        mutationRate:(float)mutationRate
-                            comments:(NSString*)comments;
+						 initialSize:(NSUInteger)initialSize
+						maxTreeDepth:(NSUInteger)maxTreeDepth
+						minTreeDepth:(NSUInteger)mintreeDepth
+						mutationRate:(float)mutationRate
+							comments:(NSString*)comments;
 
 - (NSMutableArray*)createNewHandicappers;
+- (Handicapper*)createNewHandicapperForPopulation:(Population*)population
+									forGeneration:(NSUInteger)birthGeneration;
+- (NSArray*)createNewDnaByCrossingOverDnaFrom:(Handicapper*)parent1
+								  withDnaFrom:(Handicapper*)parent2;
 - (TreeNode*)createTreeForStrand:(NSUInteger)dnaStrand
                          atLevel:(NSUInteger)level;
 - (TreeNode*)recoverTreeFromString:(NSString*)inString;
 - (NSString*)saveTreeToString:(TreeNode*)tree;
 - (NSUInteger)getTreeNodeTypeAtLevel:(NSUInteger)level;
-- (TreeNode*)copyTree:(TreeNode*)tempTree
-              without:(TreeNode*)crossoverNode;
 
+- (NSUInteger)getParentIndexFromPopulation:(Population*)population
+				   withOverallFitnessValue:(double)popsSummedFitness;
+
+- (TreeNode*)copyTree:(TreeNode*)tempTree
+		  withoutNode:(TreeNode*)crossoverNode;
+- (TreeNode*)copyTree:parent1Root
+	replacingNode:crossover1
+	withNode:crossover2;
+- (TreeNode*)getNodeFromChildAtLevel:(NSUInteger)parent1Level
+						   usingTree:(TreeNode*)parent2Root;
+- (void)freeTree:(TreeNode*)node;
 
 - (void)trainPopulationForGenerations:(NSUInteger)numberGenerations;
 - (void)testPopulation:(Population*)testPopulation
-         includingParents:(BOOL)testChildrenOnly
-     withResultFilesAtPath:(NSString*)path;
+	  includingParents:(BOOL)testChildrenOnly
+ withResultFilesAtPath:(NSString*)path;
+- (void)sortRankedPopulation;
 
-- (void)fillWorkingPopulationArray;
+- (void)fillWorkingPopulationArrayWithOriginalMembers;
 - (void)replaceOldDnaStringsForChildWithIndex:(NSUInteger)popIndex;
-- (void)removeOldDnaTreesForChildWithIndex:(NSUInteger)popIndex;
 - (void)createNextGenerationForPopulation:(Population*)testPopulation;
-
-- (void)crossoverMember:(Handicapper*)mother
-             withMember:(Handicapper*)father
-              forChild1:(Handicapper*)child1
-              andChild2:(Handicapper*)child2;
-
 - (void)replaceBottomHalfOfPopulationWithNewChildren;
-- (void)mutatePopulation:(Population*)pop;
+- (void)mutateChildrenForPopulation:(Population*)pop;
+- (void)mutateHandicappersDnaTrees:(Handicapper*)futureMutant;
 
 - (NSArray*)getWinPredictionsFromPopulation:(Population*)population
 									forRace:(RaceRecord*)raceRecord

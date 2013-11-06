@@ -6,6 +6,20 @@
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
+// define reprocuction type AND fitness selection method
+
+#define kLinearFitnessSelection 0
+#define kSuaredFitnessSelection 1
+
+#define kMonogomousPairsMethod 0
+#define kAlphasMalesDominateMethod 1
+#define kOrgyMethod 1
+
+#define kSelectionMethod kSuaredFitnessSelection
+#define kReproductionType kMonogomousPairsMethod
+
+///////////////////////////
+
 #ifndef EvoCapper_Constants_h
 #define EvoCapper_Constants_h
 
@@ -17,9 +31,9 @@
 #define kNumberFunctions 8
 #define kNumberTwoArgFuncs 4
 
-#define kBreakPosition 0
-#define kBreakSpeed 1
-#define kEarlySpeed 2
+#define kBreakPositionStrand 0
+#define kBreakSpeedStrand 1
+#define kEarlySpeedStrand 2
 #define kTopSpeedStrand 3
 #define kLateSpeedStrand 4
 #define kRecentClassStrand 5

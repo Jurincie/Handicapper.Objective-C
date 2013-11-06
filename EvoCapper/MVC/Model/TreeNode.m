@@ -12,10 +12,10 @@
 
 @synthesize leafConstant        = _leafConstant;
 @synthesize functionPtr         = _functionPtr;
-@synthesize leftChild           = _leftChild;
+@synthesize leftBranch           = _leftBranch;
 @synthesize leafVariableIndex   = _leafVariableIndex;
 @synthesize functionIndex       = _functionIndex;
-@synthesize rightChild          = _rightChild;
+@synthesize rightBranch          = _rightBranch;
 @synthesize conditionTest       = _conditionTest;
 @synthesize functionName        = _functionName;
 
@@ -26,8 +26,8 @@
         self.leafVariableIndex  = NOT_AN_INDEX;
         self.leafConstant       = NOT_A_CONSTANT;
         self.functionPtr        = nil;
-        self.leftChild          = nil;
-        self.rightChild         = nil;
+        self.leftBranch          = nil;
+        self.rightBranch         = nil;
         self.functionIndex      = funcPtrIndex;
         
         switch (funcPtrIndex)
@@ -89,8 +89,8 @@
         self.functionIndex      = NOT_AN_INDEX;
         self.functionPtr        = nil;
         self.functionName       = nil;
-        self.leftChild          = nil;
-        self.rightChild         = nil;
+        self.leftBranch          = nil;
+        self.rightBranch         = nil;
     }
     
     return self;
@@ -105,8 +105,8 @@
         self.functionIndex      = NOT_AN_INDEX;
         self.functionPtr        = nil;
         self.functionName       = nil;
-        self.leftChild          = nil;
-        self.rightChild         = nil;
+        self.leftBranch          = nil;
+        self.rightBranch         = nil;
     }
     
     return self;

@@ -11,8 +11,8 @@
 
 @interface TreeNode : NSObject
 
-@property (nonatomic, strong)   TreeNode    *leftChild;
-@property (nonatomic, strong)   TreeNode    *rightChild;
+@property (nonatomic, strong)   TreeNode    *leftBranch;
+@property (nonatomic, strong)   TreeNode    *rightBranch;
 @property (nonatomic, assign)   long double (*functionPtr)();
 @property (nonatomic, strong)   NSString    *functionName;
 @property (assign)              long double leafConstant;
