@@ -10,7 +10,7 @@
 // We have made this class a singleton
 
 #import "ECEvolutionManager.h"
-#import "Population.h"
+#import "ECPopulation.h"
 
 #define MOC [[NSApp delegate]managedObjectContext]
 
@@ -94,7 +94,7 @@
 
 	for(int popIndex = 0; popIndex < [self.population.initialSize integerValue]; popIndex++)
 	{
-		Handicapper *tempHandicapper	= self.rankedPopulation[popIndex];
+		ECHandicapper *tempHandicapper	= self.rankedPopulation[popIndex];
 		NSArray *thisMembersDnaTrees	= [NSArray arrayWithObjects:[self recoverTreeFromString:tempHandicapper.breakPositionTree],
 																	[self recoverTreeFromString:tempHandicapper.breakSpeedTree],
 																	[self recoverTreeFromString:tempHandicapper.earlySpeedTree],
@@ -160,7 +160,7 @@
 
 
    
-- (void)testPopulation:(Population*)population
+- (void)testPopulation:(ECPopulation*)population
 	  includingParents:(BOOL)parentsToo
  withResultFilesAtPath:(NSString *)path
 {
@@ -185,7 +185,7 @@
 		
 		NSArray *raceRecordsForThisEvent = [self getRaceRecordsForResultsFileAtPath:tempPath];
 		
-		for(RaceRecord *tempRaceRecord in raceRecordsForThisEvent)
+		for(ECRaceRecord *tempRaceRecord in raceRecordsForThisEvent)
 		{
 			NSUInteger winningPost	= [self getWinningPostFromRaceRecord:tempRaceRecord];
 			NSArray *winBetsArray	= [self getWinPredictionsFromPopulation:population
@@ -195,7 +195,7 @@
 			// iterate handicappers array
 			for(NSUInteger index = startIndex; index < self.currentPopSize; index++)
 			{
-				Handicapper *tempHandicapper	= [self.workingPopulationDna objectAtIndex:index];
+				ECHandicapper *tempHandicapper	= [self.workingPopulationDna objectAtIndex:index];
 				int incrementedTotal			= (int)[tempHandicapper.numberWinBets integerValue] + 1;
 				tempHandicapper.numberWinBets	= [NSNumber numberWithInt:incrementedTotal];
 				
@@ -217,7 +217,7 @@
 	return answer;
 }
 
-- (NSUInteger)getWinningPostFromRaceRecord:(RaceRecord*)thisRaceRecord
+- (NSUInteger)getWinningPostFromRaceRecord:(ECRaceRecord*)thisRaceRecord
 {
 	NSUInteger winningPost = 0;
 	
@@ -231,8 +231,8 @@
 	return raceRecordsArray;
 }
 
-- (NSArray*)getWinPredictionsFromPopulation:(Population*)population
-									forRace:(RaceRecord*)thisRaceRecord
+- (NSArray*)getWinPredictionsFromPopulation:(ECPopulation*)population
+									forRace:(ECRaceRecord*)thisRaceRecord
 							startingAtIndex:(NSUInteger) startIndex
 {
 	NSMutableArray *winBetsArray = [NSMutableArray new];
@@ -251,7 +251,7 @@
 }
 
                        
-- (void)createNextGenerationForPopulation:(Population*)testPopulation
+- (void)createNextGenerationForPopulation:(ECPopulation*)testPopulation
 {
    	// increment generation counter
 	NSNumber *incrementedGenNumber		= [NSNumber numberWithInt:(int)[self.population.generationNumber integerValue] + 1];
@@ -285,7 +285,7 @@
     // iterate bottom half of rankedPopulation removing all handicappers
 	for(NSInteger index = self.currentPopSize - 1; index >= halfwayIndex; index--)
 	{
-		Handicapper *dyingHandicapper = [self.rankedPopulation objectAtIndex:index];
+		ECHandicapper *dyingHandicapper = [self.rankedPopulation objectAtIndex:index];
 		
 		// remove handicapper from rankedPopulationArray
 		[self.rankedPopulation removeObject:dyingHandicapper];
@@ -297,14 +297,14 @@
 	// create new bottom half of rankedPop by crossing over dnaTrees form remaining half of pop
 	for(NSInteger index = halfwayIndex ; index < self.currentPopSize; index++)
 	{
-		Handicapper *newHandicapper = [self createNewHandicapperForPopulation:self.population
+		ECHandicapper *newHandicapper = [self createNewHandicapperForPopulation:self.population
 																forGeneration:(int)self.population.generationNumber];
 				
 		[self.rankedPopulation addObject:newHandicapper];
 	}
 }
 
-- (Handicapper*)createNewHandicapperForPopulation:(Population*)population
+- (ECHandicapper*)createNewHandicapperForPopulation:(ECPopulation*)population
 							forGeneration:(NSUInteger)birthGeneration
 {
 	// get 2 UNIQUE parents
@@ -320,7 +320,7 @@
 		{
 			for(NSUInteger popIndex = 0; popIndex <  self.currentPopSize / 2; popIndex++)
 			{
-				Handicapper *tempHandicapper	= [self.rankedPopulation objectAtIndex:popIndex];
+				ECHandicapper *tempHandicapper	= [self.rankedPopulation objectAtIndex:popIndex];
 				double tempFitness				= (double)[tempHandicapper.numberWinBetWinners integerValue] /
 													(double)[tempHandicapper.numberWinBets integerValue];
 				summedFitnessForPopulation		+= tempFitness;
@@ -343,10 +343,10 @@
 								  withOverallFitnessValue:summedFitnessForPopulation];
 	}
 	
-	Handicapper *parent1 = [self.rankedPopulation objectAtIndex:parent1Index];
-	Handicapper *parent2 = [self.rankedPopulation objectAtIndex:parent2Index];
+	ECHandicapper *parent1 = [self.rankedPopulation objectAtIndex:parent1Index];
+	ECHandicapper *parent2 = [self.rankedPopulation objectAtIndex:parent2Index];
 	
-	Handicapper *newHandicapper = [NSEntityDescription insertNewObjectForEntityForName:@"Handicapper"
+	ECHandicapper *newHandicapper = [NSEntityDescription insertNewObjectForEntityForName:@"Handicapper"
 																inManagedObjectContext:MOC];
 	
 	newHandicapper.numberWinBets			= [NSNumber numberWithInteger:0];
@@ -369,7 +369,7 @@
 	return newHandicapper;
 }
 
-- (NSUInteger)getParentIndexFromPopulation:(Population*)population
+- (NSUInteger)getParentIndexFromPopulation:(ECPopulation*)population
 				   withOverallFitnessValue:(double)popsFitness
 {
 	// orgy type does not specify unique parent
@@ -398,7 +398,7 @@
 				
 			for(NSUInteger popIndex = 0; popIndex < self.currentPopSize / 2; popIndex++)
 			{
-				Handicapper *handicapper	= [self.rankedPopulation objectAtIndex:popIndex];
+				ECHandicapper *handicapper	= [self.rankedPopulation objectAtIndex:popIndex];
 				double winningPercentage	= [handicapper.numberWinBetWinners integerValue] /
 												[handicapper.numberWinBets doubleValue];
 				fitnessAccumulator			+= winningPercentage;
@@ -419,7 +419,7 @@
 	return parentIndex;
 }
 
-- (void)mutateChildrenForPopulation:(Population*)pop
+- (void)mutateChildrenForPopulation:(ECPopulation*)pop
 {
     NSLog(@"mutateChildrenForPopulation: called");
 	
@@ -431,19 +431,19 @@
 		if(threshold < [self.population.mutationRate doubleValue])
 		{
 			// mutate this member
-			[self mutateHandicappersDnaTrees:[self.rankedPopulation objectAtIndex:popIndex];
+			[self mutateHandicappersDnaTrees:[self.rankedPopulation objectAtIndex:popIndex]];
 		}
 	}
 }
 
-- (void)mutateHandicappersDnaTrees:(Handicapper*)futureMutant
+- (void)mutateHandicappersDnaTrees:(ECHandicapper*)futureMutant
 {
-	
+	// FIX: implement
 }
 
 
-- (NSArray*)createNewDnaByCrossingOverDnaFrom:(Handicapper*)parent1
-								  withDnaFrom:(Handicapper*)parent2
+- (NSArray*)createNewDnaByCrossingOverDnaFrom:(ECHandicapper*)parent1
+								  withDnaFrom:(ECHandicapper*)parent2
 {
     NSUInteger parent1Index     = [parent1.rank integerValue];
     NSUInteger parent2Index     = [parent2.rank integerValue];
@@ -453,12 +453,12 @@
     BOOL grandparent1UsingRightChild = YES;
 	
 	NSMutableArray*childDnaArray	= [NSMutableArray new];
-    TreeNode *parent1Root			= nil;
-    TreeNode *parent2Root			= nil;
+    ECTreeNode *parent1Root			= nil;
+    ECTreeNode *parent2Root			= nil;
 	
-	TreeNode *crossover1			= nil;
-    TreeNode *crossover2			= nil;
-    TreeNode *crossover1Parent		= nil;
+	ECTreeNode *crossover1			= nil;
+    ECTreeNode *crossover2			= nil;
+    ECTreeNode *crossover1Parent		= nil;
 	
 	for(NSUInteger strandNumber = 0; strandNumber < kNumberDnaStrands; strandNumber++)
 	{
@@ -540,7 +540,7 @@
 	return childDnaArray;
 }
 
-- (TreeNode*)copyTree:parentRoot
+- (ECTreeNode*)copyTree:parentRoot
 		replacingNode:replaceThisNode
 			 withNode:replacementNode
 {
@@ -549,14 +549,14 @@
 		return nil;
 	}
 	
-	TreeNode *newTree   = nil;
-    TreeNode *tempNode  = parentRoot;
+	ECTreeNode *newTree   = nil;
+    ECTreeNode *tempNode  = parentRoot;
 	
 	if(tempNode.functionPtr &&
        tempNode.leafVariableIndex == NOT_AN_INDEX &&
        tempNode.leafConstant == NOT_A_CONSTANT)
 	{
-        newTree = [[TreeNode alloc] initWithFunctionPointerIndex:tempNode.functionIndex];
+        newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:tempNode.functionIndex];
 		
 		// traverse left branch first
 		if(tempNode.leftBranch == replaceThisNode)
@@ -588,11 +588,11 @@
 	}
     else if(tempNode.leafConstant != NOT_A_CONSTANT)
 	{
-        newTree = [[TreeNode alloc] initWithConstantValue:tempNode.leafConstant];
+        newTree = [[ECTreeNode alloc] initWithConstantValue:tempNode.leafConstant];
 	}
     else if(tempNode.leafVariableIndex != NOT_AN_INDEX)
 	{
-        newTree = [[TreeNode alloc] initWithRaceVariable:tempNode.leafVariableIndex];
+        newTree = [[ECTreeNode alloc] initWithRaceVariable:tempNode.leafVariableIndex];
 	}
     else
 	{
@@ -603,30 +603,97 @@
 	return newTree;
 }
 
-- (TreeNode*)getNodeFromChildAtLevel:(NSUInteger)parent1Level
-						   usingTree:(TreeNode*)parent2Root
+- (ECTreeNode*)getNodeFromChildAtLevel:(NSUInteger)parent1Level
+						   usingTree:(ECTreeNode*)parent2Root
 {
-	TreeNode *crossoverFromParent2 = nil;
+	ECTreeNode *crossoverFromParent2 = nil;
 
 	return crossoverFromParent2;
 }
-
-- (TreeNode*)createNewDnaStrandByCrossingOverDnaFrom:parent1Root
-									   excludingNode:crossover1
-									   withDnaStrand:crossover2
+- (double)evalTree:(ECTreeNode*)treeNode
+	usingVariables:(NSMutableArray*)dataArray
+			atPost:(NSUInteger)postPosition
 {
-	TreeNode *newDnaStandTree = nil;
+	double returnVal = 0.0;
 	
+	if(postPosition > kMaximumNumberEntries)
+		{
+		NSLog(@"eval tree post error 1");
+		exit(1);
+		}
 	
-	return newDnaStandTree;
+	if(treeNode.functionPtr)
+		{
+		double leftBranchVal = [self evalTree:treeNode.leftBranch
+							   usingVariables:dataArray
+									   atPost:postPosition];
+		
+		if(leftBranchVal == 00000)
+			{
+			return 00000;
+			}
+		
+		if(treeNode.rightBranch)
+			{
+			double rightBranchVal = [self evalTree:treeNode.rightBranch
+									usingVariables:dataArray
+											atPost:postPosition];
+			
+			if(leftBranchVal == 00000)
+				{
+				return 00000;
+				}
+			
+			returnVal = treeNode.functionPtr(leftBranchVal, rightBranchVal);
+			}
+		else
+			{
+			returnVal = treeNode.functionPtr(leftBranchVal);
+			}
+		}
+	else if(treeNode.leafConstant != NOT_A_CONSTANT)
+		{
+		returnVal = treeNode.leafConstant;
+		}
+	else
+		{
+		// get value for this race variable
+		if(treeNode.leafVariableIndex == NOT_AN_INDEX)
+			{
+			NSLog(@"eval tree error alpha");
+			exit(1);
+			}
+		else
+			{
+			returnVal = [self getLeafVariableValueForIndex:treeNode.leafVariableIndex
+										fromPastLineRecord:nil];
+			}
+		}
+	
+	if(returnVal == 00000)
+		{
+		return 00000;
+		}
+	
+	return returnVal;
 }
+
+
+- (double)getLeafVariableValueForIndex:(NSUInteger)leafVariableIndex
+					fromPastLineRecord:(PastLineRecord*)pastLineRecord
+{
+	double returnValue = 0.0;
+	
+	return returnValue;
+}
+
 
 
 - (void)replaceOldDnaStringsForChildWithIndex:(NSUInteger)popIndex
 {
     // Since dnaTrees are stored as strings in coreData data model
     // need to copy just edited trees to appropriate strings
-    Handicapper *changedHandicapper = nil;
+    ECHandicapper *changedHandicapper = nil;
     
     changedHandicapper.breakPositionTree        = self.workingPopulationDna[popIndex][0];
     changedHandicapper.breakSpeedTree           = self.workingPopulationDna[popIndex][1];
@@ -639,7 +706,7 @@
 }
 
 
-- (void)freeTree:(TreeNode*)node
+- (void)freeTree:(ECTreeNode*)node
 {
 	
 	if(nil == node)
@@ -658,17 +725,17 @@
 
 }
 
-- (TreeNode*)copyTree:(TreeNode*)parentRoot
-		  withoutNode:(TreeNode*)doNotCopyNode
+- (ECTreeNode*)copyTree:(ECTreeNode*)parentRoot
+		  withoutNode:(ECTreeNode*)doNotCopyNode
 {
-	TreeNode *newTree   = nil;
-    TreeNode *tempNode  = parentRoot;
+	ECTreeNode *newTree   = nil;
+    ECTreeNode *tempNode  = parentRoot;
 	
 	if(tempNode.functionPtr &&
        tempNode.leafVariableIndex == NOT_AN_INDEX &&
        tempNode.leafConstant == NOT_A_CONSTANT)
 	{
-        newTree = [[TreeNode alloc] initWithFunctionPointerIndex:tempNode.functionIndex];
+        newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:tempNode.functionIndex];
 
         if(tempNode.leftBranch == doNotCopyNode)
         {
@@ -695,11 +762,11 @@
     }
     else if(tempNode.leafConstant != NOT_A_CONSTANT)
     {
-        newTree = [[TreeNode alloc] initWithConstantValue:tempNode.leafConstant];
+        newTree = [[ECTreeNode alloc] initWithConstantValue:tempNode.leafConstant];
     }
     else if(tempNode.leafVariableIndex != NOT_AN_INDEX)
     {
-        newTree = [[TreeNode alloc] initWithRaceVariable:tempNode.leafVariableIndex];
+        newTree = [[ECTreeNode alloc] initWithRaceVariable:tempNode.leafVariableIndex];
     }
     else
     {
@@ -719,7 +786,7 @@
     // create initial population
     for(int popIndex = 0; popIndex < self.currentPopSize; popIndex++)
     {
-        Handicapper *newbie = [NSEntityDescription insertNewObjectForEntityForName:@"IndividualHandicapper"
+        ECHandicapper *newbie = [NSEntityDescription insertNewObjectForEntityForName:@"IndividualHandicapper"
                                                             inManagedObjectContext: MOC];
 		
 		NSLog(@"Population Index:%i:", popIndex);
@@ -794,14 +861,14 @@
 	return [immutableArray mutableCopy];
 }
 
-- (TreeNode*)createTreeForStrand:(NSUInteger)dnaStrand
+- (ECTreeNode*)createTreeForStrand:(NSUInteger)dnaStrand
                          atLevel:(NSUInteger)level
 {
 	// tree is made of TreeNodes
 	// as we get deeper into the tree increase probability of leaf node
     level++;
     
-    TreeNode *newNode   = nil;
+    ECTreeNode *newNode   = nil;
 	NSUInteger nodeType = [self getTreeNodeTypeAtLevel:level];
     
     switch (nodeType)
@@ -820,7 +887,7 @@
             }
             else
             {
-                newNode = [[TreeNode alloc] initWithFunctionPointerIndex:functionNumber];
+                newNode = [[ECTreeNode alloc] initWithFunctionPointerIndex:functionNumber];
             }
             
             newNode.rightBranch  = nil;
@@ -842,14 +909,14 @@
         case kVariableNode:
         {
             NSUInteger arrayIndex   = [self getPastLineVariableForDnaStrand:dnaStrand];
-            newNode                 = [[TreeNode alloc] initWithRaceVariable:arrayIndex];
+            newNode                 = [[ECTreeNode alloc] initWithRaceVariable:arrayIndex];
             
             break;
         }
         case kConstantNode:
         {
             double c    = getRand(kRandomRange, kRandomGranularity);
-            newNode     = [[TreeNode alloc] initWithConstantValue:c];
+            newNode     = [[ECTreeNode alloc] initWithConstantValue:c];
             
             break;
         }
@@ -897,7 +964,7 @@
     return nodeType;
 }
 
-- (NSString*)saveTreeToString:(TreeNode*)tree
+- (NSString*)saveTreeToString:(ECTreeNode*)tree
 {
     NSMutableString *treeString = [NSMutableString new];
 
@@ -939,9 +1006,9 @@
     return treeString;
 }
 
-- (TreeNode*)recoverTreeFromString:(NSString*)inString
+- (ECTreeNode*)recoverTreeFromString:(NSString*)inString
 {
-    TreeNode *newTree       = nil;
+    ECTreeNode *newTree       = nil;
     NSString *newString     = nil;
     NSString *newString2    = nil;
     NSString *token         = nil;
@@ -974,42 +1041,42 @@
         
 		if([token isEqualToString:@"add"])
 		{
-			newTree = [[TreeNode alloc] initWithFunctionPointerIndex:kAdditionIndex];
+			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kAdditionIndex];
 			numArgs = 2;
 		}
 		else if([token isEqualToString:@"subtract"])
 		{
-			newTree = [[TreeNode alloc] initWithFunctionPointerIndex:kSubtractionIndex];
+			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kSubtractionIndex];
 			numArgs = 2;
 		}
 		else if([token isEqualToString:@"multiply"])
 		{
-			newTree = [[TreeNode alloc] initWithFunctionPointerIndex:kMultiplicationIndex];
+			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kMultiplicationIndex];
 			numArgs = 2;
 		}
 		else if([token isEqualToString:@"divide"])
 		{
-			newTree =[[TreeNode alloc] initWithFunctionPointerIndex:kDivisionIndex];
+			newTree =[[ECTreeNode alloc] initWithFunctionPointerIndex:kDivisionIndex];
 			numArgs = 2;
 		}
 		else if([token isEqualToString:@"squareRoot"])
 		{
-			newTree = [[TreeNode alloc] initWithFunctionPointerIndex:kSquareRootIndex];
+			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kSquareRootIndex];
 			numArgs = 1;
 		}
         else if([token isEqualToString:@"square"])
 		{
-			newTree = [[TreeNode alloc] initWithFunctionPointerIndex:kSquareIndex];
+			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kSquareIndex];
 			numArgs = 1;
 		}
 		else if([token isEqualToString:@"naturalLog"])
 		{
-			newTree = [[TreeNode alloc] initWithFunctionPointerIndex:kNaturalLogIndex];;
+			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kNaturalLogIndex];;
 			numArgs = 1;
 		}
 		else if([token isEqualToString:@"reciprocal"])
 		{
-			newTree = [[TreeNode alloc] initWithFunctionPointerIndex:kReciprocalIndex];
+			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kReciprocalIndex];
 			numArgs = 1;
 		}
 		else
@@ -1060,11 +1127,11 @@
 		// or a doulbe
 		if(inString.length <= 2)
 		{
-			newTree = [[TreeNode alloc] initWithRaceVariable:[inString intValue]];
+			newTree = [[ECTreeNode alloc] initWithRaceVariable:[inString intValue]];
 		}
 		else
 		{
-			newTree = [[TreeNode alloc] initWithConstantValue:[inString doubleValue]];
+			newTree = [[ECTreeNode alloc] initWithConstantValue:[inString doubleValue]];
 		}
 	}
 	
@@ -1514,7 +1581,7 @@ double getRand(int max, int granularity)
 }
 
 
-- (TreeNode*)getQuadraticNodeAtLevel:(NSUInteger)level
+- (ECTreeNode*)getQuadraticNodeAtLevel:(NSUInteger)level
                            forStrand:(NSUInteger)dnaStrand
 {
     // creates the form:  a(x^2) + bx + c
@@ -1524,20 +1591,20 @@ double getRand(int max, int granularity)
     double x = getRand(kRandomRange, kRandomGranularity);
     level++;
 
-    TreeNode *quadTree                          = [[TreeNode alloc] initWithFunctionPointerIndex:kAdditionIndex];       // add
+    ECTreeNode *quadTree                          = [[ECTreeNode alloc] initWithFunctionPointerIndex:kAdditionIndex];       // add
 
     quadTree.leftBranch.leftBranch                = [self createTreeForStrand:dnaStrand
                                                                     atLevel:level+1];                                   // 'a' branch
-    quadTree.leftBranch                          = [[TreeNode alloc] initWithFunctionPointerIndex:kMultiplicationIndex]; // mult
-    quadTree.leftBranch.rightBranch               = [[TreeNode alloc] initWithConstantValue:x];                           // 'x'
-    quadTree.leftBranch.rightBranch.leftBranch     = [[TreeNode alloc] initWithFunctionPointerIndex:kSquareIndex];         // square
+    quadTree.leftBranch                          = [[ECTreeNode alloc] initWithFunctionPointerIndex:kMultiplicationIndex]; // mult
+    quadTree.leftBranch.rightBranch               = [[ECTreeNode alloc] initWithConstantValue:x];                           // 'x'
+    quadTree.leftBranch.rightBranch.leftBranch     = [[ECTreeNode alloc] initWithFunctionPointerIndex:kSquareIndex];         // square
 
 
-    quadTree.rightBranch                         = [[TreeNode alloc] initWithFunctionPointerIndex:kAdditionIndex];       // add
+    quadTree.rightBranch                         = [[ECTreeNode alloc] initWithFunctionPointerIndex:kAdditionIndex];       // add
     quadTree.rightBranch.leftBranch.leftBranch     = [self createTreeForStrand:dnaStrand
                                                                     atLevel:level+1];                                   // 'b' branch
-    quadTree.rightBranch.leftBranch               = [[TreeNode alloc] initWithFunctionPointerIndex:kMultiplicationIndex]; // multiply
-    quadTree.rightBranch.leftBranch.rightBranch    = [[TreeNode alloc] initWithConstantValue:x];                           // 'x'
+    quadTree.rightBranch.leftBranch               = [[ECTreeNode alloc] initWithFunctionPointerIndex:kMultiplicationIndex]; // multiply
+    quadTree.rightBranch.leftBranch.rightBranch    = [[ECTreeNode alloc] initWithConstantValue:x];                           // 'x'
     quadTree.rightBranch.rightBranch              = [self createTreeForStrand:dnaStrand
                                                                     atLevel:level];                                     // 'c' branch
     return quadTree;

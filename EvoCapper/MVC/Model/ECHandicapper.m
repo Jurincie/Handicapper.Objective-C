@@ -6,11 +6,11 @@
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
-#import "Handicapper.h"
-#import "Population.h"
+#import "ECHandicapper.h"
+#import "ECPopulation.h"
 
 
-@implementation Handicapper
+@implementation ECHandicapper
 
 @dynamic birthGeneration;
 @dynamic breakPositionTree;

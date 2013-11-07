@@ -8,11 +8,13 @@
 
 #import "stdlib.h"
 #import <Foundation/Foundation.h>
-#import "Population.h"
+#import "ECPopulation.h"
 #import "Constants.h"
-#import "TreeNode.h"
-#import "Handicapper.h"
-#import "RaceRecord.h"
+#import "ECTreeNode.h"
+#import "ECHandicapper.h"
+#import "ECRaceRecord.h"
+
+@class PastLineRecord;
 
 @interface ECEvolutionManager : NSObject
 
@@ -20,7 +22,7 @@
 @property (assign)              NSUInteger		generationsEvolved;
 @property (assign)              NSUInteger		trainingGenerationsThisCycle;
 @property (nonatomic, strong)   NSString		*trainingSetPath;
-@property (nonatomic, strong)   Population		*population;
+@property (nonatomic, strong)   ECPopulation		*population;
 @property (nonatomic, strong)   NSArray			*workingPopulationDna;  // an array of arrays of dnaTrees
 @property (nonatomic, strong)   NSMutableArray	*rankedPopulation;
 
@@ -35,52 +37,62 @@
 							comments:(NSString*)comments;
 
 - (NSMutableArray*)createNewHandicappers;
-- (Handicapper*)createNewHandicapperForPopulation:(Population*)population
-									forGeneration:(NSUInteger)birthGeneration;
-- (NSArray*)createNewDnaByCrossingOverDnaFrom:(Handicapper*)parent1
-								  withDnaFrom:(Handicapper*)parent2;
-- (TreeNode*)createTreeForStrand:(NSUInteger)dnaStrand
-                         atLevel:(NSUInteger)level;
-- (TreeNode*)recoverTreeFromString:(NSString*)inString;
-- (NSString*)saveTreeToString:(TreeNode*)tree;
-- (NSUInteger)getTreeNodeTypeAtLevel:(NSUInteger)level;
 
-- (NSUInteger)getParentIndexFromPopulation:(Population*)population
+- (ECHandicapper*)createNewHandicapperForPopulation:(ECPopulation*)population
+									forGeneration:(NSUInteger)birthGeneration;
+
+- (NSArray*)createNewDnaByCrossingOverDnaFrom:(ECHandicapper*)parent1
+								  withDnaFrom:(ECHandicapper*)parent2;
+
+- (ECTreeNode*)createTreeForStrand:(NSUInteger)dnaStrand
+                         atLevel:(NSUInteger)level;
+
+- (ECTreeNode*)recoverTreeFromString:(NSString*)inString;
+- (NSString*)saveTreeToString:(ECTreeNode*)tree;
+
+- (NSUInteger)getParentIndexFromPopulation:(ECPopulation*)population
 				   withOverallFitnessValue:(double)popsSummedFitness;
 
-- (TreeNode*)copyTree:(TreeNode*)tempTree
-		  withoutNode:(TreeNode*)crossoverNode;
-- (TreeNode*)copyTree:parent1Root
-	replacingNode:crossover1
-	withNode:crossover2;
-- (TreeNode*)getNodeFromChildAtLevel:(NSUInteger)parent1Level
-						   usingTree:(TreeNode*)parent2Root;
-- (void)freeTree:(TreeNode*)node;
+- (ECTreeNode*)copyTree:(ECTreeNode*)tempTree
+		  withoutNode:(ECTreeNode*)crossoverNode;
+
+- (ECTreeNode*)copyTree:parent1Root
+		replacingNode:crossover1
+			 withNode:crossover2;
+
+- (ECTreeNode*)getNodeFromChildAtLevel:(NSUInteger)parent1Level
+						   usingTree:(ECTreeNode*)parent2Root;
+
+- (NSUInteger)getTreeNodeTypeAtLevel:(NSUInteger)level;
+- (void)freeTree:(ECTreeNode*)node;
 
 - (void)trainPopulationForGenerations:(NSUInteger)numberGenerations;
-- (void)testPopulation:(Population*)testPopulation
+
+- (void)testPopulation:(ECPopulation*)testPopulation
 	  includingParents:(BOOL)testChildrenOnly
  withResultFilesAtPath:(NSString*)path;
-- (void)sortRankedPopulation;
 
+- (void)sortRankedPopulation;
 - (void)fillWorkingPopulationArrayWithOriginalMembers;
 - (void)replaceOldDnaStringsForChildWithIndex:(NSUInteger)popIndex;
-- (void)createNextGenerationForPopulation:(Population*)testPopulation;
+- (void)createNextGenerationForPopulation:(ECPopulation*)testPopulation;
 - (void)replaceBottomHalfOfPopulationWithNewChildren;
-- (void)mutateChildrenForPopulation:(Population*)pop;
-- (void)mutateHandicappersDnaTrees:(Handicapper*)futureMutant;
+- (void)mutateChildrenForPopulation:(ECPopulation*)pop;
+- (void)mutateHandicappersDnaTrees:(ECHandicapper*)futureMutant;
 
-- (NSArray*)getWinPredictionsFromPopulation:(Population*)population
-									forRace:(RaceRecord*)raceRecord
+- (double)getLeafVariableValueForIndex:(NSUInteger)leafVariableIndex
+					fromPastLineRecord:(PastLineRecord*)pastLineRecord;
+
+- (NSArray*)getWinPredictionsFromPopulation:(ECPopulation*)population
+									forRace:(ECRaceRecord*)raceRecord
 							startingAtIndex:(NSUInteger) startIndex;
 
 - (NSUInteger)getPastLineVariableForDnaStrand:(NSUInteger)dnaStrand;
 - (NSUInteger)getIndexOfComma:(NSString*)inString;
 - (NSUInteger)getIndexOfClosedParen:(NSString*)inString;
-
 - (BOOL)isThisADirectory:(NSString*)path;
 - (NSArray*)getRaceRecordsForResultsFileAtPath:(NSString*)resultsFileAtPath;
-- (NSUInteger)getWinningPostFromRaceRecord:(RaceRecord*)thisRaceRecord;
+- (NSUInteger)getWinningPostFromRaceRecord:(ECRaceRecord*)thisRaceRecord;
 
 // overflow, underflow and division by zero are ignored here
 // to be trapped in evalTree method

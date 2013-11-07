@@ -6,29 +6,30 @@
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
-#import "TreeNode.h"
+#import "ECTreeNode.h"
 
-@implementation TreeNode
+@implementation ECTreeNode
 
-@synthesize leafConstant        = _leafConstant;
 @synthesize functionPtr         = _functionPtr;
-@synthesize leftBranch           = _leftBranch;
-@synthesize leafVariableIndex   = _leafVariableIndex;
-@synthesize functionIndex       = _functionIndex;
-@synthesize rightBranch          = _rightBranch;
-@synthesize conditionTest       = _conditionTest;
 @synthesize functionName        = _functionName;
+@synthesize leftBranch			= _leftBranch;
+@synthesize rightBranch			= _rightBranch;
+@synthesize functionIndex       = _functionIndex;
+@synthesize conditionTest       = _conditionTest;
+@synthesize leafVariableIndex   = _leafVariableIndex;
+@synthesize leafConstant        = _leafConstant;
 
 - (id) initWithFunctionPointerIndex:(NSUInteger)funcPtrIndex
 {
     if(self = [super init])
     {
+        self.functionIndex      = funcPtrIndex;
+		self.functionName		= @"notAFunction";
+        self.functionPtr        = nil;
+        self.leftBranch			= nil;
+        self.rightBranch		= nil;
         self.leafVariableIndex  = NOT_AN_INDEX;
         self.leafConstant       = NOT_A_CONSTANT;
-        self.functionPtr        = nil;
-        self.leftBranch          = nil;
-        self.rightBranch         = nil;
-        self.functionIndex      = funcPtrIndex;
         
         switch (funcPtrIndex)
         {

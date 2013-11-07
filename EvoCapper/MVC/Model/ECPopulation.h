@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Handicapper;
+@class ECHandicapper;
 
-@interface Population : NSManagedObject
+@interface ECPopulation : NSManagedObject
 
 @property (nonatomic, retain) NSString  *comments;
 @property (nonatomic, retain) NSNumber  *generationNumber;
@@ -25,10 +25,10 @@
 @property (nonatomic, retain) NSSet     *individualHandicappers;
 @end
 
-@interface Population (CoreDataGeneratedAccessors)
+@interface ECPopulation (CoreDataGeneratedAccessors)
 
-- (void)addIndividualHandicappersObject:(Handicapper *)value;
-- (void)removeIndividualHandicappersObject:(Handicapper *)value;
+- (void)addIndividualHandicappersObject:(ECHandicapper *)value;
+- (void)removeIndividualHandicappersObject:(ECHandicapper *)value;
 - (void)addIndividualHandicappers:(NSSet *)values;
 - (void)removeIndividualHandicappers:(NSSet *)values;
 

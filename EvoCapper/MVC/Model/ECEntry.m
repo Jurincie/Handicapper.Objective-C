@@ -6,10 +6,10 @@
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
-#import "Entry.h"
+#import "ECEntry.h"
 
 
-@implementation Entry
+@implementation ECEntry
 
 @dynamic dateOfBirth;
 @dynamic name;

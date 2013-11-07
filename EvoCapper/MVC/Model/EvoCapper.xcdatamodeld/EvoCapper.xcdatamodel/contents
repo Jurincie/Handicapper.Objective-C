@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3400" systemVersion="13A603" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="Entry" representedClassName="Entry" syncable="YES">
+    <entity name="ECEntry" representedClassName="ECEntry" syncable="YES">
         <attribute name="dateOfBirth" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pastLines" optional="YES" attributeType="String" syncable="YES"/>
         <fetchedProperty name="fetchedProperty" optional="YES" syncable="YES">
-            <fetchRequest name="fetchedPropertyFetchRequest" entity="Entry"/>
+            <fetchRequest name="fetchedPropertyFetchRequest" entity="ECEntry"/>
         </fetchedProperty>
     </entity>
-    <entity name="HandicapperPopulation" representedClassName="Population" syncable="YES">
+    <entity name="HandicapperPopulation" representedClassName="ECPopulation" syncable="YES">
         <attribute name="comments" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="generationNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="genesisDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -20,7 +20,7 @@
         <attribute name="populationSize" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="individualHandicappers" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="IndividualHandicapper" inverseName="handicapperPopulation" inverseEntity="IndividualHandicapper" syncable="YES"/>
     </entity>
-    <entity name="IndividualHandicapper" representedClassName="Handicapper" syncable="YES">
+    <entity name="IndividualHandicapper" representedClassName="ECHandicapper" syncable="YES">
         <attribute name="amountBetOnWinBets" optional="YES" attributeType="Float" defaultValueString="0" syncable="YES"/>
         <attribute name="amountWonOnWinBets1" optional="YES" attributeType="Float" defaultValueString="0" syncable="YES"/>
         <attribute name="birthGeneration" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -38,8 +38,8 @@
         <relationship name="handicapperPopulation" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="HandicapperPopulation" inverseName="individualHandicappers" inverseEntity="HandicapperPopulation" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Entry" positionX="-317" positionY="-117" width="128" height="119"/>
-        <element name="HandicapperPopulation" positionX="-596" positionY="-162" width="128" height="195"/>
-        <element name="IndividualHandicapper" positionX="-261" positionY="126" width="128" height="268"/>
+        <element name="ECEntry" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="HandicapperPopulation" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="IndividualHandicapper" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

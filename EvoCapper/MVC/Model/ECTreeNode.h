@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "Constants.h"
 
-@interface TreeNode : NSObject
+@interface ECTreeNode : NSObject
 
-@property (nonatomic, strong)   TreeNode    *leftBranch;
-@property (nonatomic, strong)   TreeNode    *rightBranch;
+@property (nonatomic, strong)   ECTreeNode    *leftBranch;
+@property (nonatomic, strong)   ECTreeNode    *rightBranch;
 @property (nonatomic, assign)   long double (*functionPtr)();
 @property (nonatomic, strong)   NSString    *functionName;
 @property (assign)              long double leafConstant;
