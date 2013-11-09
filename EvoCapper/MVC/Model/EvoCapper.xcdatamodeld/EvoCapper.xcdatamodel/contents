@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3400" systemVersion="13A603" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="ECEntry" representedClassName="ECEntry" syncable="YES">
+        <attribute name="breakPositionStrength" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="breakSpeedStrength" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="collisionPropensity" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="dateOfBirth" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="earlySpeedStrength" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="insideOutsideTendency" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="lateSpeedStrength" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pastLines" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recentClassStrength" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="topSpeedStrength" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <fetchedProperty name="fetchedProperty" optional="YES" syncable="YES">
             <fetchRequest name="fetchedPropertyFetchRequest" entity="ECEntry"/>
         </fetchedProperty>
@@ -35,6 +43,7 @@
         <attribute name="rank" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="recentClassTree" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="topSpeedTree" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="winThreshold" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <relationship name="handicapperPopulation" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="HandicapperPopulation" inverseName="individualHandicappers" inverseEntity="HandicapperPopulation" syncable="YES"/>
     </entity>
     <elements>

@@ -8,18 +8,29 @@
 
 #import <Foundation/Foundation.h>
 
+@class ECResults;
+@class ECPayouts;
+
 @interface ECRaceRecord : NSObject
 
-@property (nonatomic, strong)			NSArray     *entrysStrengthsFieldsArray;
-@property (readonly, nonatomic, strong) NSString	*trackName;
-@property (readonly, nonatomic, strong)	NSDate		*raceDate;
-@property (readonly, nonatomic, strong)	NSString	*raceClass;
-@property (readonly, nonatomic, strong)	NSArray		*postNames;
-@property (readonly, nonatomic, strong)	NSArray		*postWinOdds;
-@property (readonly, assign)			NSUInteger	raceDistance;
-//@property (nonatomic, strong)			Result      *results;
+@property (nonatomic, strong)	NSArray		*entrysStrengthsFieldsArray;
+@property (nonatomic, strong)	NSString	*trackName;
+@property (nonatomic, strong)	NSDate		*raceDate;
+@property (nonatomic, strong)	NSString	*raceClass;
+@property (nonatomic, strong)	NSArray		*postEntries;
+@property (nonatomic, strong)	NSArray		*postWinOdds;
+@property (assign)				NSUInteger	raceDistance;
+@property (nonatomic, strong)	ECResults	*results;
+@property (nonatomic, strong)	ECPayouts	*payouts;
 
-- (id)initFromResultsFileSubstring:(NSString*)resultSubstring;
+
+- (id)initRaceRecordAtTrack:(NSString*)trackName
+					 onDate:(NSDate*)trainingRaceDate
+			  forRaceNumber:(NSUInteger)raceNumber
+			   forRaceClass:(NSString*)raceClass
+			 atRaceDiatance:(NSUInteger)raceDistance
+		  andEntriesAtPosts:(NSArray*)entrieNamesArray
+		   usingOddsAtPosts:(NSArray*)postOddsArray;
 
 
 @end

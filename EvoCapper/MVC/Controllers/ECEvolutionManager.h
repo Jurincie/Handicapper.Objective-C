@@ -20,9 +20,9 @@
 
 @property (assign)				NSUInteger		currentPopSize;
 @property (assign)              NSUInteger		generationsEvolved;
-@property (assign)              NSUInteger		trainingGenerationsThisCycle;
+@property (assign)              NSUInteger		generationsThisCycle;
 @property (nonatomic, strong)   NSString		*trainingSetPath;
-@property (nonatomic, strong)   ECPopulation		*population;
+@property (nonatomic, strong)   ECPopulation	*population;
 @property (nonatomic, strong)   NSArray			*workingPopulationDna;  // an array of arrays of dnaTrees
 @property (nonatomic, strong)   NSMutableArray	*rankedPopulation;
 
@@ -54,7 +54,7 @@
 				   withOverallFitnessValue:(double)popsSummedFitness;
 
 - (ECTreeNode*)copyTree:(ECTreeNode*)tempTree
-		  withoutNode:(ECTreeNode*)crossoverNode;
+		  withoutBranch:(ECTreeNode*)skipThisBranch;
 
 - (ECTreeNode*)copyTree:parent1Root
 		replacingNode:crossover1
@@ -72,7 +72,6 @@
 	  includingParents:(BOOL)testChildrenOnly
  withResultFilesAtPath:(NSString*)path;
 
-- (void)sortRankedPopulation;
 - (void)fillWorkingPopulationArrayWithOriginalMembers;
 - (void)replaceOldDnaStringsForChildWithIndex:(NSUInteger)popIndex;
 - (void)createNextGenerationForPopulation:(ECPopulation*)testPopulation;
@@ -87,12 +86,17 @@
 									forRace:(ECRaceRecord*)raceRecord
 							startingAtIndex:(NSUInteger) startIndex;
 
+- (BOOL)isThisALongLineOfUnderscores:(NSString*)inString;
+- (ECRaceRecord*)getRaceRecordFromLines:(NSArray*)resultFileLines;
+
 - (NSUInteger)getPastLineVariableForDnaStrand:(NSUInteger)dnaStrand;
 - (NSUInteger)getIndexOfComma:(NSString*)inString;
 - (NSUInteger)getIndexOfClosedParen:(NSString*)inString;
-- (BOOL)isThisADirectory:(NSString*)path;
 - (NSArray*)getRaceRecordsForResultsFileAtPath:(NSString*)resultsFileAtPath;
 - (NSUInteger)getWinningPostFromRaceRecord:(ECRaceRecord*)thisRaceRecord;
+
+
+//- (void)processResultFilesForPopulation:(ECPopulation*)myPop;
 
 // overflow, underflow and division by zero are ignored here
 // to be trapped in evalTree method

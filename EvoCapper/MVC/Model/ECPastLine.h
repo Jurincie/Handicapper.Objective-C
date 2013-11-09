@@ -34,6 +34,6 @@
 @property (nonatomic, strong) NSString  *trackName;
 @property (nonatomic, strong) NSNumber  *weight;
 @property (nonatomic, strong) NSNumber  *winningTime;
-@property (nonatomic, strong) ECEntry		*entry;
+@property (nonatomic, strong) ECEntry	*entry;
 
 @end

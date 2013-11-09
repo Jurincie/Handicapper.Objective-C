@@ -256,8 +256,8 @@
 
     [self.evolutionManager createNewPopoulationWithName:@"Test Name"
                                             initialSize:self.evolutionManager.currentPopSize
-                                           maxTreeDepth:4
-                                           minTreeDepth:8
+                                           maxTreeDepth:8
+                                           minTreeDepth:5
                                            mutationRate:.01
                                                comments:@"Initial Population TEST 1.0.0"];
 

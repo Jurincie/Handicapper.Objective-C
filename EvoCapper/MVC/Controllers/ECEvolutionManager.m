@@ -16,12 +16,12 @@
 
 @implementation ECEvolutionManager
 
-@synthesize currentPopSize					= _currentPopSize;
-@synthesize population                      = _population;
-@synthesize generationsEvolved				= _generationsEvolved;
-@synthesize trainingGenerationsThisCycle	= _trainingGenerationsThisCycle;
-@synthesize workingPopulationDna			= _workingPopulationDna;
-@synthesize rankedPopulation				= _rankedPopulation;
+@synthesize currentPopSize			= _currentPopSize;
+@synthesize population				= _population;
+@synthesize generationsEvolved		= _generationsEvolved;
+@synthesize generationsThisCycle	= _generationsThisCycle;
+@synthesize workingPopulationDna	= _workingPopulationDna;
+@synthesize rankedPopulation		= _rankedPopulation;
 
 #pragma mark Singleton Methods
 
@@ -119,40 +119,30 @@
 		NSString *question      = NSLocalizedString(@"Create New Population",
 													@"Cancel");
 		NSString *info			= NSLocalizedString(@"No population has been selected.",
-												@"Would you like to create new Population now?");
-		NSString *quitButton    = NSLocalizedString(@"Yes, create a new population", @"Create population button title");
-		NSString *cancelButton  = NSLocalizedString(@"No", @"Cancel button title");
+												@"Tap the Create New Population button or Select Population button?");
+		NSString *quitButton    = NSLocalizedString(@"OK", @"");
 		
 		[alert setMessageText:question];
 		[alert setInformativeText:info];
 		[alert addButtonWithTitle:quitButton];
-		[alert addButtonWithTitle:cancelButton];
 		
-		NSInteger answer = [alert runModal];
+		[alert runModal];
 	
-		if (answer == NSAlertDefaultReturn)
-        {
-			return;
-        }
-		else
-		{
-			self.rankedPopulation = [self createNewHandicappers];
-		}
+		return;
 	}
 
     NSLog(@"trainPopulation called in ECEvolutionManager");
 	
-	self.trainingGenerationsThisCycle = numberGenerations;
-    
-    for(NSUInteger localGenNumber = 0; localGenNumber < numberGenerations; localGenNumber++)
+	self.generationsThisCycle	= numberGenerations;
+	NSString *resultFolderPath	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane";
+  
+	  for(NSUInteger localGenNumber = 0; localGenNumber < self.generationsThisCycle; localGenNumber++)
     {
         [self testPopulation:self.population
-			includingParents:localGenNumber > 0 ? NO : YES
-	   withResultFilesAtPath:nil];
+			includingParents:localGenNumber == 0 ? YES:NO
+	   withResultFilesAtPath:resultFolderPath];
     
         [self createNextGenerationForPopulation:self.population];
-		
-	    [self mutateChildrenForPopulation:self.population];
     }
     
     [self updateAndSaveData];
@@ -162,60 +152,438 @@
    
 - (void)testPopulation:(ECPopulation*)population
 	  includingParents:(BOOL)parentsToo
- withResultFilesAtPath:(NSString *)path
+ withResultFilesAtPath:(NSString *)resultFolderPath
 {
 	// self.workingPopulation array MUST be sorted at this point with:
 	//	chldren occupying BOTTOM HALF of array with their indices
 
-	NSUInteger startIndex = (parentsToo == TRUE) ? 0 : self.currentPopSize / 2;
-		
-    // iterate all subdirectories inside kResultsFolderPath
-	NSString *tempPath = nil;
+	NSUInteger startIndex = (parentsToo == TRUE) ? 0:self.currentPopSize / 2;
 	
-    while(1)
+    // iterate all subdirectories inside kResultsFolderPath
+	NSFileManager *localFileManager			= [[NSFileManager alloc] init];
+	NSDirectoryEnumerator *dirEnumerator	= [localFileManager enumeratorAtPath:resultFolderPath];
+	NSString *filePath						= nil;
+	BOOL isDirectory						= NO;
+	
+    while((filePath = [dirEnumerator nextObject]))
     {
-		if([self isThisADirectory:tempPath] == TRUE)
+		if([localFileManager fileExistsAtPath:filePath
+								  isDirectory:&isDirectory] && isDirectory)
 		{
 			[self testPopulation:population
-			   includingParents:parentsToo
-		   withResultFilesAtPath:tempPath];
-			  
-			  return;
+				includingParents:parentsToo
+		   withResultFilesAtPath:filePath];
 		}
-		
-		NSArray *raceRecordsForThisEvent = [self getRaceRecordsForResultsFileAtPath:tempPath];
-		
-		for(ECRaceRecord *tempRaceRecord in raceRecordsForThisEvent)
+		else
 		{
-			NSUInteger winningPost	= [self getWinningPostFromRaceRecord:tempRaceRecord];
-			NSArray *winBetsArray	= [self getWinPredictionsFromPopulation:population
-																	forRace:tempRaceRecord
-															startingAtIndex:startIndex];
-								
-			// iterate handicappers array
-			for(NSUInteger index = startIndex; index < self.currentPopSize; index++)
+			if([filePath isEqualToString:@".DS_Store"])
 			{
-				ECHandicapper *tempHandicapper	= [self.workingPopulationDna objectAtIndex:index];
-				int incrementedTotal			= (int)[tempHandicapper.numberWinBets integerValue] + 1;
-				tempHandicapper.numberWinBets	= [NSNumber numberWithInt:incrementedTotal];
+				continue;
+			}
+			
+			NSArray *raceRecordsForThisEvent = [self getRaceRecordsForResultsFileAtPath:filePath];
+		
+			for(ECRaceRecord *tempRaceRecord in raceRecordsForThisEvent)
+			{
+				NSUInteger winningPost = [self getWinningPostFromRaceRecord:tempRaceRecord];
 				
-				if(winningPost == [[winBetsArray objectAtIndex:index] integerValue])
+				NSArray *winBetsArray = [self getWinPredictionsFromPopulation:population
+																	  forRace:tempRaceRecord
+															  startingAtIndex:startIndex];
+			
+				// iterate handicappers array
+				int incrementedTotal;
+				for(NSUInteger index = startIndex; index < self.currentPopSize; index++)
 				{
-					int incrementedTotal				= (int)[tempHandicapper.numberWinBetWinners integerValue] + 1;
-					tempHandicapper.numberWinBetWinners	= [NSNumber numberWithInt:incrementedTotal];
+					ECHandicapper *handicapper	= [self.workingPopulationDna objectAtIndex:index];
+					incrementedTotal			= (int)[handicapper.numberWinBets integerValue] + 1;
+					handicapper.numberWinBets	= [NSNumber numberWithInt:incrementedTotal];
+				
+					// only increment numberWinBetWinners if handicapper predicted winner correctly
+					if(winningPost == [[winBetsArray objectAtIndex:index] integerValue])
+					{
+						incrementedTotal				= (int)[handicapper.numberWinBetWinners integerValue] + 1;
+						handicapper.numberWinBetWinners	= [NSNumber numberWithInt:incrementedTotal];
+					}
 				}
 			}
 		}
     }
 }
 
-- (BOOL)isThisADirectory:(NSString*)path
-{
-	// FIX:
-	BOOL answer = NO;
-	
-	return answer;
-}
+//- (void)processResultFilesForPopulation:(ECPopulation*)population
+//{
+//	// the initial generation we only evaluate the first days races
+//	// this is because of the initial race suicide scenerio
+//	
+//	NSRange myRange;
+//	NSDirectoryEnumerator *dirEnum;
+//	NSUInteger myLength, start, raceNumber, raceDx;
+//	NSUInteger numLines, lineNumber, formatType;
+//	NSUInteger numberEntries, post;
+//	BOOL nextRaceFound, noMoreRaces;
+//	NSString *myFile, *trackName, *resultLine, *modifiedResultLine, *raceGrade;
+//	NSString *griString = @"  GRI Report";
+//	NSString *notAvailableYetString = @"NOT AVAILABLE YET";
+//	NSString *pathToResultsFolder = @"/EHS/Data Sets/Data Set 000/Training Files/";
+//	NSString * readFileContents;
+//	NSArray *lastLineTokens, *raceLines, *tokens, *firstLineTokens;
+//	raceEntry *tempGreyhoundEntry;
+//	
+//	NSMutableString *fullFilePath	= [[NSMutableString alloc] initWithCapacity:248];
+//	NSUInteger eventNumber			= 0;
+//	
+//	localGenerationNumber++;
+//	theRaceModel = nil;
+//	
+//	dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:pathToResultsFolder];
+//	while(myFile = [dirEnum nextObject])
+//		{
+//		// trim the popoulation back to Original size
+//		if(++eventNumber == 6 && [appCon generationNumber] == 0 && ORIGINAL_POPULATION_MULTIPLIER > 1)
+//			{
+//			[appCon resetPopSizeToOriginal];
+//			}
+//		
+//		//empty fullFilePath
+//		myLength = [fullFilePath length];
+//		[fullFilePath deleteCharactersInRange:NSMakeRange(0,myLength)];
+//		
+//		// load fullFilePath
+//		[fullFilePath appendString:pathToResultsFolder];
+//		[fullFilePath appendString:myFile];
+//		NSLog(fullFilePath);
+//		
+//		readFileContents = [NSString stringWithContentsOfFile:fullFilePath];
+//		raceLines =  [readFileContents componentsSeparatedByString:@"<img src=..\\rx_img\\post"];
+//		
+//		// FIRST: check for FORMAT_C
+//		if([readFileContents hasPrefix:griString])
+//			{
+//				formatType = FORMAT_C;
+//				firstLineTokens = [[raceLines objectAtIndex:0] componentsSeparatedByString:@" "];
+//				
+//				// set track name from firstLineTokens
+//				trackName = [firstLineTokens objectAtIndex:8];
+//				
+//				if(! [trackName isEqualToString:@"Phoenix"])
+//					{
+//					NSLog(@"track name error");
+//					exit(1);
+//					}
+//				
+//				start = 1;
+//			}
+//		else
+//			{
+//			// RESET racelines: split all strings on newline character '\n'
+//			raceLines = [readFileContents componentsSeparatedByString:@"\n"];
+//			firstLineTokens = [[raceLines objectAtIndex:0] componentsSeparatedByString:@" "];
+//			
+//			// check first line for proper formatted result file
+//			if(! ([[firstLineTokens objectAtIndex:0] isEqualToString:@"Phoenix"] ||
+//				  [[firstLineTokens objectAtIndex:0] isEqualToString:@"PHOENIX"]))
+//				{
+//				continue;
+//				}
+//			
+//			// set start: formatA->1  formatB->2
+//			if([firstLineTokens count] > 1)
+//				{
+//				start = 1;
+//				formatType = FORMAT_A;
+//				firstLineTokens = [[raceLines objectAtIndex:0] componentsSeparatedByString:@" "];
+//				trackName = [NSString stringWithString: [firstLineTokens objectAtIndex:0]];
+//				}
+//			else
+//				{
+//				start = 2;
+//				formatType = FORMAT_B;
+//				firstLineTokens = [[raceLines objectAtIndex:1] componentsSeparatedByString:@" "];
+//				tokens = [[raceLines objectAtIndex:0] componentsSeparatedByString:@" "];
+//				trackName = [NSString stringWithString: [tokens objectAtIndex:0]];
+//				}
+//			}
+//		
+//		// skip not available yet result files
+//		myRange = [readFileContents rangeOfString:notAvailableYetString];
+//		if(NSEqualRanges(myRange, NSMakeRange(NSNotFound, 0)) == NO)
+//			{
+//			continue;
+//			}
+//		
+//		numLines = [raceLines count];
+//		
+//		noMoreRaces = NO;
+//		lineNumber = start;
+//		
+//		while(noMoreRaces == NO)
+//			{
+//			if(lineNumber == start && formatType == FORMAT_C)
+//				{
+//				lastLineTokens = firstLineTokens;
+//				}
+//			
+//			// grab line and tokenize
+//			resultLine = [raceLines objectAtIndex:lineNumber];
+//			modifiedResultLine = [self convertPastLine:resultLine];
+//			tokens = [modifiedResultLine componentsSeparatedByString:@" "];
+//			
+//			// get raceGrade, raceNumber, raceDx //
+//			switch(formatType)
+//				{
+//					case FORMAT_A:	raceGrade = [NSString stringWithString:[tokens objectAtIndex:3]];
+//					raceNumber = [[NSString stringWithString:[tokens objectAtIndex:1]] intValue];
+//					raceDx = [[NSString stringWithString:[tokens objectAtIndex:4]] intValue];
+//					break;
+//					
+//					case FORMAT_B:	raceGrade = [NSString stringWithString:[tokens objectAtIndex:2]];
+//					
+//					// build race number
+//					raceNumber = 0;
+//					if([[tokens objectAtIndex:0] length] == 3)
+//						{
+//						raceNumber += [[[tokens objectAtIndex:0] substringToIndex:1] intValue];
+//						}
+//					else if([[tokens objectAtIndex:0] length] == 4)
+//						{
+//						raceNumber += [[[tokens objectAtIndex:0] substringToIndex:2] intValue];
+//						}
+//					else
+//						{
+//						NSLog(@"bad race number value");
+//						exit(1);
+//						}
+//					
+//					
+//					raceDx = [[NSString stringWithString:[tokens objectAtIndex:4]] intValue];
+//					break;
+//					
+//					case FORMAT_C:	raceGrade = [NSString stringWithString:[lastLineTokens objectAtIndex:[lastLineTokens count] - 6]];
+//					raceDx = [[lastLineTokens objectAtIndex:[lastLineTokens count] - 3] intValue];
+//					
+//					if(raceDx != 550 && raceDx != 685)
+//						{
+//						// check for "over" token at this position
+//						if([[lastLineTokens objectAtIndex:[lastLineTokens count] - 6] isEqualToString:@"over"])
+//							{
+//							raceGrade = [NSString stringWithString:[lastLineTokens objectAtIndex:[lastLineTokens count] - 7]];
+//							raceDx = [[lastLineTokens objectAtIndex:[lastLineTokens count] - 4] intValue];
+//							}
+//						if(raceDx != 550 && raceDx != 685)
+//							{
+//							if(raceDx == 770 || raceDx == 330 || raceDx == 440)
+//								{
+//								skipThisRace = YES;
+//								}
+//							else
+//								{
+//								printf("bad race Dx: %d\n", raceDx);
+//								exit(1);
+//								}
+//							}
+//						
+//						
+//						raceNumber = [[lastLineTokens objectAtIndex:[lastLineTokens count] - 9] intValue];;
+//						}
+//					else
+//						{
+//						raceNumber = [[lastLineTokens objectAtIndex:[lastLineTokens count] - 8] intValue];
+//						}
+//					
+//					break;
+//				}
+//			
+//			// only evaluate races equal to or above threshold
+//			if([self getClassStrengthFromString:raceGrade] < CLASS_THRESHOLD)
+//				{
+//				skipThisRace = YES;
+//				}
+//			else
+//				{
+//				skipThisRace  = NO;
+//				}
+//			
+//			if(skipThisRace == NO)
+//				{
+//				theRaceModel = [[raceModel alloc] initWithArray:firstLineTokens forFileFormat:formatType];
+//				
+//				if(theRaceModel == nil)
+//					{
+//					NSLog(@"raceModel allocation error");
+//					exit(1);
+//					}
+//				
+//				[theRaceModel setTrackName: trackName];
+//				[theRaceModel setGrade: raceGrade];
+//				[theRaceModel setDistance: raceDx];
+//				[theRaceModel setRaceNumber: raceNumber];
+//				[theRaceModel resetGreyhoundEntryArray];
+//				tempRaceNumber = raceNumber;
+//				numberEntries = 0;
+//				printf("race number: %d\n", [theRaceModel raceNumber]);
+//				
+//				//  grab THIS line and tokenize
+//				resultLine = [raceLines objectAtIndex:lineNumber];
+//				modifiedResultLine = [self convertPastLine:resultLine];
+//				tokens = [modifiedResultLine componentsSeparatedByString:@" "];
+//				
+//				// create new instance of raceEntry
+//				// load dogname, post, weight
+//				tempGreyhoundEntry = [[raceEntry alloc] initWithArray:tokens forFormat:formatType];
+//				
+//				if([tempGreyhoundEntry scratched] == NO)
+//					{
+//					numberEntries++;
+//					post = [tempGreyhoundEntry postPosition];
+//					[[theRaceModel greyhoundEntries] replaceObjectAtIndex:post-1 withObject:tempGreyhoundEntry];
+//					}
+//				}
+//			
+//			// loop through all entrys in THIS race
+//			nextRaceFound = NO;
+//			while(nextRaceFound == NO)
+//				{
+//				// grab line and tokenize
+//				resultLine = [raceLines objectAtIndex:++lineNumber];
+//				modifiedResultLine = [self convertPastLine:resultLine];
+//				tokens = [modifiedResultLine componentsSeparatedByString:@" "];
+//				
+//				if([self isThisLastEntryUsingArray:tokens] == YES)
+//					{
+//					nextRaceFound = YES;
+//					lastLineTokens = tokens;
+//					lineNumber++;
+//					if(lineNumber >= numLines)
+//						{
+//						noMoreRaces = YES;
+//						}
+//					}
+//				
+//				if(skipThisRace == NO)
+//					{
+//						// create new instance of raceEntry
+//						// load dogname, post, weight
+//						tempGreyhoundEntry = [[raceEntry alloc] initWithArray:tokens forFormat:formatType];
+//						
+//						if([tempGreyhoundEntry scratched] == NO)
+//							{
+//							numberEntries++;
+//							post = [tempGreyhoundEntry postPosition];
+//							[[theRaceModel greyhoundEntries] replaceObjectAtIndex:post-1 withObject:tempGreyhoundEntry];
+//							}
+//					}
+//				}
+//			
+//			if(skipThisRace == YES)
+//				{
+//				continue;
+//				}
+//			
+//			// process the payout info. as needed
+//			// initially get the win payout info.
+//			// getPayoutInfo incriments lineNumber and returns new value
+//			[self getPayoutInfo:tokens forFormatType:formatType];
+//			
+//			[theRaceModel setNumberRaceEntries:numberEntries];
+//			
+//			if(winningPayout != 0.0)
+//				{
+//				if([self analyzeRace] == YES)
+//					{
+//						// get the winning post
+//						winningPost = [self getWinningPostFromArray:tokens forFormatType:formatType];
+//						if(winningPost > MAX_ENTRIES || winningPost < 1)
+//							{
+//							printf("bad winning post number: %d\n", winningPost);
+//							printf("race not analyzed\n");
+//							break;
+//							}
+//						
+//						[self placeYourBets];
+//						
+//						[self updateMemberStatistics];
+//						[appCon sortWorkingPopulationArray];
+//						[appCon updateDisplay:nil];
+//					}
+//				else
+//					{
+//					printf("race not analyzed\n");
+//					}
+//				}
+//			else
+//				{
+//				NSLog(@"bad payout or no winning post");
+//				}
+//			
+//			theRaceModel = nil;
+//			}
+//		}
+//	
+//	NSLog(@"processing result files complete");
+//}
+
+//- (BOOL)analyzeRace
+//{
+//	NSUInteger start, end, count, post;
+//	raceEntry *entry;
+//	popMember *member;
+//	BOOL result = YES;
+//	NSNumber *postNumber;
+//	NSInvocationOperation *analyzePostOp;
+//	NSOperationQueue *opQueue = [NSOperationQueue new];
+//	
+//	skipThisRace = NO;
+//	end = [appCon popSize];
+//	[opQueue setMaxConcurrentOperationCount:8];
+//	
+//	// reset accumulators in active members
+//	if([appCon generationNumber] == 0 || ([appCon newDataFile] && ([appCon generationsAlreadyEvolved] == [appCon generationNumber])))
+//		{
+//		start = 0;
+//		}
+//	else
+//		{
+//		start = [appCon popSize] / 2;
+//		}
+//	
+//	for(count = start; count < end; count++)
+//		{
+//		member = [[appCon ladder] objectAtIndex:count];
+//		[member resetAccumulators];
+//		}
+//	
+//	///////////////////////////////////////
+//	// loop thorugh ALL POSSIBLE entries //
+//	///////////////////////////////////////
+//	for(post = 1; post <= MAX_ENTRIES; post++)
+//		{
+//		entry = [[theRaceModel greyhoundEntries] objectAtIndex:post-1];
+//		
+//		// skip this entry if no unscratched entry at this post
+//		if([entry emptyPost] == YES || [entry scratched] == YES)
+//			{
+//			continue;
+//			}
+//		else
+//			{
+//			postNumber = [NSNumber numberWithInt:post];
+//			analyzePostOp = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(analyzePost:) object:postNumber];
+//			[opQueue addOperation:analyzePostOp];
+//			}
+//		}
+//	
+//	[opQueue waitUntilAllOperationsAreFinished];
+//	
+//	if(skipThisRace == YES)
+//		{
+//		result = NO;
+//		}
+//	
+//	return result;
+//}
+
+
 
 - (NSUInteger)getWinningPostFromRaceRecord:(ECRaceRecord*)thisRaceRecord
 {
@@ -226,9 +594,142 @@
 
 - (NSArray*)getRaceRecordsForResultsFileAtPath:(NSString*)resultsFileAtPath
 {
-	NSArray *raceRecordsArray = nil;
+	// this method returns an array of ECRaceRecord objects (1 per race)
+	// we are reading lines from result file now it looks like this (without the line numbers):
+	//		1  <html>
+	//		2  <head>
+	//		3  <title> Rosnet,Inc - Greyhound Racing</title>
+	//		4  </head>
+	//		5  </head>
+	//		6  <body bgcolor="#FFFFFF" text="#000000" vlink="#00FF00" link="#FFFF00">
+	//		7  <font face=Arial Narrow size=3>
+	//		8  <pre>
+	//		9  ____________________________________________________________________________________________________________________________________
+	//		10  DERBY LANE                   Wednesday Nov 05 2008 Afternoon   Race 1    Grade  C   (550)  Time: 31.19
+	//		11  ____________________________________________________________________________________________________________________________________
+	//		12  Don't Sell Short 64  1 5 1 2  1 2  1 1½    31.19 *2.30 Grabbed Lead 1st Turn
+	//		13  Dancin Maddox    68½ 2 8 3    3    2 1½    31.30 12.90 Just Up For Place-midt
+	//		14  Jt Gold N Silver 75½ 8 3 7    5    3 2     31.31 13.70 Trying Hard-showed Rl
+	//		15  Kiowa Manley     71  5 1 2    2    4 2½    31.37 2.50  Factor To Stretch-ins
+	//		16  King Tarik       74½ 3 6 8    7    5 3½    31.44 8.00  Blocked 1st-went Wide
+	//		17  Good Luck Charm  61  4 7 4    4    6 4     31.49 9.50  Some Erly Gain-crwdd
+	//		18  Cold B Be Happy  72  7 2 6    6    7 4½    31.50 3.50  Cls Qtrs Both Turns-rl
+	//		19  Forego Cide      78  6 4 5    8    8 10    31.91 9.90  Went Wide 1st Tn-faded
+	//		20  Alderson Kennel's BD. F 2/17/2006 Dodgem By Design x Sunberry
+	//		21  1 Don't Sell Short  6.60    4.20    2.60     Quin        (1-2)        $45.60
+	//		22  2 Dancin Maddox             10.80   8.00     Perf        (1-2)        $85.80
+	//		23  8 Jt Gold N Silver                  4.80     Tri          (1-2-8)     $417.80
+	//		24  5 Kiowa Manley                               Super       (1-2-8-5)   $4,246.40
+	//		25
+	//		26  ____________________________________________________________________________________________________________________________________
+	//		27  DERBY LANE                   Wednesday Nov 05 2008 Afternoon   Race 2    Grade  D   (550)  Time: 30.97
+	//		28  ____________________________________________________________________________________________________________________________________
+	//		29  Curler Ron G     70½ 7 2 1 3  1 4  1 3½    30.97 3.50  Won With Ease-inside
+	//		30  Ww's Arcadia     60  4 3 2    2    2 3½    31.21 4.90  Held Place Safe-rail
+	//		31  Jamie M Grodeki  61½ 6 4 5    4    3 5     31.32 5.90  Swung Wide 1st-gaining
+	//		32  Silver Fang      67  1 8 4    3    4 6½    31.43 3.90  Outfinished-inside
+	//		33  Dust Doll        65  5 5 8    8    5 7½    31.50 7.30  Blocked 1st-some Gain
+	//		34  El Witty         64  2 6 6    6    6 8     31.51 16.60 No Room Erly-wide 2nd
+	//		35  Top Cat Hotshot  63  3 7 7    7    7 8½    31.57 33.00 Impeded 1st-forced Wd
+	//		36  Hamparsum        65½ 8 1 3    5    8 9     31.58 *2.40 Cls Qtrs 2nd Tn-faded
+	//		37  Floyd & Porter Kennel's Bd. M 3/31/2007 Lonesome Cry x Trayton's Baby
+	//		38  7 Curler Ron G      9.00    4.40    2.60     Quin        (4-7)        $21.80
+	//		39  4 Ww's Arcadia              13.80   3.80     Perf        (7-4)        $90.20
+	//		40  6 Jamie M Grodeki                   3.00     Tri          (7-4-6)     $178.60
+	//		41  1 Silver Fang                                Super       (7-4-6-1)   $720.60
+	//		42  Double |(1-7) | $45.80
+	//		43  ____________________________________________________________________________________________________________________________________
+	//		44  DERBY LANE                   Wednesday Nov 05 2008 Afternoon   Race 3    Grade TM   (550)  Time: 31.05
+	//		45  ____________________________________________________________________________________________________________________________________
+	//
+	BOOL isThisANewRecord	= NO;
+	NSMutableArray *records	= nil;
+	NSError *error			= nil;
+	NSString *fileContents	= [NSString stringWithContentsOfFile:resultsFileAtPath
+													    encoding:NSStringEncodingConversionAllowLossy
+														   error:&error];
+
+	NSArray *fileContentsLineByLine =  [fileContents componentsSeparatedByString:@"\n"];
 	
-	return raceRecordsArray;
+	// skip html meta lines
+	NSUInteger startIndex = 8;
+	
+	// takes us to the attendance line
+	NSUInteger endIndex	= fileContentsLineByLine.count - 4;
+	
+	// iterate through file line by line
+	// looking for start of each new race
+	for(NSUInteger i = startIndex; i < endIndex; i++)
+	{
+		NSString *thisLine		= [fileContentsLineByLine objectAtIndex:i];
+		NSString *twoLinesAhead	= [fileContentsLineByLine objectAtIndex:i+2];
+		
+		if([self isThisALongLineOfUnderscores:thisLine] && [self isThisALongLineOfUnderscores:twoLinesAhead])
+		{
+			NSMutableArray *linesForThisRace	= [NSMutableArray new];
+			NSUInteger resultLineNumber			= 0;
+			NSString *tempString				= [fileContentsLineByLine objectAtIndex:i + resultLineNumber];
+			
+			// loop until next race
+			
+		do
+		{
+			[linesForThisRace addObject:tempString];
+			NSString *tempString	= [fileContentsLineByLine objectAtIndex:i + resultLineNumber++];
+			isThisANewRecord		= [self isThisALongLineOfUnderscores:tempString];
+		}
+		while(isThisANewRecord == NO && i + resultLineNumber < endIndex);
+			
+			// end of lines for this race
+			ECRaceRecord *raceRecord = [self getRaceRecordFromLines:linesForThisRace];
+			
+			[records addObject:raceRecord];
+			
+			// increment i so we don't reread this race
+			i += resultLineNumber - 1;
+		}
+	}
+	
+	
+	// ok to return the mutableArray since an immutable copy is made for the return
+	return records;
+}
+
+- (ECRaceRecord*)getRaceRecordFromLines:(NSArray*)resultFileLines
+{
+	ECRaceRecord *newRaceRecord = nil;
+	
+	// fill race record with:
+	//	- trackName (same for all raceRecords)
+	//	- raceDate  (same for all raceRecords)
+	//	- raceClass
+	//	- raceNumber
+	//	- raceDistance
+	//	- entryNames with postPositions
+	
+	NSDate *raceDate = nil;
+	NSString *trackName	= @"";
+	NSString *raceClass = @"";
+	NSUInteger raceNumber = 0;
+	
+	
+	return newRaceRecord;
+}
+
+- (BOOL)isThisALongLineOfUnderscores:(NSString*)inString
+{
+	BOOL answer = NO;
+	
+	if([inString characterAtIndex:5] == '_' &&
+	[inString characterAtIndex:20] == '_' &&
+	[inString characterAtIndex:25] == '_' &&
+	[inString characterAtIndex:40] == '_' &&
+	[inString characterAtIndex:45] == '_')
+	{
+		answer = YES;
+	}
+	
+	return answer;
 }
 
 - (NSArray*)getWinPredictionsFromPopulation:(ECPopulation*)population
@@ -254,28 +755,32 @@
 - (void)createNextGenerationForPopulation:(ECPopulation*)testPopulation
 {
    	// increment generation counter
-	NSNumber *incrementedGenNumber		= [NSNumber numberWithInt:(int)[self.population.generationNumber integerValue] + 1];
+	NSUInteger plusOneInt				= [self.population.generationNumber integerValue] + 1;
+	NSNumber *incrementedGenNumber		= [NSNumber numberWithInt:(int)plusOneInt];
 	self.population.generationNumber	= incrementedGenNumber;
 	
 	// rerank population
-	[self sortRankedPopulation];
+	[self rankPopulationVia:self.rankedPopulation];
 	
 	// remove and release worst performing half of pop
 	// and replace them with children crossed over by best performing half
 	[self replaceBottomHalfOfPopulationWithNewChildren];
+	
+	// now mutate
+	[self mutateChildrenForPopulation:self.population];
 }
 
-- (void)sortRankedPopulation
+- (void)rankPopulationVia:(NSMutableArray*)sortingArray
 {
 	// sort population
-	// sort rankedPopulation based on numberOfWinBetWinners (for now)
+	// sort rankedPopulation based on [numberOfWinBetWinners / numberWinBets] for now...
 	NSSortDescriptor *discript	= [[NSSortDescriptor alloc] initWithKey:@"numberOfWinBetWinners"
-																		  ascending:YES];
+															 ascending:YES];
 	NSArray *descriptorArray	= [NSArray arrayWithObjects:discript, nil];
 	NSArray *rankedArray		= [self.rankedPopulation sortedArrayUsingDescriptors:descriptorArray];
 	
-	[self.rankedPopulation removeAllObjects];
-	[self.rankedPopulation addObjectsFromArray:rankedArray];
+	[sortingArray removeAllObjects];
+	[sortingArray addObjectsFromArray:rankedArray];
 }
 
 - (void)replaceBottomHalfOfPopulationWithNewChildren
@@ -726,7 +1231,7 @@
 }
 
 - (ECTreeNode*)copyTree:(ECTreeNode*)parentRoot
-		  withoutNode:(ECTreeNode*)doNotCopyNode
+ withoutBranch:(ECTreeNode*)skipThisBranch
 {
 	ECTreeNode *newTree   = nil;
     ECTreeNode *tempNode  = parentRoot;
@@ -737,26 +1242,26 @@
 	{
         newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:tempNode.functionIndex];
 
-        if(tempNode.leftBranch == doNotCopyNode)
+        if(tempNode.leftBranch == skipThisBranch)
         {
             newTree.leftBranch = nil;
         }
         else
         {
             newTree.leftBranch = [self copyTree:tempNode.leftBranch
-								   withoutNode:doNotCopyNode];
+								  withoutBranch:skipThisBranch];
         }
         
         if(tempNode.rightBranch)
         {
-            if(tempNode.rightBranch == doNotCopyNode)
+            if(tempNode.rightBranch == skipThisBranch)
             {
                 newTree.rightBranch = nil;
             }
             else
             {
                 newTree.rightBranch = [self copyTree:tempNode.rightBranch
-										withoutNode:doNotCopyNode];
+										withoutBranch:skipThisBranch];
             }
         }
     }
@@ -796,7 +1301,9 @@
         {
             // iterate through dnaStrands
             int rootLevel = 0;
-            
+        
+			// since these relevance trees have fewer variables
+			// make these dnaTrees shallower by starting rootLevel higher up
             if(strandNumber == 6)
             {
                 rootLevel = 1;

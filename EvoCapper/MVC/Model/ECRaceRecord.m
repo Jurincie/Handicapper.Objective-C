@@ -14,21 +14,33 @@
 @synthesize raceDate					= _raceDate;
 @synthesize raceClass					= _raceClass;
 @synthesize raceDistance				= _raceDistance;
-@synthesize postNames					= _postNames;
+@synthesize postEntries					= _postEntries;
 @synthesize postWinOdds					= _postWinOdds;
 @synthesize entrysStrengthsFieldsArray	= _entrysStrengthsFieldsArray;
-//@synthesize results						= _results;
+@synthesize results						= _results;
+@synthesize payouts						= _payouts;
 
-- (id)initFromResultsFileSubstring:(NSString*)resultsFileSubstring
+- (id)initRaceRecordAtTrack:(NSString*)trackName
+					 onDate:(NSDate*)trainingRaceDate
+			  forRaceNumber:(NSUInteger)raceNumber
+			   forRaceClass:(NSString*)raceClass
+			 atRaceDiatance:(NSUInteger)raceDistance
+		  andEntriesAtPosts:(NSArray*)postEntriesArray
+		   usingOddsAtPosts:(NSArray*)postOddsArray
 {
-	ECRaceRecord *raceRecord = [super init];
+	ECRaceRecord *newRaceRecord = [super init];
 	
-	if(raceRecord)
+	if(newRaceRecord)
 	{
-	
+		newRaceRecord.trackName		= trackName;
+		newRaceRecord.raceDate		= trainingRaceDate;
+		newRaceRecord.raceClass		= raceClass;
+		newRaceRecord.raceDistance	= raceDistance;
+		newRaceRecord.postEntries	= postEntriesArray;
+		newRaceRecord.postWinOdds	= postOddsArray;
 	}
 	
-	return raceRecord;
+	return newRaceRecord;
 }
 
 @end

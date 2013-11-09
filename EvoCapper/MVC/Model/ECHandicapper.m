@@ -27,5 +27,6 @@
 @dynamic amountBetOnWinBets;
 @dynamic amountWonOnWinBets1;
 @dynamic handicapperPopulation;
+@dynamic winThreshold;
 
 @end
