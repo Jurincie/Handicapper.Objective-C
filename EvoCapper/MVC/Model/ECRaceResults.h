@@ -7,19 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ECRacePayouts.h"
 
 @interface ECRaceResults : NSObject
 
 @property (assign)				double	winningTime;
 @property (nonatomic, strong)	NSArray *postsFinalPositionArray;
 @property (nonatomic, strong)	NSArray *postsFinalTimeArray;
-@property (assign)				double	winPayout;
-@property (assign)				double	placePayout;
-@property (assign)				double	showPayout;
-@property (assign)				double	quinellaPayout;
-@property (assign)				double	perfectaPayout;
-@property (assign)				double	trifectaPayout;
-@property (assign)				double	superfectaPayout;
-@property (assign)				double	dailyDoublePayout;
 
 @end

@@ -248,6 +248,11 @@
 
 - (IBAction)createNewPopulationButtonTapped:(id)sender
 {
+	if(self.currentPopulation)
+	{
+		
+	}
+
     NSLog(@"Create New Population Button Tapped");
 
     // resent a modal window to get user input for new population values

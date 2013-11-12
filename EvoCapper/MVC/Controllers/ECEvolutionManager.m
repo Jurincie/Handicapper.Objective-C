@@ -162,26 +162,28 @@
     // iterate all subdirectories inside kResultsFolderPath
 	NSFileManager *localFileManager			= [[NSFileManager alloc] init];
 	NSDirectoryEnumerator *dirEnumerator	= [localFileManager enumeratorAtPath:resultFolderPath];
-	NSString *filePath						= nil;
+	NSString *fileName						= nil;
 	BOOL isDirectory						= NO;
 	
-    while((filePath = [dirEnumerator nextObject]))
+    while((fileName = [dirEnumerator nextObject]))
     {
-		if([localFileManager fileExistsAtPath:filePath
+		NSString *fullFilePath = [NSString stringWithFormat:@"%@/%@", resultFolderPath, fileName];
+		
+		if([localFileManager fileExistsAtPath:fullFilePath
 								  isDirectory:&isDirectory] && isDirectory)
 		{
 			[self testPopulation:population
 				includingParents:parentsToo
-		   withResultFilesAtPath:filePath];
+		   withResultFilesAtPath:fullFilePath];
 		}
 		else
 		{
-			if([filePath isEqualToString:@".DS_Store"])
+			if([fileName isEqualToString:@".DS_Store"])
 			{
 				continue;
 			}
 			
-			NSArray *raceRecordsForThisEvent = [self getRaceRecordsForResultsFileAtPath:filePath];
+			NSArray *raceRecordsForThisEvent = [self getRaceRecordsForResultsFileAtPath:fullFilePath];
 		
 			for(ECRaceRecord *tempRaceRecord in raceRecordsForThisEvent)
 			{
@@ -621,27 +623,7 @@
 	//		23  8 Jt Gold N Silver                  4.80     Tri          (1-2-8)     $417.80
 	//		24  5 Kiowa Manley                               Super       (1-2-8-5)   $4,246.40
 	//		25
-	//		26  ____________________________________________________________________________________________________________________________________
-	//		27  DERBY LANE                   Wednesday Nov 05 2008 Afternoon   Race 2    Grade  D   (550)  Time: 30.97
-	//		28  ____________________________________________________________________________________________________________________________________
-	//		29  Curler Ron G     70½ 7 2 1 3  1 4  1 3½    30.97 3.50  Won With Ease-inside
-	//		30  Ww's Arcadia     60  4 3 2    2    2 3½    31.21 4.90  Held Place Safe-rail
-	//		31  Jamie M Grodeki  61½ 6 4 5    4    3 5     31.32 5.90  Swung Wide 1st-gaining
-	//		32  Silver Fang      67  1 8 4    3    4 6½    31.43 3.90  Outfinished-inside
-	//		33  Dust Doll        65  5 5 8    8    5 7½    31.50 7.30  Blocked 1st-some Gain
-	//		34  El Witty         64  2 6 6    6    6 8     31.51 16.60 No Room Erly-wide 2nd
-	//		35  Top Cat Hotshot  63  3 7 7    7    7 8½    31.57 33.00 Impeded 1st-forced Wd
-	//		36  Hamparsum        65½ 8 1 3    5    8 9     31.58 *2.40 Cls Qtrs 2nd Tn-faded
-	//		37  Floyd & Porter Kennel's Bd. M 3/31/2007 Lonesome Cry x Trayton's Baby
-	//		38  7 Curler Ron G      9.00    4.40    2.60     Quin        (4-7)        $21.80
-	//		39  4 Ww's Arcadia              13.80   3.80     Perf        (7-4)        $90.20
-	//		40  6 Jamie M Grodeki                   3.00     Tri          (7-4-6)     $178.60
-	//		41  1 Silver Fang                                Super       (7-4-6-1)   $720.60
-	//		42  Double |(1-7) | $45.80
-	//		43  ____________________________________________________________________________________________________________________________________
-	//		44  DERBY LANE                   Wednesday Nov 05 2008 Afternoon   Race 3    Grade TM   (550)  Time: 31.05
-	//		45  ____________________________________________________________________________________________________________________________________
-	//
+
 	BOOL isThisANewRecord	= NO;
 	NSMutableArray *records	= nil;
 	NSError *error			= nil;
@@ -666,27 +648,43 @@
 		
 		if([self isThisALongLineOfUnderscores:thisLine] && [self isThisALongLineOfUnderscores:twoLinesAhead])
 		{
-			NSMutableArray *linesForThisRace	= [NSMutableArray new];
-			NSUInteger resultLineNumber			= 0;
-			NSString *tempString				= [fileContentsLineByLine objectAtIndex:i + resultLineNumber];
+			// reset
+			isThisANewRecord = NO;
 			
-			// loop until next race
+			// create thisRaceLineByLine and add the line starting with trackName (lines 10)
+			NSMutableArray *thisRaceLineByLine = [NSMutableArray new];
+		
+			[thisRaceLineByLine	addObject:[fileContentsLineByLine objectAtIndex:i+1]];
 			
-		do
-		{
-			[linesForThisRace addObject:tempString];
-			NSString *tempString	= [fileContentsLineByLine objectAtIndex:i + resultLineNumber++];
-			isThisANewRecord		= [self isThisALongLineOfUnderscores:tempString];
-		}
-		while(isThisANewRecord == NO && i + resultLineNumber < endIndex);
+			// skips 2nd longLine...
+			NSUInteger thisRaceLineNumber = 3;
 			
-			// end of lines for this race
-			ECRaceRecord *raceRecord = [self getRaceRecordFromLines:linesForThisRace];
+			// loop until next race start found
+			while(i + thisRaceLineNumber < endIndex)
+			{
+				thisLine			= [fileContentsLineByLine objectAtIndex:i + thisRaceLineNumber++];
+				isThisANewRecord	= [self isThisALongLineOfUnderscores:thisLine];
+				
+				if(isThisANewRecord)
+				{
+					break;  // new record found
+				}
+				
+				else
+				{
+					[thisRaceLineByLine addObject:thisLine];
+				}
+			}
+		
 			
-			[records addObject:raceRecord];
+			// load raceRecord fields form these lines
+			ECRaceRecord *newRaceRecord = [self getRaceRecordFromLines:thisRaceLineByLine];
+			
+			// add new raceRecord to records array
+			[records addObject:newRaceRecord];
 			
 			// increment i so we don't reread this race
-			i += resultLineNumber - 1;
+			i += thisRaceLineNumber - 2;
 		}
 	}
 	
@@ -695,26 +693,311 @@
 	return records;
 }
 
-- (ECRaceRecord*)getRaceRecordFromLines:(NSArray*)resultFileLines
+- (ECRaceRecord*)getRaceRecordFromLines:(NSArray*)resultFileLineByLine
 {
-	ECRaceRecord *newRaceRecord = nil;
+	//Line #	^
+	//	0:		DERBY LANE                   Wednesday Nov 05 2008 Afternoon   Race 2    Grade  D   (550)  Time: 30.97
+	//	1:		Curler Ron G     70½ 7 2 1 3  1 4  1 3½    30.97 3.50  Won With Ease-inside
+	//	2:		Ww's Arcadia     60  4 3 2    2    2 3½    31.21 4.90  Held Place Safe-rail
+	//	3:		Jamie M Grodeki  61½ 6 4 5    4    3 5     31.32 5.90  Swung Wide 1st-gaining
+	//  4:		Silver Fang      67  1 8 4    3    4 6½    31.43 3.90  Outfinished-inside
+	//	5:		Dust Doll        65  5 5 8    8    5 7½    31.50 7.30  Blocked 1st-some Gain
+	//	6:		El Witty         64  2 6 6    6    6 8     31.51 16.60 No Room Erly-wide 2nd
+	//	7:		Top Cat Hotshot  63  3 7 7    7    7 8½    31.57 33.00 Impeded 1st-forced Wd
+	//	8:		Hamparsum        65½ 8 1 3    5    8 9     31.58 *2.40 Cls Qtrs 2nd Tn-faded
+	//	9:		Floyd & Porter Kennel's Bd. M 3/31/2007 Lonesome Cry x Trayton's Baby
+	//	10:		7 Curler Ron G      9.00    4.40    2.60     Quin        (4-7)        $21.80
+	//	11:		4 Ww's Arcadia              13.80   3.80     Perf        (7-4)        $90.20
+	//	12:		6 Jamie M Grodeki                   3.00     Tri          (7-4-6)     $178.60
+	//	13:		1 Silver Fang                                Super       (7-4-6-1)   $720.60
+	//	14:		Double |(1-7) | $45.80
+	//
 	
-	// fill race record with:
-	//	- trackName (same for all raceRecords)
-	//	- raceDate  (same for all raceRecords)
+	// fill race record with using lines above as template
+	
+	//	- trackName
+	//	- raceDate
 	//	- raceClass
 	//	- raceNumber
 	//	- raceDistance
 	//	- entryNames with postPositions
+		
+	NSString *modifiedLine		= [self removeExtraSpacesFromString:[resultFileLineByLine objectAtIndex:0]];
+	NSArray *lineZeroTokens		= [modifiedLine componentsSeparatedByString:@" "];
+	NSUInteger firstDateToken	= [self getIndexOfFirstTokenDescribingDateInArray:lineZeroTokens];
 	
-	NSDate *raceDate = nil;
-	NSString *trackName	= @"";
-	NSString *raceClass = @"";
-	NSUInteger raceNumber = 0;
+	if(firstDateToken == 0)
+	{
+		NSLog(@"error getting index start of date token");
+		exit(1);
+	}
+	
+	// get track Name
+	NSMutableString *trackName = [NSMutableString new];
+	
+	for(NSUInteger index = 0; index < firstDateToken; index++)
+	{
+		// add a space " " character unless initial word
+		if(index > 0)
+		{
+			[trackName appendString:@" "];
+		}
+	
+		NSString *word = [lineZeroTokens objectAtIndex:index];
+	
+		[trackName appendString:word];
+	}
+	
+	// jump through some hoops to create NSDate object
+	NSString *yyyySubstring	= [lineZeroTokens objectAtIndex:firstDateToken + 3];
+	NSString *monthName		= [lineZeroTokens objectAtIndex:firstDateToken + 1];
+	NSString *mmSubstring	= [self getMmSubstringFromSpelledMonth:monthName];
+	NSString *ddSubstring	= [lineZeroTokens objectAtIndex:firstDateToken + 2];
+	NSString *suffix		= @" 10:00:00 +0600";
+	NSString *dateString	= [NSString stringWithFormat:@"%@-%@-%@%@", yyyySubstring, mmSubstring, ddSubstring, suffix];
+	NSDate *raceDate		= [NSDate dateWithString:dateString];
+	
+	NSString *raceClass			= [lineZeroTokens objectAtIndex:firstDateToken + 8];
+	NSUInteger raceNumber		= [[lineZeroTokens objectAtIndex:firstDateToken + 6] integerValue];
+	NSUInteger raceDistance		= [self getRaceDistanceFromString:[lineZeroTokens objectAtIndex:firstDateToken + 9]];
+	double winningTime			= [[lineZeroTokens objectAtIndex:firstDateToken + 11] doubleValue];
+
+// iterate through resultFileLineByLine filling in entryNamesArray and postOddsArray
+	NSMutableArray *entryNamesArray	= [NSMutableArray new];
+	NSMutableArray *postOddsArray	= [NSMutableArray new];
+	NSUInteger lineNumber			= 0;
+	BOOL isThisKennelLine			= NO;
+	
+	NSString *resultFileLine	= [resultFileLineByLine objectAtIndex:++lineNumber];
+	modifiedLine				= [self removeExtraSpacesFromString:resultFileLine];
+	
+	do
+	{
+		NSArray *tokens		= [modifiedLine componentsSeparatedByString:@" "];
+		NSString *entryName	= [self getEntryNameFromreResultLine:tokens];
+		
+		[entryNamesArray addObject:entryName];
+		
+		resultFileLine	= [resultFileLineByLine objectAtIndex:++lineNumber];
+		modifiedLine	= [self removeExtraSpacesFromString:resultFileLine];
+		
+		isThisKennelLine = [self isThisWinningKennelLine:modifiedLine];
+	}
+	while(isThisKennelLine == NO);
 	
 	
-	return newRaceRecord;
+	ECRaceRecord *raceRecord = [[ECRaceRecord alloc] initRaceRecordAtTrack:trackName
+																	onDate:raceDate
+														   withWinningTime:winningTime
+															 forRaceNumber:raceNumber
+															  forRaceClass:raceClass
+															atRaceDiatance:raceDistance
+														 andEntriesAtPosts:entryNamesArray
+														  usingOddsAtPosts:postOddsArray];
+
+	return raceRecord;
 }
+
+- (NSString*)getEntryNameFromreResultLine:(NSArray*)tokens
+{
+	NSMutableString *entryName = [NSMutableString new];
+	
+	for(NSUInteger index = 0; index < tokens.count; index++)
+	{
+		NSString *word = [tokens objectAtIndex:index];
+		
+		if([self isThisWordAValidWeightString:word] == YES)
+		{
+			break;
+		}
+		
+		if(index > 0)	// add a " " character after initial character
+		{
+			[entryName appendString:@" "];
+		}
+		
+		[entryName appendString:word];
+	}
+	
+	return  entryName;
+}
+
+- (BOOL)isThisWordAValidWeightString:(NSString*)word
+{
+	BOOL answer = NO;
+	int minVal	= (int)'0';
+	int maxVal	= (int)'9';
+	
+	if(word.length > 1 && word.length < 5)
+	{
+		char firstChar = [word characterAtIndex:0];
+		char secondChar = [word characterAtIndex:0];
+		
+		if((int)'4' <= (int)firstChar  &&  maxVal >= (int)firstChar)
+		{
+			if(minVal <= (int)secondChar && maxVal >= (int)secondChar)
+			{
+				answer = YES;
+			}
+		}
+	}
+	
+	return answer;
+}
+
+- (BOOL)isThisWordADateString:(NSString*)word
+{
+	BOOL isDateString = NO;
+	
+	if(word.length == 8)
+	{
+		if ([word characterAtIndex:1] == '/' &&		// check for form m/d/yyyy
+			[word characterAtIndex:3] == '/' &&
+			[word characterAtIndex:2] != '/')
+		{
+			isDateString = YES;
+		}
+	}
+	else if(word.length == 9)
+	{
+		if([word characterAtIndex:2] == '/' &&		// check for form mm/d/yyyy
+			[word characterAtIndex:4] == '/' &&
+			[word characterAtIndex:3] != '/')
+		{
+			isDateString = YES;
+		}
+		else if([word characterAtIndex:1] == '/' &&	// check for form m/dd/yyyy
+				[word characterAtIndex:4] == '/' &&
+				[word characterAtIndex:2] != '/' &&
+				[word characterAtIndex:3] != '/')
+		{
+			isDateString = YES;
+		}
+	}
+	else if(word.length == 10)
+	{
+		if([word characterAtIndex:2] == '/' &&		// check for form mm/dd/yyyy
+		   [word characterAtIndex:5] == '/' &&
+		   [word characterAtIndex:3] != '/' &&
+		   [word characterAtIndex:4] != '/')
+		{
+			isDateString = YES;
+		}
+	}
+		
+	return isDateString;
+}
+
+- (BOOL)isThisWinningKennelLine:(NSString*)resultFileLine
+{
+	BOOL isWinningLine = NO;
+		
+	return isWinningLine;
+}
+
+- (NSString*)getMmSubstringFromSpelledMonth:(NSString*)spelledMonthString
+{
+	NSString *mmSubstring			= nil;
+	NSString *spelledMonthSubstring = [spelledMonthString substringToIndex:3];
+	
+	if([spelledMonthSubstring isEqualToString:@"Jan"])
+	{
+		mmSubstring = @"01";
+	}
+	else if([spelledMonthSubstring isEqualToString:@"Feb"])
+	{
+		mmSubstring = @"02";
+	}
+	else if([spelledMonthSubstring isEqualToString:@"Mar"])
+	{
+		mmSubstring = @"03";
+	}
+	else if([spelledMonthSubstring isEqualToString:@"Apr"])
+	{
+		mmSubstring = @"04";
+	}
+	else if([spelledMonthString isEqualToString:@"May"])
+	{
+		mmSubstring = @"05";
+	}
+	else if([spelledMonthSubstring isEqualToString:@"Jun"])
+	{
+		mmSubstring = @"06";
+	}
+	else if([spelledMonthSubstring isEqualToString:@"Jul"])
+	{
+		mmSubstring = @"07";
+	}
+	else if([spelledMonthSubstring isEqualToString:@"Aug"])
+	{
+		mmSubstring = @"08";
+	}
+	else if([spelledMonthSubstring isEqualToString:@"Sep"])
+	{
+		mmSubstring = @"09";
+	}
+	else if([spelledMonthSubstring isEqualToString:@"Oct"])
+	{
+		mmSubstring = @"10";
+	}
+	else if([spelledMonthSubstring isEqualToString:@"Nov"])
+	{
+		mmSubstring = @"11";
+	}
+	else if([spelledMonthSubstring isEqualToString:@"Dec"])
+	{
+		mmSubstring = @"12";
+	}
+
+	return mmSubstring;
+}
+
+
+- (NSUInteger)getRaceDistanceFromString:(NSString*)raceNumberString
+{
+	NSString *prefix				= [raceNumberString substringToIndex:4];
+	NSString *stringWithoutParens	= [prefix substringFromIndex:1];
+	NSUInteger distanceOfRaceinFeet = [stringWithoutParens integerValue];
+	
+	return distanceOfRaceinFeet;
+}
+
+- (NSString*)removeExtraSpacesFromString:(NSString*)originalString
+{
+    NSString *strippedString = nil;
+    
+    while ([originalString rangeOfString:@"  "].location != NSNotFound)
+	{
+        originalString = [originalString stringByReplacingOccurrencesOfString:@"  "
+                                                                   withString:@" "];
+	}
+    
+    strippedString = [NSString stringWithString:originalString];
+    
+    return strippedString;
+}
+
+- (NSUInteger) getIndexOfFirstTokenDescribingDateInArray:(NSArray*)lineZeroTokens
+{
+	NSUInteger index = 0;
+	
+	for(index = 0; index < lineZeroTokens.count; index++)
+	{
+		if([[lineZeroTokens objectAtIndex:index] isEqualToString:@"Monday"] ||
+			[[lineZeroTokens objectAtIndex:index] isEqualToString:@"Tuesday"] ||
+			[[lineZeroTokens objectAtIndex:index] isEqualToString:@"Wednesday"] ||
+			[[lineZeroTokens objectAtIndex:index] isEqualToString:@"Thursday"] ||
+			[[lineZeroTokens objectAtIndex:index] isEqualToString:@"Friday"] ||
+			[[lineZeroTokens objectAtIndex:index] isEqualToString:@"Saturday"] ||
+			[[lineZeroTokens objectAtIndex:index] isEqualToString:@"Sunday"])
+		{
+			break;
+		}
+	}
+	
+	return index;
+}
+
 
 - (BOOL)isThisALongLineOfUnderscores:(NSString*)inString
 {

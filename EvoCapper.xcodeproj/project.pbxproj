@@ -24,7 +24,8 @@
 		7AB3B3A8182BFFB10089C80C /* ECPastLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3A7182BFFB10089C80C /* ECPastLine.m */; };
 		7AB3B3B0182EFE280089C80C /* ECEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3AF182EFE280089C80C /* ECEntry.m */; };
 		7AB3B3B3182EFE740089C80C /* ECRaceRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3B2182EFE740089C80C /* ECRaceRecord.m */; };
-		7AB3B3B6182EFFB00089C80C /* ECRaceResults.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3B5182EFFB00089C80C /* ECRaceResults.m */; };
+		7AB3B3B9182F02B00089C80C /* ECRaceResults.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3B8182F02B00089C80C /* ECRaceResults.m */; };
+		7AB3B3BC182F03200089C80C /* ECRacePayouts.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3BB182F03200089C80C /* ECRacePayouts.m */; };
 		7AB9FD0B181ADCED00C17A46 /* EvoCapper.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD09181ADCED00C17A46 /* EvoCapper.xcdatamodeld */; };
 		7AB9FD11181ADF1700C17A46 /* ECPopulation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD10181ADF1700C17A46 /* ECPopulation.m */; };
 		7AB9FD1A181AFF8300C17A46 /* ECTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD19181AFF8300C17A46 /* ECTreeNode.m */; };
@@ -71,8 +72,10 @@
 		7AB3B3AF182EFE280089C80C /* ECEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECEntry.m; path = MVC/Model/ECEntry.m; sourceTree = "<group>"; };
 		7AB3B3B1182EFE740089C80C /* ECRaceRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRaceRecord.h; path = MVC/Model/ECRaceRecord.h; sourceTree = "<group>"; };
 		7AB3B3B2182EFE740089C80C /* ECRaceRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRaceRecord.m; path = MVC/Model/ECRaceRecord.m; sourceTree = "<group>"; };
-		7AB3B3B4182EFFB00089C80C /* ECRaceResults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRaceResults.h; path = MVC/Model/ECRaceResults.h; sourceTree = "<group>"; };
-		7AB3B3B5182EFFB00089C80C /* ECRaceResults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRaceResults.m; path = MVC/Model/ECRaceResults.m; sourceTree = "<group>"; };
+		7AB3B3B7182F02B00089C80C /* ECRaceResults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRaceResults.h; path = MVC/Model/ECRaceResults.h; sourceTree = "<group>"; };
+		7AB3B3B8182F02B00089C80C /* ECRaceResults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRaceResults.m; path = MVC/Model/ECRaceResults.m; sourceTree = "<group>"; };
+		7AB3B3BA182F03200089C80C /* ECRacePayouts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRacePayouts.h; path = MVC/Model/ECRacePayouts.h; sourceTree = "<group>"; };
+		7AB3B3BB182F03200089C80C /* ECRacePayouts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRacePayouts.m; path = MVC/Model/ECRacePayouts.m; sourceTree = "<group>"; };
 		7AB9FD05181AC6C500C17A46 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		7AB9FD0A181ADCED00C17A46 /* EvoCapper.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = EvoCapper.xcdatamodel; sourceTree = "<group>"; };
 		7AB9FD0F181ADF1700C17A46 /* ECPopulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECPopulation.h; path = MVC/Model/ECPopulation.h; sourceTree = "<group>"; };
@@ -125,18 +128,22 @@
 		7A27ED3A1818221C00AA91AE /* M-Model */ = {
 			isa = PBXGroup;
 			children = (
-				7AB3B3A6182BFFB10089C80C /* ECPastLine.h */,
-				7AB3B3A7182BFFB10089C80C /* ECPastLine.m */,
-				7AB9FD0F181ADF1700C17A46 /* ECPopulation.h */,
-				7AB9FD10181ADF1700C17A46 /* ECPopulation.m */,
-				7AB9FD18181AFF8300C17A46 /* ECTreeNode.h */,
-				7AB9FD19181AFF8300C17A46 /* ECTreeNode.m */,
 				7A173E37182485AD0095DA1F /* ECHandicapper.h */,
 				7A173E38182485AD0095DA1F /* ECHandicapper.m */,
+				7AB9FD0F181ADF1700C17A46 /* ECPopulation.h */,
+				7AB9FD10181ADF1700C17A46 /* ECPopulation.m */,
 				7AB3B3AE182EFE280089C80C /* ECEntry.h */,
 				7AB3B3AF182EFE280089C80C /* ECEntry.m */,
+				7AB3B3A6182BFFB10089C80C /* ECPastLine.h */,
+				7AB3B3A7182BFFB10089C80C /* ECPastLine.m */,
+				7AB9FD18181AFF8300C17A46 /* ECTreeNode.h */,
+				7AB9FD19181AFF8300C17A46 /* ECTreeNode.m */,
 				7AB3B3B1182EFE740089C80C /* ECRaceRecord.h */,
 				7AB3B3B2182EFE740089C80C /* ECRaceRecord.m */,
+				7AB3B3B7182F02B00089C80C /* ECRaceResults.h */,
+				7AB3B3B8182F02B00089C80C /* ECRaceResults.m */,
+				7AB3B3BA182F03200089C80C /* ECRacePayouts.h */,
+				7AB3B3BB182F03200089C80C /* ECRacePayouts.m */,
 			);
 			name = "M-Model";
 			sourceTree = "<group>";
@@ -146,8 +153,6 @@
 			children = (
 				7A27ED3F18184CEE00AA91AE /* ECEvolutionManager.h */,
 				7A27ED4018184CEE00AA91AE /* ECEvolutionManager.m */,
-				7AB3B3B4182EFFB00089C80C /* ECRaceResults.h */,
-				7AB3B3B5182EFFB00089C80C /* ECRaceResults.m */,
 			);
 			name = "C-Controllers";
 			sourceTree = "<group>";
@@ -348,7 +353,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A98B3CD18170ECD0013F43D /* ECAppDelegate.m in Sources */,
-				7AB3B3B6182EFFB00089C80C /* ECRaceResults.m in Sources */,
+				7AB3B3B9182F02B00089C80C /* ECRaceResults.m in Sources */,
 				7AB9FD0B181ADCED00C17A46 /* EvoCapper.xcdatamodeld in Sources */,
 				7A98B3C618170ECD0013F43D /* main.m in Sources */,
 				7AB3B3A8182BFFB10089C80C /* ECPastLine.m in Sources */,
@@ -357,6 +362,7 @@
 				7A27ED4118184CEE00AA91AE /* ECEvolutionManager.m in Sources */,
 				7AB9FD1A181AFF8300C17A46 /* ECTreeNode.m in Sources */,
 				7AB3B3B0182EFE280089C80C /* ECEntry.m in Sources */,
+				7AB3B3BC182F03200089C80C /* ECRacePayouts.m in Sources */,
 				7A173E39182485AD0095DA1F /* ECHandicapper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

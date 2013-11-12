@@ -22,6 +22,7 @@
 
 - (id)initRaceRecordAtTrack:(NSString*)trackName
 					 onDate:(NSDate*)trainingRaceDate
+			withWinningTime:(double)winningTime
 			  forRaceNumber:(NSUInteger)raceNumber
 			   forRaceClass:(NSString*)raceClass
 			 atRaceDiatance:(NSUInteger)raceDistance
