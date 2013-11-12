@@ -87,8 +87,9 @@
 							startingAtIndex:(NSUInteger) startIndex;
 
 - (BOOL)isThisALongLineOfUnderscores:(NSString*)inString;
-- (BOOL)isThisWordADateString:(NSString*)word;
-- (BOOL)isThisWordAValidWeightString:(NSString*)word;
+- (BOOL)isThisADateString:(NSString*)word;
+- (BOOL)isThisAValidWeightString:(NSString*)word;
+- (BOOL)isThisAValidTimeString:(NSString*)word;
 
 - (ECRaceRecord*)getRaceRecordFromLines:(NSArray*)resultFileLines;
 
@@ -103,8 +104,12 @@
 - (NSUInteger)getIndexOfFirstTokenDescribingDateInArray:(NSArray*)lineZeroTokens;
 - (NSUInteger)getRaceDistanceFromString:(NSString*)raceNumberString;
 - (NSString*)getMmSubstringFromSpelledMonth:(NSString*)spelledMonthString;
-- (NSString*)getEntryNameFromreResultLine:(NSArray*)tokens;
-
+- (NSString*)getEntryNameFromResultLine:(NSArray*)tokens;
+- (NSUInteger)getPostPositionFromResultLine:(NSArray*)tokens;
+- (double)getPostTimeWinOddsFromResultLine:(NSArray*)tokens;
+- (void)getResultsAndPayoutsForRaceRecord:(ECRaceRecord*)raceRecord
+							   usingArray:(NSArray*)resultFileLineByLine
+							 atLineNumber:(NSUInteger)lineNumber;
 
 // overflow, underflow and division by zero are ignored here
 // to be trapped in evalTree method

@@ -12,7 +12,11 @@
 @interface ECRaceResults : NSObject
 
 @property (assign)				double	winningTime;
-@property (nonatomic, strong)	NSArray *postsFinalPositionArray;
-@property (nonatomic, strong)	NSArray *postsFinalTimeArray;
+@property (nonatomic, strong)	NSArray *postsFinishPositionArray;
+@property (nonatomic, strong)	NSArray *postsFinishTimeArray;
+
+- (ECRaceResults*)initWithFinishPositionsArray:(NSArray*)finishPositionsByPost
+							andFinishTimeArray:(NSArray*)finishTimesByPost;
+
 
 @end

@@ -771,13 +771,41 @@
 	NSString *resultFileLine	= [resultFileLineByLine objectAtIndex:++lineNumber];
 	modifiedLine				= [self removeExtraSpacesFromString:resultFileLine];
 	
+	// fill arrays with strings @"empty post"
+	for(NSUInteger index = 0; index < kMaximumNumberEntries; index++)
+	{
+		[entryNamesArray addObject:@"Empty Post"];
+		[postOddsArray addObject:@"Empty Post"];
+	}
+	
+	// replace @"Empty Post" strings with name and odds for each post
 	do
 	{
 		NSArray *tokens		= [modifiedLine componentsSeparatedByString:@" "];
-		NSString *entryName	= [self getEntryNameFromreResultLine:tokens];
+		NSString *entryName	= [self getEntryNameFromResultLine:tokens];
 		
-		[entryNamesArray addObject:entryName];
+		if(entryName)
+		{
+			NSUInteger postNumber	= [self getPostPositionFromResultLine:tokens];
+			double postWinOdds		= [self getPostTimeWinOddsFromResultLine:tokens];
 		
+			if(postWinOdds == 0.0)
+			{
+				NSLog(@"error getting post odds");
+				exit(1);
+			}
+		
+			NSNumber *winOdds = [NSNumber numberWithDouble:postWinOdds];
+		
+			[entryNamesArray replaceObjectAtIndex:postNumber-1
+									   withObject:entryName];
+		
+			[postOddsArray replaceObjectAtIndex:postNumber-1
+									 withObject:winOdds];
+		}
+		
+				
+		// update line
 		resultFileLine	= [resultFileLineByLine objectAtIndex:++lineNumber];
 		modifiedLine	= [self removeExtraSpacesFromString:resultFileLine];
 		
@@ -786,19 +814,32 @@
 	while(isThisKennelLine == NO);
 	
 	
-	ECRaceRecord *raceRecord = [[ECRaceRecord alloc] initRaceRecordAtTrack:trackName
-																	onDate:raceDate
-														   withWinningTime:winningTime
-															 forRaceNumber:raceNumber
-															  forRaceClass:raceClass
-															atRaceDiatance:raceDistance
-														 andEntriesAtPosts:entryNamesArray
-														  usingOddsAtPosts:postOddsArray];
-
-	return raceRecord;
+	ECRaceRecord *record = [[ECRaceRecord alloc] initRaceRecordAtTrack:trackName
+																onDate:raceDate
+													   withWinningTime:winningTime
+														 forRaceNumber:raceNumber
+														  forRaceClass:raceClass
+														atRaceDiatance:raceDistance
+													 andEntriesAtPosts:entryNamesArray
+													  usingOddsAtPosts:postOddsArray];
+				
+	[self getResultsAndPayoutsForRaceRecord:record
+								 usingArray:resultFileLineByLine
+								 atLineNumber:lineNumber++];
+				
+	return record;
 }
 
-- (NSString*)getEntryNameFromreResultLine:(NSArray*)tokens
+- (void)getResultsAndPayoutsForRaceRecord:(ECRaceRecord*)raceRecord
+							   usingArray:(NSArray*)resultFileLineByLine
+							 atLineNumber:(NSUInteger)lineNumber
+{
+	raceRecord.results	= nil;
+	raceRecord.payouts	= nil;
+}
+
+
+- (NSString*)getEntryNameFromResultLine:(NSArray*)tokens
 {
 	NSMutableString *entryName = [NSMutableString new];
 	
@@ -806,7 +847,7 @@
 	{
 		NSString *word = [tokens objectAtIndex:index];
 		
-		if([self isThisWordAValidWeightString:word] == YES)
+		if([self isThisAValidWeightString:word] == YES)
 		{
 			break;
 		}
@@ -822,7 +863,71 @@
 	return  entryName;
 }
 
-- (BOOL)isThisWordAValidWeightString:(NSString*)word
+
+- (NSUInteger)getPostPositionFromResultLine:(NSArray*)tokens
+{
+	NSUInteger postPosition = 0;
+	
+	for(NSUInteger index = 0; index < tokens.count; index++)
+	{
+		NSString *word = [tokens objectAtIndex:index];
+		
+		if([self isThisAValidWeightString:word] == YES)
+		{
+			NSString *nextWord	= [tokens objectAtIndex:index+1];
+			postPosition		= [nextWord integerValue];
+			
+			break;
+		}
+	}
+	
+	return  postPosition;
+}
+
+
+- (double)getPostTimeWinOddsFromResultLine:(NSArray*)tokens
+{
+	// line examples:
+	//					Backwood Ethel   62½ 1 1 1 3  1 3  1 5     31.05 *0.80 Increasing Lead-inside
+	//					Hallo See Me     63½ 2 2 2    2    2 5     31.42 8.30  Evenly To Place-midtrk
+	//
+	// Note: '*' character singifies odds on favorite at post time
+	
+	// Strategy: Look for the first word that qualifies as a valid time
+	//				Next word represents decimal version of post time odds
+	//				Don't forget to check for the '*' char at characterAtIndex:0
+	
+	NSUInteger startIndex	= 0; // raise this value to speed up searches
+	double winOdds			= 0.0;
+	
+	for(NSUInteger index = startIndex; index < tokens.count; index++)
+	{
+		NSString *word = [tokens objectAtIndex:index];
+		
+		if([self isThisAValidTimeString:word])
+		{
+			NSString *nextWord = [tokens objectAtIndex:index+1];
+			
+			if([nextWord characterAtIndex:0] == '*')
+			{
+				// this is odds on favorite (must remove first char
+				NSString *suffix	= [nextWord substringFromIndex:1];
+				winOdds				= [suffix doubleValue];
+			}
+		}
+	}
+
+	return winOdds;
+}
+
+- (BOOL)isThisAValidTimeString:(NSString*)word
+{
+	BOOL answer = NO;
+	
+	return answer;
+}
+
+- (BOOL)isThisAValidWeightString:(NSString*)word
 {
 	BOOL answer = NO;
 	int minVal	= (int)'0';
@@ -845,7 +950,7 @@
 	return answer;
 }
 
-- (BOOL)isThisWordADateString:(NSString*)word
+- (BOOL)isThisADateString:(NSString*)word
 {
 	BOOL isDateString = NO;
 	
@@ -888,11 +993,22 @@
 	return isDateString;
 }
 
-- (BOOL)isThisWinningKennelLine:(NSString*)resultFileLine
+- (BOOL)isThisWinningKennelLine:(NSString*)modifiedFileLine
 {
-	BOOL isWinningLine = NO;
+	BOOL isWinningKennelLine	= NO;
+	NSArray *tokens				= [modifiedFileLine componentsSeparatedByString:@" "];
+	
+	for(NSUInteger index = 0; index < tokens.count; index++)
+	{
+		NSString *word = [tokens objectAtIndex:index];
 		
-	return isWinningLine;
+		if([self isThisADateString:word])
+		{
+			isWinningKennelLine = YES;
+		}
+	}
+		
+	return isWinningKennelLine;
 }
 
 - (NSString*)getMmSubstringFromSpelledMonth:(NSString*)spelledMonthString
