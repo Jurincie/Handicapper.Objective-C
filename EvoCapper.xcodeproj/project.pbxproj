@@ -26,6 +26,7 @@
 		7AB3B3B3182EFE740089C80C /* ECRaceRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3B2182EFE740089C80C /* ECRaceRecord.m */; };
 		7AB3B3B9182F02B00089C80C /* ECRaceResults.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3B8182F02B00089C80C /* ECRaceResults.m */; };
 		7AB3B3BC182F03200089C80C /* ECRacePayouts.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3BB182F03200089C80C /* ECRacePayouts.m */; };
+		7AB3B3BF18340BBC0089C80C /* ECTrainigRaceRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3BE18340BBC0089C80C /* ECTrainigRaceRecord.m */; };
 		7AB9FD0B181ADCED00C17A46 /* EvoCapper.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD09181ADCED00C17A46 /* EvoCapper.xcdatamodeld */; };
 		7AB9FD11181ADF1700C17A46 /* ECPopulation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD10181ADF1700C17A46 /* ECPopulation.m */; };
 		7AB9FD1A181AFF8300C17A46 /* ECTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD19181AFF8300C17A46 /* ECTreeNode.m */; };
@@ -76,6 +77,8 @@
 		7AB3B3B8182F02B00089C80C /* ECRaceResults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRaceResults.m; path = MVC/Model/ECRaceResults.m; sourceTree = "<group>"; };
 		7AB3B3BA182F03200089C80C /* ECRacePayouts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRacePayouts.h; path = MVC/Model/ECRacePayouts.h; sourceTree = "<group>"; };
 		7AB3B3BB182F03200089C80C /* ECRacePayouts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRacePayouts.m; path = MVC/Model/ECRacePayouts.m; sourceTree = "<group>"; };
+		7AB3B3BD18340BBC0089C80C /* ECTrainigRaceRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECTrainigRaceRecord.h; path = MVC/Model/ECTrainigRaceRecord.h; sourceTree = "<group>"; };
+		7AB3B3BE18340BBC0089C80C /* ECTrainigRaceRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECTrainigRaceRecord.m; path = MVC/Model/ECTrainigRaceRecord.m; sourceTree = "<group>"; };
 		7AB9FD05181AC6C500C17A46 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		7AB9FD0A181ADCED00C17A46 /* EvoCapper.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = EvoCapper.xcdatamodel; sourceTree = "<group>"; };
 		7AB9FD0F181ADF1700C17A46 /* ECPopulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECPopulation.h; path = MVC/Model/ECPopulation.h; sourceTree = "<group>"; };
@@ -144,6 +147,8 @@
 				7AB3B3B8182F02B00089C80C /* ECRaceResults.m */,
 				7AB3B3BA182F03200089C80C /* ECRacePayouts.h */,
 				7AB3B3BB182F03200089C80C /* ECRacePayouts.m */,
+				7AB3B3BD18340BBC0089C80C /* ECTrainigRaceRecord.h */,
+				7AB3B3BE18340BBC0089C80C /* ECTrainigRaceRecord.m */,
 			);
 			name = "M-Model";
 			sourceTree = "<group>";
@@ -361,6 +366,7 @@
 				7AB9FD11181ADF1700C17A46 /* ECPopulation.m in Sources */,
 				7A27ED4118184CEE00AA91AE /* ECEvolutionManager.m in Sources */,
 				7AB9FD1A181AFF8300C17A46 /* ECTreeNode.m in Sources */,
+				7AB3B3BF18340BBC0089C80C /* ECTrainigRaceRecord.m in Sources */,
 				7AB3B3B0182EFE280089C80C /* ECEntry.m in Sources */,
 				7AB3B3BC182F03200089C80C /* ECRacePayouts.m in Sources */,
 				7A173E39182485AD0095DA1F /* ECHandicapper.m in Sources */,

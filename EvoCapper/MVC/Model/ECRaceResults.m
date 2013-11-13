@@ -11,6 +11,7 @@
 @implementation ECRaceResults
 
 @synthesize winningTime					= _winningTime;
+@synthesize winningPost					= _winningPost;
 @synthesize postsFinishPositionArray	= _postsFinishPositionArray;
 @synthesize postsFinishTimeArray		= _postsFinishTimeArray;
 
@@ -24,18 +25,19 @@
 		self.postsFinishPositionArray	= finishPositionsByPost;
 		self.postsFinishTimeArray		= finishTimesByPost;
 		
-		NSUInteger winningPost = 0;
-		
 		for(NSUInteger index = 0; index < finishTimesByPost.count; index++)
 		{
 			if([[finishPositionsByPost objectAtIndex:index] integerValue] == 1)
 			{
-				winningPost = index+1;
+				self.winningPost = index+1;
 				break;
 			}
 		}
-		
-		self.winningTime = [[self.postsFinishTimeArray objectAtIndex:winningPost] doubleValue];
+	
+		if(finishPositionsByPost)
+		{
+			self.winningTime = [[self.postsFinishTimeArray objectAtIndex:self.winningPost - 1] doubleValue];
+		}
 	}
 	
 	return self;

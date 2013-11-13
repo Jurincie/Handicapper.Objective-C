@@ -13,6 +13,7 @@
 #import "ECTreeNode.h"
 #import "ECHandicapper.h"
 #import "ECRaceRecord.h"
+#import "ECTrainigRaceRecord.h"
 
 @class PastLineRecord;
 
@@ -91,24 +92,26 @@
 - (BOOL)isThisAValidWeightString:(NSString*)word;
 - (BOOL)isThisAValidTimeString:(NSString*)word;
 
-- (ECRaceRecord*)getRaceRecordFromLines:(NSArray*)resultFileLines;
+- (ECTrainigRaceRecord*)getRaceRecordFromLines:(NSArray*)resultFileLines;
 
 - (NSUInteger)getPastLineVariableForDnaStrand:(NSUInteger)dnaStrand;
 - (NSUInteger)getIndexOfComma:(NSString*)inString;
 - (NSUInteger)getIndexOfClosedParen:(NSString*)inString;
 - (NSArray*)getRaceRecordsForResultsFileAtPath:(NSString*)resultsFileAtPath;
 - (NSUInteger)getWinningPostFromRaceRecord:(ECRaceRecord*)thisRaceRecord;
-
+- (NSInteger)getFinishPositionFromResultLine:(NSArray*)tokens;
 
 - (NSString*)removeExtraSpacesFromString:(NSString*)originalString;
 - (NSUInteger)getIndexOfFirstTokenDescribingDateInArray:(NSArray*)lineZeroTokens;
 - (NSUInteger)getRaceDistanceFromString:(NSString*)raceNumberString;
 - (NSString*)getMmSubstringFromSpelledMonth:(NSString*)spelledMonthString;
-- (NSString*)getEntryNameFromResultLine:(NSArray*)tokens;
-- (NSUInteger)getPostPositionFromResultLine:(NSArray*)tokens;
-- (double)getPostTimeWinOddsFromResultLine:(NSArray*)tokens;
-- (void)getResultsAndPayoutsForRaceRecord:(ECRaceRecord*)raceRecord
-							   usingArray:(NSArray*)resultFileLineByLine
+
+- (void)useResultLineArray:(NSArray*)tokens
+	toGetValueForEntryName:(NSString**)entryNameString
+			  postPosition:(NSUInteger*)entryPostPosition
+		 andFinishPosition:(NSUInteger*)entryFinishPosition;
+
+- (ECRacePayouts*)getPayoutsUsingArray:(NSArray*)resultFileLineByLine
 							 atLineNumber:(NSUInteger)lineNumber;
 
 // overflow, underflow and division by zero are ignored here
