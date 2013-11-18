@@ -24,7 +24,7 @@
 							  inRaceClass:(NSString*)trainingRaceClass
 						   atRaceDiatance:(NSUInteger)trainingRaceDistance
 						  withWinningPost:(NSUInteger)trainingRaceWinningPost
-					   withEntriesAtPosts:(NSArray*)entrieNamesArray
+				 andEntryNamesByPostArray:(NSArray*)entrieNamesArray
 						resultingInPayout:(ECRacePayouts*)trainingRacePayout
 {
 	self = [super init];

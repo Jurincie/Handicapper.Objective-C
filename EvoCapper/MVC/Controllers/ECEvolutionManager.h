@@ -10,16 +10,20 @@
 #import <Foundation/Foundation.h>
 #import "ECPopulation.h"
 #import "Constants.h"
+#import "ECEntry.h"
 #import "ECTreeNode.h"
 #import "ECHandicapper.h"
 #import "ECRaceRecord.h"
 #import "ECTrainigRaceRecord.h"
+#import "ECPastLineRecord.h"
+#import "ECEntryStrengthFields.h"
 
 @class PastLineRecord;
 
 @interface ECEvolutionManager : NSObject
 
-@property (assign)				NSUInteger		currentPopSize;
+@property (assign)				NSUInteger		trainingPopSize;
+@property (assign)				NSUInteger		populationSize;
 @property (assign)              NSUInteger		generationsEvolved;
 @property (assign)              NSUInteger		generationsThisCycle;
 @property (nonatomic, strong)   NSString		*trainingSetPath;
@@ -71,7 +75,7 @@
 
 - (void)testPopulation:(ECPopulation*)testPopulation
 	  includingParents:(BOOL)testChildrenOnly
- withResultFilesAtPath:(NSString*)path;
+	belowResultsFolder:(NSString*)path;
 
 - (void)fillWorkingPopulationArrayWithOriginalMembers;
 - (void)replaceOldDnaStringsForChildWithIndex:(NSUInteger)popIndex;
@@ -80,29 +84,31 @@
 - (void)mutateChildrenForPopulation:(ECPopulation*)pop;
 - (void)mutateHandicappersDnaTrees:(ECHandicapper*)futureMutant;
 
+- (NSUInteger)getPastLineVariableForDnaStrand:(NSUInteger)dnaStrand;
 - (double)getLeafVariableValueForIndex:(NSUInteger)leafVariableIndex
 					fromPastLineRecord:(PastLineRecord*)pastLineRecord;
 
 - (NSArray*)getWinPredictionsFromPopulation:(ECPopulation*)population
-									forRace:(ECRaceRecord*)raceRecord
-							startingAtIndex:(NSUInteger) startIndex;
+									forRace:(ECTrainigRaceRecord*)raceRecord
+							startingAtIndex:(NSUInteger) startIndex
+							  forParentsToo:(BOOL)parentsToo;
 
 - (BOOL)isThisALongLineOfUnderscores:(NSString*)inString;
 - (BOOL)isThisADateString:(NSString*)word;
 - (BOOL)isThisAValidWeightString:(NSString*)word;
 - (BOOL)isThisAValidTimeString:(NSString*)word;
+- (BOOL)isThisWinPayoutString:(NSString*)word;
 
-- (ECTrainigRaceRecord*)getRaceRecordFromLines:(NSArray*)resultFileLines;
+- (NSArray*)getPastLinesForEntryFromPastLinesText:(NSString*)pastLinesText;
+- (ECPastLineRecord*)getPastLineRecordFromSubArray:(NSArray*)subArray;
 
-- (NSUInteger)getPastLineVariableForDnaStrand:(NSUInteger)dnaStrand;
 - (NSUInteger)getIndexOfComma:(NSString*)inString;
 - (NSUInteger)getIndexOfClosedParen:(NSString*)inString;
-- (NSArray*)getRaceRecordsForResultsFileAtPath:(NSString*)resultsFileAtPath;
-- (NSUInteger)getWinningPostFromRaceRecord:(ECRaceRecord*)thisRaceRecord;
-- (NSInteger)getFinishPositionFromResultLine:(NSArray*)tokens;
+- (NSArray*)getTrainingRaceRecordsForResultsFileAtPath:(NSString*)resultsFileAtPath;
+- (ECTrainigRaceRecord*)getTrainingRaceRecordFromLines:(NSArray*)resultFileLines;
 
 - (NSString*)removeExtraSpacesFromString:(NSString*)originalString;
-- (NSUInteger)getIndexOfFirstTokenDescribingDateInArray:(NSArray*)lineZeroTokens;
+- (NSUInteger)getIndexOfFirstDateToken:(NSArray*)lineZeroTokens;
 - (NSUInteger)getRaceDistanceFromString:(NSString*)raceNumberString;
 - (NSString*)getMmSubstringFromSpelledMonth:(NSString*)spelledMonthString;
 
@@ -113,6 +119,13 @@
 
 - (ECRacePayouts*)getPayoutsUsingArray:(NSArray*)resultFileLineByLine
 							 atLineNumber:(NSUInteger)lineNumber;
+
+- (NSArray*)simulateRace:(ECTrainigRaceRecord*)trainingRecord
+		   forPopulation:(ECPopulation*)population
+	  withStrengthFields:(NSArray*)strengthFields;
+
+- (NSUInteger)simulateRace:(ECTrainigRaceRecord*)trainingRaceRecord
+		withEntryStrengths:(NSArray*)entryStrengths;
 
 // overflow, underflow and division by zero are ignored here
 // to be trapped in evalTree method

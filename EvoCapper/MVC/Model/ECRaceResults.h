@@ -16,8 +16,6 @@
 @property (nonatomic, strong)	NSArray		*postsFinishPositionArray;
 @property (nonatomic, strong)	NSArray		*postsFinishTimeArray;
 
-- (ECRaceResults*)initWithFinishPositionsArray:(NSArray*)finishPositionsByPost
-							andFinishTimeArray:(NSArray*)finishTimesByPost;
-
+- (ECRaceResults*)initWithFinishPositionsArray:(NSArray*)finishPositionsByPost;
 
 @end

@@ -12,16 +12,16 @@
 
 @interface ECEntry : NSManagedObject
 
-@property (nonatomic, retain) NSDate * dateOfBirth;
-@property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSString * pastLines;
-@property (nonatomic, retain) NSNumber * breakPositionStrength;
-@property (nonatomic, retain) NSNumber * breakSpeedStrength;
-@property (nonatomic, retain) NSNumber * earlySpeedStrength;
-@property (nonatomic, retain) NSNumber * topSpeedStrength;
-@property (nonatomic, retain) NSNumber * lateSpeedStrength;
-@property (nonatomic, retain) NSNumber * collisionPropensity;
-@property (nonatomic, retain) NSNumber * insideOutsideTendency;
-@property (nonatomic, retain) NSNumber * recentClassStrength;
+@property (nonatomic, retain) NSDate	*dateOfBirth;
+@property (nonatomic, retain) NSString	*name;
+@property (nonatomic, retain) NSString	*pastLines;
+@property (nonatomic, retain) NSNumber	*breakPositionStrength;
+@property (nonatomic, retain) NSNumber	*breakSpeedStrength;
+@property (nonatomic, retain) NSNumber	*earlySpeedStrength;
+@property (nonatomic, retain) NSNumber	*topSpeedStrength;
+@property (nonatomic, retain) NSNumber	*lateSpeedStrength;
+@property (nonatomic, retain) NSNumber	*collisionPropensity;
+@property (nonatomic, retain) NSNumber	*insideOutsideTendency;
+@property (nonatomic, retain) NSNumber	*recentClassStrength;
 
 @end

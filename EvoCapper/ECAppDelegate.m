@@ -257,10 +257,10 @@
 
     // resent a modal window to get user input for new population values
 
-	self.evolutionManager.currentPopSize = 16;
+	self.evolutionManager.populationSize = 16;
 
     [self.evolutionManager createNewPopoulationWithName:@"Test Name"
-                                            initialSize:self.evolutionManager.currentPopSize
+                                            initialSize:self.evolutionManager.populationSize
                                            maxTreeDepth:8
                                            minTreeDepth:5
                                            mutationRate:.01

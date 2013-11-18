@@ -19,7 +19,7 @@
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @property (strong, nonatomic) ECEvolutionManager    *evolutionManager;
-@property (strong, nonatomic) ECPopulation            *currentPopulation;
+@property (strong, nonatomic) ECPopulation			*currentPopulation;
 
 - (IBAction)saveAction:(id)sender;
 

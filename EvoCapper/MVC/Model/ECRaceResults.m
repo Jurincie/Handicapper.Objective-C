@@ -16,27 +16,21 @@
 @synthesize postsFinishTimeArray		= _postsFinishTimeArray;
 
 - (ECRaceResults*)initWithFinishPositionsArray:(NSArray*)finishPositionsByPost
-							andFinishTimeArray:(NSArray*)finishTimesByPost
 {
 	self = [super init];
 	
 	if(self)
 	{
+		self.winningPost				= 0;
 		self.postsFinishPositionArray	= finishPositionsByPost;
-		self.postsFinishTimeArray		= finishTimesByPost;
 		
-		for(NSUInteger index = 0; index < finishTimesByPost.count; index++)
+		for(NSUInteger index = 0; index < finishPositionsByPost.count; index++)
 		{
-			if([[finishPositionsByPost objectAtIndex:index] integerValue] == 1)
+			if([[finishPositionsByPost objectAtIndex:index] unsignedIntegerValue] == 1)
 			{
-				self.winningPost = index+1;
+				self.winningPost = index+ 1;
 				break;
 			}
-		}
-	
-		if(finishPositionsByPost)
-		{
-			self.winningTime = [[self.postsFinishTimeArray objectAtIndex:self.winningPost - 1] doubleValue];
 		}
 	}
 	

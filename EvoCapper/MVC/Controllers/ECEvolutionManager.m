@@ -16,7 +16,8 @@
 
 @implementation ECEvolutionManager
 
-@synthesize currentPopSize			= _currentPopSize;
+@synthesize trainingPopSize			= _trainingPopSize;
+@synthesize populationSize			= _populationSize;
 @synthesize population				= _population;
 @synthesize generationsEvolved		= _generationsEvolved;
 @synthesize generationsThisCycle	= _generationsThisCycle;
@@ -64,10 +65,10 @@
 {
     NSLog(@"createNewPopulation called in ECEvolutionManager");
 	
-	self.generationsEvolved = [self.population.generationNumber integerValue];
+	self.generationsEvolved = [self.population.generationNumber unsignedIntegerValue];
     self.population			= [NSEntityDescription insertNewObjectForEntityForName:@"HandicapperPopulation"
 															inManagedObjectContext:MOC];
-	self.currentPopSize		= [self.population.initialSize integerValue];
+	self.populationSize		= initialSize;
 	
     if(self.population)
     {
@@ -92,7 +93,7 @@
 	self.workingPopulationDna	= [NSMutableArray new];
 	NSMutableArray *dnaTrees	= [NSMutableArray new];
 
-	for(int popIndex = 0; popIndex < [self.population.initialSize integerValue]; popIndex++)
+	for(int popIndex = 0; popIndex < [self.population.initialSize unsignedIntegerValue]; popIndex++)
 	{
 		ECHandicapper *tempHandicapper	= self.rankedPopulation[popIndex];
 		NSArray *thisMembersDnaTrees	= [NSArray arrayWithObjects:[self recoverTreeFromString:tempHandicapper.breakPositionTree],
@@ -112,6 +113,8 @@
 
 - (void)trainPopulationForGenerations:(NSUInteger)numberGenerations
 {
+    NSLog(@"trainPopulation called in ECEvolutionManager");
+
 	if(nil == self.population)
 	{
 		// use NSAlert to deal with this
@@ -131,35 +134,45 @@
 		return;
 	}
 
-    NSLog(@"trainPopulation called in ECEvolutionManager");
-	
+		
 	self.generationsThisCycle	= numberGenerations;
 	NSString *resultFolderPath	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane";
-  
-	  for(NSUInteger localGenNumber = 0; localGenNumber < self.generationsThisCycle; localGenNumber++)
+	
+			
+	for(NSUInteger localGenNumber = 0; localGenNumber < self.generationsThisCycle; localGenNumber++)
     {
+		self.trainingPopSize	= self.populationSize / 2;
+		BOOL testAllMembers		= NO;
+
+		if(localGenNumber == 0)
+		{
+			self.trainingPopSize	*= 22;
+			BOOL testAllMembers		= YES;
+		}
+		
+	
         [self testPopulation:self.population
-			includingParents:localGenNumber == 0 ? YES:NO
-	   withResultFilesAtPath:resultFolderPath];
+			includingParents:testAllMembers
+		  belowResultsFolder:resultFolderPath];
     
         [self createNextGenerationForPopulation:self.population];
     }
     
     [self updateAndSaveData];
+	
+	NSLog(@"trainPopulation finished");
 }
 
 
    
 - (void)testPopulation:(ECPopulation*)population
 	  includingParents:(BOOL)parentsToo
- withResultFilesAtPath:(NSString *)resultFolderPath
+	belowResultsFolder:(NSString *)resultFolderPath
 {
 	// self.workingPopulation array MUST be sorted at this point with:
 	//	chldren occupying BOTTOM HALF of array with their indices
-
-	NSUInteger startIndex = (parentsToo == TRUE) ? 0:self.currentPopSize / 2;
 	
-    // iterate all subdirectories inside kResultsFolderPath
+	NSUInteger startIndex					= self.populationSize - self.trainingPopSize;
 	NSFileManager *localFileManager			= [[NSFileManager alloc] init];
 	NSDirectoryEnumerator *dirEnumerator	= [localFileManager enumeratorAtPath:resultFolderPath];
 	NSString *fileName						= nil;
@@ -174,7 +187,7 @@
 		{
 			[self testPopulation:population
 				includingParents:parentsToo
-		   withResultFilesAtPath:fullFilePath];
+		   belowResultsFolder:fullFilePath];
 		}
 		else
 		{
@@ -183,28 +196,25 @@
 				continue;
 			}
 			
-			NSArray *raceRecordsForThisEvent = [self getRaceRecordsForResultsFileAtPath:fullFilePath];
+			NSArray *raceRecordsForThisEvent = [self getTrainingRaceRecordsForResultsFileAtPath:fullFilePath];
 		
-			for(ECRaceRecord *tempRaceRecord in raceRecordsForThisEvent)
+			for(ECTrainigRaceRecord *trainingRaceRecord in raceRecordsForThisEvent)
 			{
-				NSUInteger winningPost = [self getWinningPostFromRaceRecord:tempRaceRecord];
-				
 				NSArray *winBetsArray = [self getWinPredictionsFromPopulation:population
-																	  forRace:tempRaceRecord
-															  startingAtIndex:startIndex];
-			
+																	  forRace:trainingRaceRecord];
 				// iterate handicappers array
-				int incrementedTotal;
-				for(NSUInteger index = startIndex; index < self.currentPopSize; index++)
+				NSUInteger incrementedTotal;
+				
+				for(NSUInteger index = startIndex; index < self.populationSize; index++)
 				{
-					ECHandicapper *handicapper	= [self.workingPopulationDna objectAtIndex:index];
-					incrementedTotal			= (int)[handicapper.numberWinBets integerValue] + 1;
+					ECHandicapper *handicapper	= [self.rankedPopulation objectAtIndex:index];
+					incrementedTotal			= [handicapper.numberWinBets unsignedIntegerValue] + 1;
 					handicapper.numberWinBets	= [NSNumber numberWithInt:incrementedTotal];
 				
 					// only increment numberWinBetWinners if handicapper predicted winner correctly
-					if(winningPost == [[winBetsArray objectAtIndex:index] integerValue])
+					if(trainingRaceRecord.winningPost == [[winBetsArray objectAtIndex:index] unsignedIntegerValue])
 					{
-						incrementedTotal				= (int)[handicapper.numberWinBetWinners integerValue] + 1;
+						incrementedTotal				= [handicapper.numberWinBetWinners unsignedIntegerValue] + 1;
 						handicapper.numberWinBetWinners	= [NSNumber numberWithInt:incrementedTotal];
 					}
 				}
@@ -587,14 +597,7 @@
 
 
 
-- (NSUInteger)getWinningPostFromRaceRecord:(ECRaceRecord*)thisRaceRecord
-{
-	NSUInteger winningPost = 0;
-	
-	return winningPost;
-}
-
-- (NSArray*)getRaceRecordsForResultsFileAtPath:(NSString*)resultsFileAtPath
+- (NSArray*)getTrainingRaceRecordsForResultsFileAtPath:(NSString*)resultsFileAtPath
 {
 	// this method returns an array of ECRaceRecord objects (1 per race)
 	// we are reading lines from result file now it looks like this (without the line numbers):
@@ -625,13 +628,13 @@
 	//		25
 
 	BOOL isThisANewRecord	= NO;
-	NSMutableArray *records	= nil;
+	NSMutableArray *records	= [NSMutableArray new];
 	NSError *error			= nil;
 	NSString *fileContents	= [NSString stringWithContentsOfFile:resultsFileAtPath
 													    encoding:NSStringEncodingConversionAllowLossy
 														   error:&error];
 
-	NSArray *fileContentsLineByLine =  [fileContents componentsSeparatedByString:@"\n"];
+	NSArray *fileContentsLineByLine = [fileContents componentsSeparatedByString:@"\n"];
 	
 	// skip html meta lines
 	NSUInteger startIndex = 8;
@@ -677,7 +680,7 @@
 			}
 			
 			// load raceRecord fields form these lines
-			ECTrainigRaceRecord	*trainingRaceRecord = [self getRaceRecordFromLines:thisRaceLineByLine];
+			ECTrainigRaceRecord	*trainingRaceRecord = [self getTrainingRaceRecordFromLines:thisRaceLineByLine];
 			
 			// add new raceRecord to records array
 			[records addObject:trainingRaceRecord];
@@ -687,12 +690,11 @@
 		}
 	}
 	
-	
 	// ok to return the mutableArray since an immutable copy is made for the return
 	return records;
 }
 
-- (ECTrainigRaceRecord*)getRaceRecordFromLines:(NSArray*)resultFileLineByLine
+- (ECTrainigRaceRecord*)getTrainingRaceRecordFromLines:(NSArray*)resultFileLineByLine
 {
 	//Line #	^
 	//	0:		DERBY LANE                   Wednesday Nov 05 2008 Afternoon   Race 2    Grade  D   (550)  Time: 30.97
@@ -723,7 +725,7 @@
 		
 	NSString *modifiedLine		= [self removeExtraSpacesFromString:[resultFileLineByLine objectAtIndex:0]];
 	NSArray *lineZeroTokens		= [modifiedLine componentsSeparatedByString:@" "];
-	NSUInteger firstDateToken	= [self getIndexOfFirstTokenDescribingDateInArray:lineZeroTokens];
+	NSUInteger firstDateToken	= [self getIndexOfFirstDateToken:lineZeroTokens];
 	
 	if(firstDateToken == 0)
 	{
@@ -798,19 +800,18 @@
 					andFinishPosition:&finishPosition];
 				
 		NSNumber *finishPositionNumber = [NSNumber numberWithInteger:finishPosition];
-		
+				
+		[finishByPostArray replaceObjectAtIndex:postNumber-1
+									 withObject:finishPositionNumber];
+				
 		[namesByPostArray replaceObjectAtIndex:postNumber-1
 									withObject:entryName];
-		
-		[finishByPostArray replaceObjectAtIndex:postNumber-1
-									withObject:finishPositionNumber];
 	}
 	
-	ECRaceResults *results	= [[ECRaceResults alloc] initWithFinishPositionsArray:finishByPostArray
-																andFinishTimeArray:nil];
+	ECRaceResults *results	= [[ECRaceResults alloc] initWithFinishPositionsArray:finishByPostArray];
 	results.winningTime		= winningTime;
 	ECRacePayouts *payouts	= [self getPayoutsUsingArray:resultFileLineByLine
-										   atLineNumber:lineNumber++];
+										   atLineNumber:++lineNumber];
 				
 	ECTrainigRaceRecord *record = [[ECTrainigRaceRecord alloc] initRecordAtTrack:trackName
 																	  onRaceDate:raceDate
@@ -818,7 +819,7 @@
 																	 inRaceClass:raceClass
 																  atRaceDiatance:raceDx
 																 withWinningPost:results.winningPost
-															  withEntriesAtPosts:namesByPostArray
+														andEntryNamesByPostArray:namesByPostArray
 															   resultingInPayout:payouts];
 				
 	return record;
@@ -829,9 +830,13 @@
 			  postPosition:(NSUInteger*)entryPostPosition
 			  andFinishPosition:(NSUInteger*)entryFinishPosition
 {
-	// line examples:
-	//					Backwood Ethel   62½ 1 1 1 3  1 3  1 5     31.05 *0.80 Increasing Lead-inside
-	//					Hallo See Me     63½ 2 2 2    2    2 5     31.42 8.30  Evenly To Place-midtrk
+	/* result line EXAMPLE:
+	
+	Backwood Ethel   62½ 1 1 1 3  1 3  1 5     31.05 *0.80 Increasing Lead-inside
+	Hallo See Me     63½ 2 2 2    2    2 5     31.42 8.30  Evenly To Place-midtrk
+	...
+	
+	*/
 	
 	NSMutableString *entryName	= [NSMutableString new];
 	NSUInteger finishPosition	= 0;
@@ -856,7 +861,8 @@
 	}
 	
 	// post position is always 2 words after name ends
-	NSUInteger post		= [[tokens objectAtIndex:++index] integerValue];
+	index++;
+	NSUInteger post		= [[tokens objectAtIndex:index] integerValue];
 	*entryPostPosition	= post;
 	
 	// finish position is usually 4 words later
@@ -889,25 +895,45 @@
 {
 	// FIX: initially only concerned with win Payout
 	//		eventually get all payouts properly
-	ECRacePayouts *newRacePayoutsObject = [[ECRacePayouts alloc] init];
+	ECRacePayouts *racePayout = [[ECRacePayouts alloc] init];
 	
 	NSString *payoutLine	= [resultFileLineByLine objectAtIndex:lineNumber];
 	NSString *modifiedLine	= [self removeExtraSpacesFromString:payoutLine];
-	NSArray *tokens			= [modifiedLine componentsSeparatedByString:@""];
+	NSArray *tokens			= [modifiedLine componentsSeparatedByString:@" "];
 	
-	for(NSUInteger index = 0; index < tokens.count; index++)
+	// since word[0] is postValue start search at word[1]
+	for(NSUInteger index = 1; index < tokens.count; index++)
 	{
-		double winningPayout = [[tokens objectAtIndex:index] doubleValue];
+		NSString *word = [tokens objectAtIndex:index];
 		
-		if(winningPayout != 0.0)
+		if([word doubleValue] > 0.0)
 		{
-			break;
+			if([self isThisWinPayoutString:word] == YES)
+			{
+				double winPayout		= [word doubleValue];
+				racePayout.winPayout	= winPayout;
+				break;
+			}
 		}
 	}
 	
-	return newRacePayoutsObject;
+	return racePayout;
 }
 
+- (BOOL)isThisWinPayoutString:(NSString*)word
+{
+	BOOL isValid = NO;
+	
+	// win payout is first word with decimal place two characters from end of string
+	char testChar = [word characterAtIndex:word.length - 3];
+	
+	if(testChar == '.')
+	{
+		isValid = TRUE;
+	}
+	
+	return isValid;
+}
 
 - (BOOL)isThisAValidTimeString:(NSString*)word
 {
@@ -1083,19 +1109,20 @@
     return strippedString;
 }
 
-- (NSUInteger) getIndexOfFirstTokenDescribingDateInArray:(NSArray*)lineZeroTokens
+- (NSUInteger)getIndexOfFirstDateToken:(NSArray*)lineZeroTokens
 {
 	NSUInteger index = 0;
 	
 	for(index = 0; index < lineZeroTokens.count; index++)
 	{
-		if([[lineZeroTokens objectAtIndex:index] isEqualToString:@"Monday"] ||
-			[[lineZeroTokens objectAtIndex:index] isEqualToString:@"Tuesday"] ||
-			[[lineZeroTokens objectAtIndex:index] isEqualToString:@"Wednesday"] ||
-			[[lineZeroTokens objectAtIndex:index] isEqualToString:@"Thursday"] ||
-			[[lineZeroTokens objectAtIndex:index] isEqualToString:@"Friday"] ||
-			[[lineZeroTokens objectAtIndex:index] isEqualToString:@"Saturday"] ||
-			[[lineZeroTokens objectAtIndex:index] isEqualToString:@"Sunday"])
+		NSString *word = [lineZeroTokens objectAtIndex:index];
+		if([word isEqualToString:@"Monday"]		||
+			[word isEqualToString:@"Tuesday"]	||
+			[word isEqualToString:@"Wednesday"] ||
+			[word isEqualToString:@"Thursday"]	||
+			[word isEqualToString:@"Friday"]	||
+			[word isEqualToString:@"Saturday"]	||
+			[word isEqualToString:@"Sunday"])
 		{
 			break;
 		}
@@ -1122,30 +1149,163 @@
 }
 
 - (NSArray*)getWinPredictionsFromPopulation:(ECPopulation*)population
-									forRace:(ECRaceRecord*)thisRaceRecord
-							startingAtIndex:(NSUInteger) startIndex
+									forRace:(ECTrainigRaceRecord*)trainingRaceRecord
 {
-	NSMutableArray *winBetsArray = [NSMutableArray new];
+	NSArray *winPredictionsArray = nil;
 	
-	for(NSUInteger index = startIndex; index < self.currentPopSize; index++)
+	// create a 2D array to track each handicappers 8 entrys (automatically initialized to zero)
+	NSMutableArray *strengthFieldsArray = [NSMutableArray new];
+	NSUInteger startIndex				= self.populationSize - self.trainingPopSize;
+	
+	// iterate through each entry accumulating values for population
+	for(NSString *entryName in trainingRaceRecord.postEntries)
 	{
-		//Handicapper *tempHandicapper = [self.workingPopulationMembersDna objectAtIndex:index];
+		ECEntry *entry	= [NSEntityDescription insertNewObjectForEntityForName:@"ECEntry"
+														inManagedObjectContext:MOC];
+		entry.name		= entryName;
+		
+		// get past Lines from subdirectory of :/Users/ronjurincie/Desktop/Greyhound Central/Modified Dog Histories/
+		
+		// obtain subdirectory name from first char in entryName
+		NSString *parentDirectoryName	= @"/Users/ronjurincie/Desktop/Greyhound Central/Modified Dog Histories";
+		NSString *sudDirectoryName		= [entryName substringToIndex:1];
+		NSString *pastLinesFilePath		= [NSString stringWithFormat:@"%@/%@/%@", parentDirectoryName, sudDirectoryName, entryName];
+		NSError *error;
 	
-		// FIX: get actual prediction
-		int  predictedPostOfWinner = rand();
+		NSString *pastLinesFileContents	= [NSString stringWithContentsOfFile:pastLinesFilePath
+																	encoding:NSStringEncodingConversionAllowLossy
+																   error:&error];
+		NSArray *pastRaceLinesForEntry	= [self getPastLinesForEntryFromPastLinesText:pastLinesFileContents];
+		
+		for(PastLineRecord *pastLine in pastRaceLinesForEntry)
+		{
+			/***********************************
+			
+				Multiprocess Here
+				devoting 1 core per Handicapper
+				
+			************************************/
+			
+			for(NSUInteger index = startIndex; index < self.populationSize; index++)
+			{
+			
+			}
+
+		}
+		
+	}
+
+	winPredictionsArray = [self simulateRace:trainingRaceRecord
+							   forPopulation:population
+						  withStrengthFields:strengthFieldsArray];
+		
+	// NOTE: wait here until all members have made their predictions
+
+	return winPredictionsArray;
+}
+
+- (NSArray*)getPastLinesForEntryFromPastLinesText:(NSString*)pastLinesFileConents
+{
+	// create a mutable array to fill with ECPastLineRecord objects
+	NSMutableArray *pastLineArray = [NSMutableArray new];
+
+	// create an array by splitting pastLinesText string on '\n' chars
+	NSArray *pastLinesFileLineByLine = [pastLinesFileConents componentsSeparatedByString:@"\n"];
 	
-		[winBetsArray addObject:[NSNumber numberWithInt:predictedPostOfWinner]];
-    }
+	// Note: ther are 24 or 25 lines per record
+	//			Depending on whether there is a "Replay" suffix to testLineNumber string
 	
-	return winBetsArray;
+	NSUInteger lineNumber		= 0;
+	NSUInteger testLineNumber	= 22;
+	NSRange subRange;
+	NSUInteger avoidEOFBuffer	= 5;
+	
+	while (lineNumber < pastLinesFileLineByLine.count - avoidEOFBuffer)
+	{
+		// create a new pastLineSubArray
+		NSString *testString = [pastLinesFileLineByLine objectAtIndex:testLineNumber];
+	
+		if([testString hasSuffix:@"Replay"])
+		{
+			subRange	= NSMakeRange(lineNumber, 24);
+			lineNumber	+= 25;
+		}
+		else
+		{
+			subRange	= NSMakeRange(lineNumber, 23);
+			lineNumber	+= 24;
+		}
+		
+		// reset testLineNumber
+		testLineNumber						= lineNumber + 22;
+		NSArray *subArray					= [pastLinesFileLineByLine subarrayWithRange:subRange];
+		ECPastLineRecord *pastLineRecord	= [self getPastLineRecordFromSubArray:subArray];
+	
+		[pastLineArray addObject:pastLineRecord];
+	}
+	
+		
+	return pastLineArray;
+}
+
+- (ECPastLineRecord*)getPastLineRecordFromSubArray:(NSArray*)subArray
+ {
+	ECPastLineRecord *pastLineRecord = [ECPastLineRecord new];
+	
+	for (NSUInteger index = 0; index < subArray.count; index++)
+	{
+		NSString *tempString = [subArray objectAtIndex:index];
+		NSLog(@"%@", tempString);
+	}
+	
+	NSLog(@"");
+	
+	return pastLineRecord;
+ }
+
+
+
+- (NSArray*)simulateRace:(ECTrainigRaceRecord*)trainingRaceRecord
+		   forPopulation:(ECPopulation*)population
+	  withStrengthFields:(NSArray*)strengthFieldsArray
+{
+	NSMutableArray *winPostPredictionsArray = [NSMutableArray new];
+	
+	/***********************************
+	 
+	 Multiprocess Here
+	 devoting 1 core per Handicapper
+	 
+	 ************************************/
+	 
+	 // iterate through population
+	 for(NSUInteger index = 0; index < [population.populationSize unsignedIntegerValue]; index++)
+	 {
+		NSArray *thisHandicappersStrengthFields = nil; // FIX:
+		
+		NSInteger predictedWinningPost = [self simulateRace:trainingRaceRecord
+										 withEntryStrengths:thisHandicappersStrengthFields];
+	 
+		[winPostPredictionsArray addObject:[NSNumber numberWithUnsignedInteger:predictedWinningPost]];
+	 }
+
+	return winPostPredictionsArray;
+}
+
+- (NSUInteger)simulateRace:(ECTrainigRaceRecord*)trainingRaceRecord
+		withEntryStrengths:(NSArray*)entryStrengths
+{
+		NSUInteger postOfPredictedWinner = 0;
+		
+		return postOfPredictedWinner;
 }
 
                        
 - (void)createNextGenerationForPopulation:(ECPopulation*)testPopulation
 {
    	// increment generation counter
-	NSUInteger plusOneInt				= [self.population.generationNumber integerValue] + 1;
-	NSNumber *incrementedGenNumber		= [NSNumber numberWithInt:(int)plusOneInt];
+	NSUInteger plusOneInt				= [self.population.generationNumber unsignedIntegerValue] + 1;
+	NSNumber *incrementedGenNumber		= [NSNumber numberWithUnsignedInteger:plusOneInt];
 	self.population.generationNumber	= incrementedGenNumber;
 	
 	// rerank population
@@ -1174,10 +1334,10 @@
 
 - (void)replaceBottomHalfOfPopulationWithNewChildren
 {
-	NSInteger halfwayIndex = self.currentPopSize / 2;
+	NSInteger halfwayIndex = self.populationSize / 2;
 
     // iterate bottom half of rankedPopulation removing all handicappers
-	for(NSInteger index = self.currentPopSize - 1; index >= halfwayIndex; index--)
+	for(NSInteger index = self.populationSize - 1; index >= halfwayIndex; index--)
 	{
 		ECHandicapper *dyingHandicapper = [self.rankedPopulation objectAtIndex:index];
 		
@@ -1189,10 +1349,10 @@
 	}
 	
 	// create new bottom half of rankedPop by crossing over dnaTrees form remaining half of pop
-	for(NSInteger index = halfwayIndex ; index < self.currentPopSize; index++)
+	for(NSInteger index = halfwayIndex ; index < self.populationSize; index++)
 	{
 		ECHandicapper *newHandicapper = [self createNewHandicapperForPopulation:self.population
-																forGeneration:(int)self.population.generationNumber];
+																  forGeneration:[self.population.generationNumber unsignedIntegerValue]];
 				
 		[self.rankedPopulation addObject:newHandicapper];
 	}
@@ -1212,11 +1372,11 @@
 			
 		case kLinearFitnessSelection:
 		{
-			for(NSUInteger popIndex = 0; popIndex <  self.currentPopSize / 2; popIndex++)
+			for(NSUInteger popIndex = 0; popIndex <  self.populationSize / 2; popIndex++)
 			{
 				ECHandicapper *tempHandicapper	= [self.rankedPopulation objectAtIndex:popIndex];
-				double tempFitness				= (double)[tempHandicapper.numberWinBetWinners integerValue] /
-													(double)[tempHandicapper.numberWinBets integerValue];
+				double tempFitness				= (double)[tempHandicapper.numberWinBetWinners unsignedIntegerValue] /
+													(double)[tempHandicapper.numberWinBets unsignedIntegerValue];
 				summedFitnessForPopulation		+= tempFitness;
 			}
 			
@@ -1290,10 +1450,10 @@
 		
 		case kLinearFitnessSelection:
 				
-			for(NSUInteger popIndex = 0; popIndex < self.currentPopSize / 2; popIndex++)
+			for(NSUInteger popIndex = 0; popIndex < self.populationSize / 2; popIndex++)
 			{
 				ECHandicapper *handicapper	= [self.rankedPopulation objectAtIndex:popIndex];
-				double winningPercentage	= [handicapper.numberWinBetWinners integerValue] /
+				double winningPercentage	= [handicapper.numberWinBetWinners unsignedIntegerValue] /
 												[handicapper.numberWinBets doubleValue];
 				fitnessAccumulator			+= winningPercentage;
 			
@@ -1317,7 +1477,7 @@
 {
     NSLog(@"mutateChildrenForPopulation: called");
 	
-	for(NSUInteger popIndex = self.currentPopSize / 2; popIndex < self.currentPopSize; popIndex++)
+	for(NSUInteger popIndex = self.populationSize / 2; popIndex < self.populationSize; popIndex++)
 	{
 		// mutate selected members
 		double threshold = (double) (rand() % 100) / 100.0;
@@ -1339,8 +1499,8 @@
 - (NSArray*)createNewDnaByCrossingOverDnaFrom:(ECHandicapper*)parent1
 								  withDnaFrom:(ECHandicapper*)parent2
 {
-    NSUInteger parent1Index     = [parent1.rank integerValue];
-    NSUInteger parent2Index     = [parent2.rank integerValue];
+    NSUInteger parent1Index     = [parent1.rank unsignedIntegerValue];
+    NSUInteger parent2Index     = [parent2.rank unsignedIntegerValue];
 	NSUInteger parent1Level		= 0;
     NSUInteger traverseMoves	= 0;
 	
@@ -1357,7 +1517,7 @@
 	for(NSUInteger strandNumber = 0; strandNumber < kNumberDnaStrands; strandNumber++)
 	{
         // identify motherCrossoverNode
-        traverseMoves = rand() % ([self.population.maxTreeDepth integerValue] * 2);
+        traverseMoves = rand() % ([self.population.maxTreeDepth unsignedIntegerValue] * 2);
        
          if(traverseMoves < 2)
         {
@@ -1678,7 +1838,7 @@
     NSArray *immutableArray			= nil;
 	
     // create initial population
-    for(int popIndex = 0; popIndex < self.currentPopSize; popIndex++)
+    for(int popIndex = 0; popIndex < self.populationSize; popIndex++)
     {
         ECHandicapper *newbie = [NSEntityDescription insertNewObjectForEntityForName:@"IndividualHandicapper"
                                                             inManagedObjectContext: MOC];
@@ -1703,7 +1863,7 @@
             }
             
             // don't worry about trees, will rebuild trees later from the strings below
-            NSString *dnaString = [self saveTreeToString:[self createTreeForStrand:popIndex
+            NSString *dnaString = [self saveTreeToString:[self createTreeForStrand:strandNumber
                                                                            atLevel:rootLevel]];
             switch (strandNumber)
             {
@@ -1775,7 +1935,7 @@
             
             // FIX: for now do NOT use quadratic nodes
             // make 9% of function nodes quadratic Iff they are low enough in tree
-            // if(rand() % 11 == 10 && level < [[self.population maxTreeDepth] integerValue] - 2)
+            // if(rand() % 11 == 10 && level < [[self.population maxTreeDepth] unsignedIntegerValue] - 2)
             if(0)
             {
                 newNode = [self getQuadraticNodeAtLevel:level
