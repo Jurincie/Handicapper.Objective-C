@@ -22,7 +22,6 @@
 
 @synthesize foundTrouble	= _foundTrouble;
 @synthesize scratched		= _scratched;
-@synthesize outOfPicture	= _outOfPicture;
 @synthesize didNotFinish	= _didNotFinish;
 @synthesize matinee			= _matinee;
 
@@ -40,10 +39,11 @@
 
 @synthesize comments	= _comments;
 
-@synthesize delta1	= _delta1;  // break position - 1st turn position
-@synthesize delta2	= _delta2;	// 1st turn position - top of stretch position
-@synthesize delta3	= _delta3;	// top of stretch position - finish position
-
+@synthesize deltaPosition1	= _deltaPosition1;  // break position - 1st turn position
+@synthesize deltaPosition2	= _deltaPosition2;	// 1st turn position - top of stretch position
+@synthesize deltaPosition3	= _deltaPosition3;	// top of stretch position - finish position
+@synthesize deltaLengths1	= _deltaLengths1;	// lengthsInLeadFirstTurn - lengthsInLeadTopOfStretch
+@synthesize deltaLengths2	= _deltaLengths2;	// lengthsInLeadTopOfStretch - lengthsInLeadFinish
 
 /* ECPastLineRecord line by line definition:
 
@@ -67,7 +67,7 @@
 17:	race class
 18:	win entry
 19:	place entry
-20:	how entry
+20:	show entry
 21:	number entries
 
 */

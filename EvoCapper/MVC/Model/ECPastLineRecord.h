@@ -22,7 +22,6 @@
 
 @property (assign)				BOOL		foundTrouble;
 @property (assign)				BOOL		scratched;
-@property (assign)				BOOL		outOfPicture;
 @property (assign)				BOOL		didNotFinish;
 @property (assign)				BOOL		matinee;
 
@@ -32,9 +31,11 @@
 @property (assign)				double		topOfStretchPosition;
 @property (assign)				double		finishPosition;
 
-@property (assign)				double		delta1;
-@property (assign)				double		delta2;
-@property (assign)				double		delta3;
+@property (assign)				double		deltaPosition1;
+@property (assign)				double		deltaPosition2;
+@property (assign)				double		deltaPosition3;
+@property (assign)				double		deltaLengths1;
+@property (assign)				double		deltaLengths2;
 
 @property (assign)				double		lengthsLeadFirstTurn;
 @property (assign)				double		lengthsLeadTopOfStretch;

@@ -144,12 +144,12 @@
 		self.trainingPopSize	= self.populationSize / 2;
 		BOOL testAllMembers		= NO;
 
-		if(localGenNumber == 0)
+		if(localGenNumber == 0) // FIX: check for user requesting entire pop testing (
+								//	if database changed, or incubator changed, for example
 		{
-			self.trainingPopSize	*= 22;
-			BOOL testAllMembers		= YES;
+			self.trainingPopSize	= self.populationSize;
+			testAllMembers			= YES;
 		}
-		
 	
         [self testPopulation:self.population
 			includingParents:testAllMembers
@@ -223,374 +223,30 @@
     }
 }
 
-//- (void)processResultFilesForPopulation:(ECPopulation*)population
-//{
-//	// the initial generation we only evaluate the first days races
-//	// this is because of the initial race suicide scenerio
-//	
-//	NSRange myRange;
-//	NSDirectoryEnumerator *dirEnum;
-//	NSUInteger myLength, start, raceNumber, raceDx;
-//	NSUInteger numLines, lineNumber, formatType;
-//	NSUInteger numberEntries, post;
-//	BOOL nextRaceFound, noMoreRaces;
-//	NSString *myFile, *trackName, *resultLine, *modifiedResultLine, *raceGrade;
-//	NSString *griString = @"  GRI Report";
-//	NSString *notAvailableYetString = @"NOT AVAILABLE YET";
-//	NSString *pathToResultsFolder = @"/EHS/Data Sets/Data Set 000/Training Files/";
-//	NSString * readFileContents;
-//	NSArray *lastLineTokens, *raceLines, *tokens, *firstLineTokens;
-//	raceEntry *tempGreyhoundEntry;
-//	
-//	NSMutableString *fullFilePath	= [[NSMutableString alloc] initWithCapacity:248];
-//	NSUInteger eventNumber			= 0;
-//	
-//	localGenerationNumber++;
-//	theRaceModel = nil;
-//	
-//	dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:pathToResultsFolder];
-//	while(myFile = [dirEnum nextObject])
-//		{
-//		// trim the popoulation back to Original size
-//		if(++eventNumber == 6 && [appCon generationNumber] == 0 && ORIGINAL_POPULATION_MULTIPLIER > 1)
-//			{
-//			[appCon resetPopSizeToOriginal];
-//			}
-//		
-//		//empty fullFilePath
-//		myLength = [fullFilePath length];
-//		[fullFilePath deleteCharactersInRange:NSMakeRange(0,myLength)];
-//		
-//		// load fullFilePath
-//		[fullFilePath appendString:pathToResultsFolder];
-//		[fullFilePath appendString:myFile];
-//		NSLog(fullFilePath);
-//		
-//		readFileContents = [NSString stringWithContentsOfFile:fullFilePath];
-//		raceLines =  [readFileContents componentsSeparatedByString:@"<img src=..\\rx_img\\post"];
-//		
-//		// FIRST: check for FORMAT_C
-//		if([readFileContents hasPrefix:griString])
-//			{
-//				formatType = FORMAT_C;
-//				firstLineTokens = [[raceLines objectAtIndex:0] componentsSeparatedByString:@" "];
-//				
-//				// set track name from firstLineTokens
-//				trackName = [firstLineTokens objectAtIndex:8];
-//				
-//				if(! [trackName isEqualToString:@"Phoenix"])
-//					{
-//					NSLog(@"track name error");
-//					exit(1);
-//					}
-//				
-//				start = 1;
-//			}
-//		else
-//			{
-//			// RESET racelines: split all strings on newline character '\n'
-//			raceLines = [readFileContents componentsSeparatedByString:@"\n"];
-//			firstLineTokens = [[raceLines objectAtIndex:0] componentsSeparatedByString:@" "];
-//			
-//			// check first line for proper formatted result file
-//			if(! ([[firstLineTokens objectAtIndex:0] isEqualToString:@"Phoenix"] ||
-//				  [[firstLineTokens objectAtIndex:0] isEqualToString:@"PHOENIX"]))
-//				{
-//				continue;
-//				}
-//			
-//			// set start: formatA->1  formatB->2
-//			if([firstLineTokens count] > 1)
-//				{
-//				start = 1;
-//				formatType = FORMAT_A;
-//				firstLineTokens = [[raceLines objectAtIndex:0] componentsSeparatedByString:@" "];
-//				trackName = [NSString stringWithString: [firstLineTokens objectAtIndex:0]];
-//				}
-//			else
-//				{
-//				start = 2;
-//				formatType = FORMAT_B;
-//				firstLineTokens = [[raceLines objectAtIndex:1] componentsSeparatedByString:@" "];
-//				tokens = [[raceLines objectAtIndex:0] componentsSeparatedByString:@" "];
-//				trackName = [NSString stringWithString: [tokens objectAtIndex:0]];
-//				}
-//			}
-//		
-//		// skip not available yet result files
-//		myRange = [readFileContents rangeOfString:notAvailableYetString];
-//		if(NSEqualRanges(myRange, NSMakeRange(NSNotFound, 0)) == NO)
-//			{
-//			continue;
-//			}
-//		
-//		numLines = [raceLines count];
-//		
-//		noMoreRaces = NO;
-//		lineNumber = start;
-//		
-//		while(noMoreRaces == NO)
-//			{
-//			if(lineNumber == start && formatType == FORMAT_C)
-//				{
-//				lastLineTokens = firstLineTokens;
-//				}
-//			
-//			// grab line and tokenize
-//			resultLine = [raceLines objectAtIndex:lineNumber];
-//			modifiedResultLine = [self convertPastLine:resultLine];
-//			tokens = [modifiedResultLine componentsSeparatedByString:@" "];
-//			
-//			// get raceGrade, raceNumber, raceDx //
-//			switch(formatType)
-//				{
-//					case FORMAT_A:	raceGrade = [NSString stringWithString:[tokens objectAtIndex:3]];
-//					raceNumber = [[NSString stringWithString:[tokens objectAtIndex:1]] intValue];
-//					raceDx = [[NSString stringWithString:[tokens objectAtIndex:4]] intValue];
-//					break;
-//					
-//					case FORMAT_B:	raceGrade = [NSString stringWithString:[tokens objectAtIndex:2]];
-//					
-//					// build race number
-//					raceNumber = 0;
-//					if([[tokens objectAtIndex:0] length] == 3)
-//						{
-//						raceNumber += [[[tokens objectAtIndex:0] substringToIndex:1] intValue];
-//						}
-//					else if([[tokens objectAtIndex:0] length] == 4)
-//						{
-//						raceNumber += [[[tokens objectAtIndex:0] substringToIndex:2] intValue];
-//						}
-//					else
-//						{
-//						NSLog(@"bad race number value");
-//						exit(1);
-//						}
-//					
-//					
-//					raceDx = [[NSString stringWithString:[tokens objectAtIndex:4]] intValue];
-//					break;
-//					
-//					case FORMAT_C:	raceGrade = [NSString stringWithString:[lastLineTokens objectAtIndex:[lastLineTokens count] - 6]];
-//					raceDx = [[lastLineTokens objectAtIndex:[lastLineTokens count] - 3] intValue];
-//					
-//					if(raceDx != 550 && raceDx != 685)
-//						{
-//						// check for "over" token at this position
-//						if([[lastLineTokens objectAtIndex:[lastLineTokens count] - 6] isEqualToString:@"over"])
-//							{
-//							raceGrade = [NSString stringWithString:[lastLineTokens objectAtIndex:[lastLineTokens count] - 7]];
-//							raceDx = [[lastLineTokens objectAtIndex:[lastLineTokens count] - 4] intValue];
-//							}
-//						if(raceDx != 550 && raceDx != 685)
-//							{
-//							if(raceDx == 770 || raceDx == 330 || raceDx == 440)
-//								{
-//								skipThisRace = YES;
-//								}
-//							else
-//								{
-//								printf("bad race Dx: %d\n", raceDx);
-//								exit(1);
-//								}
-//							}
-//						
-//						
-//						raceNumber = [[lastLineTokens objectAtIndex:[lastLineTokens count] - 9] intValue];;
-//						}
-//					else
-//						{
-//						raceNumber = [[lastLineTokens objectAtIndex:[lastLineTokens count] - 8] intValue];
-//						}
-//					
-//					break;
-//				}
-//			
-//			// only evaluate races equal to or above threshold
-//			if([self getClassStrengthFromString:raceGrade] < CLASS_THRESHOLD)
-//				{
-//				skipThisRace = YES;
-//				}
-//			else
-//				{
-//				skipThisRace  = NO;
-//				}
-//			
-//			if(skipThisRace == NO)
-//				{
-//				theRaceModel = [[raceModel alloc] initWithArray:firstLineTokens forFileFormat:formatType];
-//				
-//				if(theRaceModel == nil)
-//					{
-//					NSLog(@"raceModel allocation error");
-//					exit(1);
-//					}
-//				
-//				[theRaceModel setTrackName: trackName];
-//				[theRaceModel setGrade: raceGrade];
-//				[theRaceModel setDistance: raceDx];
-//				[theRaceModel setRaceNumber: raceNumber];
-//				[theRaceModel resetGreyhoundEntryArray];
-//				tempRaceNumber = raceNumber;
-//				numberEntries = 0;
-//				printf("race number: %d\n", [theRaceModel raceNumber]);
-//				
-//				//  grab THIS line and tokenize
-//				resultLine = [raceLines objectAtIndex:lineNumber];
-//				modifiedResultLine = [self convertPastLine:resultLine];
-//				tokens = [modifiedResultLine componentsSeparatedByString:@" "];
-//				
-//				// create new instance of raceEntry
-//				// load dogname, post, weight
-//				tempGreyhoundEntry = [[raceEntry alloc] initWithArray:tokens forFormat:formatType];
-//				
-//				if([tempGreyhoundEntry scratched] == NO)
-//					{
-//					numberEntries++;
-//					post = [tempGreyhoundEntry postPosition];
-//					[[theRaceModel greyhoundEntries] replaceObjectAtIndex:post-1 withObject:tempGreyhoundEntry];
-//					}
-//				}
-//			
-//			// loop through all entrys in THIS race
-//			nextRaceFound = NO;
-//			while(nextRaceFound == NO)
-//				{
-//				// grab line and tokenize
-//				resultLine = [raceLines objectAtIndex:++lineNumber];
-//				modifiedResultLine = [self convertPastLine:resultLine];
-//				tokens = [modifiedResultLine componentsSeparatedByString:@" "];
-//				
-//				if([self isThisLastEntryUsingArray:tokens] == YES)
-//					{
-//					nextRaceFound = YES;
-//					lastLineTokens = tokens;
-//					lineNumber++;
-//					if(lineNumber >= numLines)
-//						{
-//						noMoreRaces = YES;
-//						}
-//					}
-//				
-//				if(skipThisRace == NO)
-//					{
-//						// create new instance of raceEntry
-//						// load dogname, post, weight
-//						tempGreyhoundEntry = [[raceEntry alloc] initWithArray:tokens forFormat:formatType];
-//						
-//						if([tempGreyhoundEntry scratched] == NO)
-//							{
-//							numberEntries++;
-//							post = [tempGreyhoundEntry postPosition];
-//							[[theRaceModel greyhoundEntries] replaceObjectAtIndex:post-1 withObject:tempGreyhoundEntry];
-//							}
-//					}
-//				}
-//			
-//			if(skipThisRace == YES)
-//				{
-//				continue;
-//				}
-//			
-//			// process the payout info. as needed
-//			// initially get the win payout info.
-//			// getPayoutInfo incriments lineNumber and returns new value
-//			[self getPayoutInfo:tokens forFormatType:formatType];
-//			
-//			[theRaceModel setNumberRaceEntries:numberEntries];
-//			
-//			if(winningPayout != 0.0)
-//				{
-//				if([self analyzeRace] == YES)
-//					{
-//						// get the winning post
-//						winningPost = [self getWinningPostFromArray:tokens forFormatType:formatType];
-//						if(winningPost > MAX_ENTRIES || winningPost < 1)
-//							{
-//							printf("bad winning post number: %d\n", winningPost);
-//							printf("race not analyzed\n");
-//							break;
-//							}
-//						
-//						[self placeYourBets];
-//						
-//						[self updateMemberStatistics];
-//						[appCon sortWorkingPopulationArray];
-//						[appCon updateDisplay:nil];
-//					}
-//				else
-//					{
-//					printf("race not analyzed\n");
-//					}
-//				}
-//			else
-//				{
-//				NSLog(@"bad payout or no winning post");
-//				}
-//			
-//			theRaceModel = nil;
-//			}
-//		}
-//	
-//	NSLog(@"processing result files complete");
-//}
-
 //- (BOOL)analyzeRace
 //{
-//	NSUInteger start, end, count, post;
-//	raceEntry *entry;
-//	popMember *member;
-//	BOOL result = YES;
+//	NSUInteger start, end, count;
+//	
+//	ECHandicapper *handicapper;
 //	NSNumber *postNumber;
 //	NSInvocationOperation *analyzePostOp;
-//	NSOperationQueue *opQueue = [NSOperationQueue new];
 //	
-//	skipThisRace = NO;
-//	end = [appCon popSize];
-//	[opQueue setMaxConcurrentOperationCount:8];
+//	BOOL result					= YES;
+//	NSOperationQueue *opQueue	= [NSOperationQueue new];
 //	
-//	// reset accumulators in active members
-//	if([appCon generationNumber] == 0 || ([appCon newDataFile] && ([appCon generationsAlreadyEvolved] == [appCon generationNumber])))
-//		{
-//		start = 0;
-//		}
-//	else
-//		{
-//		start = [appCon popSize] / 2;
-//		}
-//	
-//	for(count = start; count < end; count++)
-//		{
-//		member = [[appCon ladder] objectAtIndex:count];
-//		[member resetAccumulators];
-//		}
+//	[opQueue setMaxConcurrentOperationCount:4];
 //	
 //	///////////////////////////////////////
 //	// loop thorugh ALL POSSIBLE entries //
 //	///////////////////////////////////////
-//	for(post = 1; post <= MAX_ENTRIES; post++)
-//		{
-//		entry = [[theRaceModel greyhoundEntries] objectAtIndex:post-1];
+//	for(NSUInteger post = 1; post <= kMaximumNumberEntries; post++)
+//	{
+//		ECEntry *entry = [[theRaceModel greyhoundEntries] objectAtIndex:post-1];
 //		
 //		// skip this entry if no unscratched entry at this post
-//		if([entry emptyPost] == YES || [entry scratched] == YES)
-//			{
-//			continue;
-//			}
-//		else
-//			{
-//			postNumber = [NSNumber numberWithInt:post];
-//			analyzePostOp = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(analyzePost:) object:postNumber];
-//			[opQueue addOperation:analyzePostOp];
-//			}
-//		}
-//	
+//	}
+//		
 //	[opQueue waitUntilAllOperationsAreFinished];
-//	
-//	if(skipThisRace == YES)
-//		{
-//		result = NO;
-//		}
 //	
 //	return result;
 //}
@@ -1174,7 +830,7 @@
 	
 		NSString *pastLinesFileContents	= [NSString stringWithContentsOfFile:pastLinesFilePath
 																	encoding:NSStringEncodingConversionAllowLossy
-																   error:&error];
+																	   error:&error];
 		NSArray *pastRaceLinesForEntry	= [self getPastLinesForEntryFromPastLinesText:pastLinesFileContents];
 		
 		for(PastLineRecord *pastLine in pastRaceLinesForEntry)
@@ -1248,21 +904,88 @@
 	return pastLineArray;
 }
 
-- (ECPastLineRecord*)getPastLineRecordFromSubArray:(NSArray*)subArray
+- (ECPastLineRecord*)getPastLineRecordFromSubArray:(NSArray*)pastLineArray
  {
 	ECPastLineRecord *pastLineRecord = [ECPastLineRecord new];
 	
-	for (NSUInteger index = 0; index < subArray.count; index++)
+	// get date and matinee? from line[0]
+	NSString *lineZero		= [pastLineArray objectAtIndex:0];
+	NSString *datePrefix	= [lineZero substringToIndex:9];
+	NSString *dateSuffix	= @" 10:00:00 +0600";
+	NSString *dateString	= [NSString stringWithFormat:@"%@%@", datePrefix, dateSuffix];
+	NSDate *pastLineDate	= [NSDate dateWithString:dateString];
+	NSString *tempString	= [lineZero substringFromIndex:10];
+	BOOL matinee			= NO;
+
+	if([tempString characterAtIndex:0] == 'm')
 	{
-		NSString *tempString = [subArray objectAtIndex:index];
-		NSLog(@"%@", tempString);
+		matinee = YES;
 	}
+ 
+	pastLineRecord.raceDate					= pastLineDate;
+	pastLineRecord.matinee					= matinee;
+	pastLineRecord.trackName				= [pastLineArray objectAtIndex:1];
+	pastLineRecord.raceDistance				= [[pastLineArray objectAtIndex:2] integerValue];
+	pastLineRecord.trackConditions			= [pastLineArray objectAtIndex:3];
+	pastLineRecord.winningTime				= [[pastLineArray objectAtIndex:4] doubleValue];
+	pastLineRecord.weight					= [[pastLineArray objectAtIndex:5] integerValue];
+	pastLineRecord.postPosition				= [[pastLineArray objectAtIndex:6] integerValue];
+	pastLineRecord.breakPosition			= [[pastLineArray objectAtIndex:7] integerValue];
+	pastLineRecord.firstTurnPosition		= [[pastLineArray objectAtIndex:8] integerValue];
+	pastLineRecord.lengthsLeadFirstTurn		= [[pastLineArray objectAtIndex:9] integerValue];
+	pastLineRecord.topOfStretchPosition		= [[pastLineArray objectAtIndex:10] integerValue];
+	pastLineRecord.lengthsLeadTopOfStretch	= [[pastLineArray objectAtIndex:11] integerValue];
+	pastLineRecord.finishPosition			= [[pastLineArray objectAtIndex:12] integerValue];
+	pastLineRecord.lengthsLeadFinish		= [[pastLineArray objectAtIndex:13] integerValue];
+	pastLineRecord.entryTime				= [[pastLineArray objectAtIndex:14] doubleValue];
+	pastLineRecord.winOdds					= [[pastLineArray objectAtIndex:15] doubleValue];
+	pastLineRecord.comments					= [pastLineArray objectAtIndex:16];
+	pastLineRecord.raceClass				= [pastLineArray objectAtIndex:17];
+	pastLineRecord.numberEntries			= [[pastLineArray objectAtIndex:21] integerValue];
+
+	pastLineRecord.deltaPosition1	= pastLineRecord.breakPosition - pastLineRecord.firstTurnPosition;
+	pastLineRecord.deltaPosition2	= pastLineRecord.firstTurnPosition - pastLineRecord.topOfStretchPosition;
+	pastLineRecord.deltaPosition3	= pastLineRecord.topOfStretchPosition - pastLineRecord.finishPosition;
 	
-	NSLog(@"");
+	pastLineRecord.deltaLengths1	= pastLineRecord.lengthsLeadFirstTurn - pastLineRecord.lengthsLeadTopOfStretch;
+	pastLineRecord.deltaLengths2	= pastLineRecord.lengthsLeadTopOfStretch - pastLineRecord.lengthsLeadFinish;
+	
+	[self processCommentsForPastLineRecord:pastLineRecord];
 	
 	return pastLineRecord;
- }
+}
 
+- (void)processCommentsForPastLineRecord:(ECPastLineRecord*)pastLineRecord
+{
+	pastLineRecord.foundTrouble	= NO;
+	pastLineRecord.scratched	= NO;
+	pastLineRecord.didNotFinish	= NO;
+	
+	// create arrays here of key words we are looking for in comments string
+	NSArray *collisionWords = [NSArray arrayWithObjects:@"fell", @"trouble", @"collided", @"bumped", @"hit", nil];
+	NSArray *indsideWords	= [NSArray arrayWithObjects:@"rail", @"Rail", @"inside", @"Inside", @"Threat-insid", nil];
+	NSArray *outsideWords	= [NSArray arrayWithObjects:@"outside", @"Outside", @"out", @"Out", nil];
+
+	NSArray *words = [pastLineRecord.comments componentsSeparatedByString:@" "];
+	
+	for(NSString *word in words)
+	{
+		if([collisionWords containsObject:word])
+		{
+			
+		}
+		
+		if([indsideWords containsObject:word])
+		{
+		
+		}
+		
+		if([outsideWords containsObject:word])
+		{
+		
+		}
+	}
+}
 
 
 - (NSArray*)simulateRace:(ECTrainigRaceRecord*)trainingRaceRecord

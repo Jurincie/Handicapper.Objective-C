@@ -89,10 +89,7 @@
 					fromPastLineRecord:(PastLineRecord*)pastLineRecord;
 
 - (NSArray*)getWinPredictionsFromPopulation:(ECPopulation*)population
-									forRace:(ECTrainigRaceRecord*)raceRecord
-							startingAtIndex:(NSUInteger) startIndex
-							  forParentsToo:(BOOL)parentsToo;
-
+									forRace:(ECTrainigRaceRecord*)raceRecord;
 - (BOOL)isThisALongLineOfUnderscores:(NSString*)inString;
 - (BOOL)isThisADateString:(NSString*)word;
 - (BOOL)isThisAValidWeightString:(NSString*)word;
