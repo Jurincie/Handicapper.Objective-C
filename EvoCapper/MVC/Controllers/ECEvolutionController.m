@@ -9,12 +9,26 @@
 // Since we only want (1) EvolutionManager Ever to be created
 // We have made this class a singleton
 
-#import "ECEvolutionManager.h"
-#import "ECPopulation.h"
-
 #define MOC [[NSApp delegate]managedObjectContext]
 
-@implementation ECEvolutionManager
+#import "ECEvolutionController.h"
+#import "ECPopulation.h"
+#import "Constants.h"
+#import "ECEntry.h"
+#import "ECTree.h"
+#import "ECHandicapper.h"
+#import "ECRaceRecord.h"
+#import "ECTrainigRaceRecord.h"
+#import "ECPastLineRecord.h"
+#import "ECEntryStrengthFields.h"
+#import "ECPostStatistics.h"
+#import "ECTrack.h"
+#import "ECFirstTurnStats.h"
+#import "ECSecondTurnStats.h"
+#import "ECTopOfStretchStats.h"
+#import "NSString+ECStringValidizer.h"
+
+@implementation ECEvolutionController
 
 @synthesize trainingPopSize			= _trainingPopSize;
 @synthesize populationSize			= _populationSize;
@@ -28,7 +42,7 @@
 
 + (id)sharedManager
 {
-    static ECEvolutionManager *sharedManager = nil;
+    static ECEvolutionController *sharedManager = nil;
     
     static dispatch_once_t onceToken;
     
@@ -333,7 +347,7 @@
 		NSString *thisLine		= [fileContentsLineByLine objectAtIndex:i];
 		NSString *twoLinesAhead	= [fileContentsLineByLine objectAtIndex:i+2];
 		
-		if([self isThisALongLineOfUnderscores:thisLine] && [self isThisALongLineOfUnderscores:twoLinesAhead])
+		if([NSString isThisALongLineOfUnderscores:thisLine] && [NSString isThisALongLineOfUnderscores:twoLinesAhead])
 		{
 			// reset
 			isThisANewRecord = NO;
@@ -350,7 +364,7 @@
 			while(i + thisRaceLineNumber < endIndex)
 			{
 				thisLine			= [fileContentsLineByLine objectAtIndex:i + thisRaceLineNumber++];
-				isThisANewRecord	= [self isThisALongLineOfUnderscores:thisLine];
+				isThisANewRecord	= [NSString isThisALongLineOfUnderscores:thisLine];
 				
 				if(isThisANewRecord)
 				{
@@ -465,7 +479,7 @@
 	{
 		NSString *resultFileLine	= [resultFileLineByLine objectAtIndex:++lineNumber];
 		modifiedLine				= [self removeExtraSpacesFromString:resultFileLine];
-		isThisKennelLine			= [self isThisWinningKennelLine:modifiedLine];
+		isThisKennelLine			= [NSString isThisWinningKennelLine:modifiedLine];
 
 		if(isThisKennelLine)
 		{
@@ -592,7 +606,7 @@
 		
 		if([word doubleValue] > 0.0)
 		{
-			if([self isThisWinPayoutString:word] == YES)
+			if([NSString isThisWinPayoutString:word] == YES)
 			{
 				double winPayout		= [word doubleValue];
 				racePayout.winPayout	= winPayout;
@@ -604,112 +618,6 @@
 	return racePayout;
 }
 
-- (BOOL)isThisWinPayoutString:(NSString*)word
-{
-	BOOL isValid = NO;
-	
-	// win payout is first word with decimal place two characters from end of string
-	char testChar = [word characterAtIndex:word.length - 3];
-	
-	if(testChar == '.')
-	{
-		isValid = TRUE;
-	}
-	
-	return isValid;
-}
-
-- (BOOL)isThisAValidTimeString:(NSString*)word
-{
-	BOOL answer			= NO;
-	double minTimeValue = 27.00;
-	double maxTimeValue	= 40.00;
-	
-	double value = [word doubleValue];
-	
-	if(value > minTimeValue && value < maxTimeValue)
-	{
-		answer = YES;
-	}
-	
-	return answer;
-}
-
-- (BOOL)isThisAValidWeightString:(NSString*)word
-{
-	double minWeight	= 45.00;
-	double maxWeight	= 105.00;
-	BOOL isValidWeight	= NO;
-	double weightValue	= [word doubleValue];
-	
-	if(weightValue > minWeight &&  weightValue < maxWeight)
-	{
-		isValidWeight = YES;
-	}
-	
-	return isValidWeight;
-}
-
-- (BOOL)isThisADateString:(NSString*)word
-{
-	BOOL isDateString = NO;
-	
-	if(word.length == 8)
-	{
-		if ([word characterAtIndex:1] == '/' &&		// check for form m/d/yyyy
-			[word characterAtIndex:3] == '/' &&
-			[word characterAtIndex:2] != '/')
-		{
-			isDateString = YES;
-		}
-	}
-	else if(word.length == 9)
-	{
-		if([word characterAtIndex:2] == '/' &&		// check for form mm/d/yyyy
-			[word characterAtIndex:4] == '/' &&
-			[word characterAtIndex:3] != '/')
-		{
-			isDateString = YES;
-		}
-		else if([word characterAtIndex:1] == '/' &&	// check for form m/dd/yyyy
-				[word characterAtIndex:4] == '/' &&
-				[word characterAtIndex:2] != '/' &&
-				[word characterAtIndex:3] != '/')
-		{
-			isDateString = YES;
-		}
-	}
-	else if(word.length == 10)
-	{
-		if([word characterAtIndex:2] == '/' &&		// check for form mm/dd/yyyy
-		   [word characterAtIndex:5] == '/' &&
-		   [word characterAtIndex:3] != '/' &&
-		   [word characterAtIndex:4] != '/')
-		{
-			isDateString = YES;
-		}
-	}
-		
-	return isDateString;
-}
-
-- (BOOL)isThisWinningKennelLine:(NSString*)modifiedFileLine
-{
-	BOOL isWinningKennelLine	= NO;
-	NSArray *tokens				= [modifiedFileLine componentsSeparatedByString:@" "];
-	
-	for(NSUInteger index = 0; index < tokens.count; index++)
-	{
-		NSString *word = [tokens objectAtIndex:index];
-		
-		if([self isThisADateString:word])
-		{
-			isWinningKennelLine = YES;
-		}
-	}
-		
-	return isWinningKennelLine;
-}
 
 - (NSString*)getMmSubstringFromSpelledMonth:(NSString*)spelledMonthString
 {
@@ -816,22 +724,6 @@
 }
 
 
-- (BOOL)isThisALongLineOfUnderscores:(NSString*)inString
-{
-	BOOL answer = NO;
-	
-	if([inString characterAtIndex:5] == '_' &&
-	[inString characterAtIndex:20] == '_' &&
-	[inString characterAtIndex:25] == '_' &&
-	[inString characterAtIndex:40] == '_' &&
-	[inString characterAtIndex:45] == '_')
-	{
-		answer = YES;
-	}
-	
-	return answer;
-}
-
 - (NSArray*)getWinPredictionsFromPopulation:(ECPopulation*)population
 									forRace:(ECTrainigRaceRecord*)trainingRaceRecord
 {
@@ -861,7 +753,7 @@
 																	   error:&error];
 		NSArray *pastRaceLinesForEntry	= [self getPastLinesForEntryFromPastLinesText:pastLinesFileContents];
 		
-		for(PastLineRecord *pastLine in pastRaceLinesForEntry)
+		for(ECPastLineRecord *pastLine in pastRaceLinesForEntry)
 		{
 			/***********************************
 			
@@ -1319,12 +1211,12 @@
     BOOL grandparent1UsingRightChild = YES;
 	
 	NSMutableArray*childDnaArray	= [NSMutableArray new];
-    ECTreeNode *parent1Root			= nil;
-    ECTreeNode *parent2Root			= nil;
+    ECTree *parent1Root			= nil;
+    ECTree *parent2Root			= nil;
 	
-	ECTreeNode *crossover1			= nil;
-    ECTreeNode *crossover2			= nil;
-    ECTreeNode *crossover1Parent		= nil;
+	ECTree *crossover1			= nil;
+    ECTree *crossover2			= nil;
+    ECTree *crossover1Parent		= nil;
 	
 	for(NSUInteger strandNumber = 0; strandNumber < kNumberDnaStrands; strandNumber++)
 	{
@@ -1406,7 +1298,7 @@
 	return childDnaArray;
 }
 
-- (ECTreeNode*)copyTree:parentRoot
+- (ECTree*)copyTree:parentRoot
 		replacingNode:replaceThisNode
 			 withNode:replacementNode
 {
@@ -1415,14 +1307,14 @@
 		return nil;
 	}
 	
-	ECTreeNode *newTree   = nil;
-    ECTreeNode *tempNode  = parentRoot;
+	ECTree *newTree   = nil;
+    ECTree *tempNode  = parentRoot;
 	
 	if(tempNode.functionPtr &&
        tempNode.leafVariableIndex == NOT_AN_INDEX &&
        tempNode.leafConstant == NOT_A_CONSTANT)
 	{
-        newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:tempNode.functionIndex];
+        newTree = [[ECTree alloc] initWithFunctionPointerIndex:tempNode.functionIndex];
 		
 		// traverse left branch first
 		if(tempNode.leftBranch == replaceThisNode)
@@ -1454,11 +1346,11 @@
 	}
     else if(tempNode.leafConstant != NOT_A_CONSTANT)
 	{
-        newTree = [[ECTreeNode alloc] initWithConstantValue:tempNode.leafConstant];
+        newTree = [[ECTree alloc] initWithConstantValue:tempNode.leafConstant];
 	}
     else if(tempNode.leafVariableIndex != NOT_AN_INDEX)
 	{
-        newTree = [[ECTreeNode alloc] initWithRaceVariable:tempNode.leafVariableIndex];
+        newTree = [[ECTree alloc] initWithRaceVariable:tempNode.leafVariableIndex];
 	}
     else
 	{
@@ -1469,14 +1361,14 @@
 	return newTree;
 }
 
-- (ECTreeNode*)getNodeFromChildAtLevel:(NSUInteger)parent1Level
-						   usingTree:(ECTreeNode*)parent2Root
+- (ECTree*)getNodeFromChildAtLevel:(NSUInteger)parent1Level
+						   usingTree:(ECTree*)parent2Root
 {
-	ECTreeNode *crossoverFromParent2 = nil;
+	ECTree *crossoverFromParent2 = nil;
 
 	return crossoverFromParent2;
 }
-- (double)evalTree:(ECTreeNode*)treeNode
+- (double)evalTree:(ECTree*)treeNode
 	usingVariables:(NSMutableArray*)dataArray
 			atPost:(NSUInteger)postPosition
 {
@@ -1546,7 +1438,7 @@
 
 
 - (double)getLeafVariableValueForIndex:(NSUInteger)leafVariableIndex
-					fromPastLineRecord:(PastLineRecord*)pastLineRecord
+					fromPastLineRecord:(ECPastLineRecord*)pastLineRecord
 {
 	double returnValue = 0.0;
 	
@@ -1572,7 +1464,7 @@
 }
 
 
-- (void)freeTree:(ECTreeNode*)node
+- (void)freeTree:(ECTree*)node
 {
 	
 	if(nil == node)
@@ -1591,17 +1483,17 @@
 
 }
 
-- (ECTreeNode*)copyTree:(ECTreeNode*)parentRoot
- withoutBranch:(ECTreeNode*)skipThisBranch
+- (ECTree*)copyTree:(ECTree*)parentRoot
+ withoutBranch:(ECTree*)skipThisBranch
 {
-	ECTreeNode *newTree   = nil;
-    ECTreeNode *tempNode  = parentRoot;
+	ECTree *newTree   = nil;
+    ECTree *tempNode  = parentRoot;
 	
 	if(tempNode.functionPtr &&
        tempNode.leafVariableIndex == NOT_AN_INDEX &&
        tempNode.leafConstant == NOT_A_CONSTANT)
 	{
-        newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:tempNode.functionIndex];
+        newTree = [[ECTree alloc] initWithFunctionPointerIndex:tempNode.functionIndex];
 
         if(tempNode.leftBranch == skipThisBranch)
         {
@@ -1628,11 +1520,11 @@
     }
     else if(tempNode.leafConstant != NOT_A_CONSTANT)
     {
-        newTree = [[ECTreeNode alloc] initWithConstantValue:tempNode.leafConstant];
+        newTree = [[ECTree alloc] initWithConstantValue:tempNode.leafConstant];
     }
     else if(tempNode.leafVariableIndex != NOT_AN_INDEX)
     {
-        newTree = [[ECTreeNode alloc] initWithRaceVariable:tempNode.leafVariableIndex];
+        newTree = [[ECTree alloc] initWithRaceVariable:tempNode.leafVariableIndex];
     }
     else
     {
@@ -1729,14 +1621,14 @@
 	return [immutableArray mutableCopy];
 }
 
-- (ECTreeNode*)createTreeForStrand:(NSUInteger)dnaStrand
+- (ECTree*)createTreeForStrand:(NSUInteger)dnaStrand
                          atLevel:(NSUInteger)level
 {
 	// tree is made of TreeNodes
 	// as we get deeper into the tree increase probability of leaf node
     level++;
     
-    ECTreeNode *newNode   = nil;
+    ECTree *newNode   = nil;
 	NSUInteger nodeType = [self getTreeNodeTypeAtLevel:level];
     
     switch (nodeType)
@@ -1755,7 +1647,7 @@
             }
             else
             {
-                newNode = [[ECTreeNode alloc] initWithFunctionPointerIndex:functionNumber];
+                newNode = [[ECTree alloc] initWithFunctionPointerIndex:functionNumber];
             }
             
             newNode.rightBranch  = nil;
@@ -1777,14 +1669,14 @@
         case kVariableNode:
         {
             NSUInteger arrayIndex   = [self getPastLineVariableForDnaStrand:dnaStrand];
-            newNode                 = [[ECTreeNode alloc] initWithRaceVariable:arrayIndex];
+            newNode                 = [[ECTree alloc] initWithRaceVariable:arrayIndex];
             
             break;
         }
         case kConstantNode:
         {
             double c    = getRand(kRandomRange, kRandomGranularity);
-            newNode     = [[ECTreeNode alloc] initWithConstantValue:c];
+            newNode     = [[ECTree alloc] initWithConstantValue:c];
             
             break;
         }
@@ -1832,7 +1724,7 @@
     return nodeType;
 }
 
-- (NSString*)saveTreeToString:(ECTreeNode*)tree
+- (NSString*)saveTreeToString:(ECTree*)tree
 {
     NSMutableString *treeString = [NSMutableString new];
 
@@ -1874,9 +1766,9 @@
     return treeString;
 }
 
-- (ECTreeNode*)recoverTreeFromString:(NSString*)inString
+- (ECTree*)recoverTreeFromString:(NSString*)inString
 {
-    ECTreeNode *newTree       = nil;
+    ECTree *newTree       = nil;
     NSString *newString     = nil;
     NSString *newString2    = nil;
     NSString *token         = nil;
@@ -1909,42 +1801,42 @@
         
 		if([token isEqualToString:@"add"])
 		{
-			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kAdditionIndex];
+			newTree = [[ECTree alloc] initWithFunctionPointerIndex:kAdditionIndex];
 			numArgs = 2;
 		}
 		else if([token isEqualToString:@"subtract"])
 		{
-			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kSubtractionIndex];
+			newTree = [[ECTree alloc] initWithFunctionPointerIndex:kSubtractionIndex];
 			numArgs = 2;
 		}
 		else if([token isEqualToString:@"multiply"])
 		{
-			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kMultiplicationIndex];
+			newTree = [[ECTree alloc] initWithFunctionPointerIndex:kMultiplicationIndex];
 			numArgs = 2;
 		}
 		else if([token isEqualToString:@"divide"])
 		{
-			newTree =[[ECTreeNode alloc] initWithFunctionPointerIndex:kDivisionIndex];
+			newTree =[[ECTree alloc] initWithFunctionPointerIndex:kDivisionIndex];
 			numArgs = 2;
 		}
 		else if([token isEqualToString:@"squareRoot"])
 		{
-			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kSquareRootIndex];
+			newTree = [[ECTree alloc] initWithFunctionPointerIndex:kSquareRootIndex];
 			numArgs = 1;
 		}
         else if([token isEqualToString:@"square"])
 		{
-			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kSquareIndex];
+			newTree = [[ECTree alloc] initWithFunctionPointerIndex:kSquareIndex];
 			numArgs = 1;
 		}
 		else if([token isEqualToString:@"naturalLog"])
 		{
-			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kNaturalLogIndex];;
+			newTree = [[ECTree alloc] initWithFunctionPointerIndex:kNaturalLogIndex];;
 			numArgs = 1;
 		}
 		else if([token isEqualToString:@"reciprocal"])
 		{
-			newTree = [[ECTreeNode alloc] initWithFunctionPointerIndex:kReciprocalIndex];
+			newTree = [[ECTree alloc] initWithFunctionPointerIndex:kReciprocalIndex];
 			numArgs = 1;
 		}
 		else
@@ -1995,11 +1887,11 @@
 		// or a doulbe
 		if(inString.length <= 2)
 		{
-			newTree = [[ECTreeNode alloc] initWithRaceVariable:[inString intValue]];
+			newTree = [[ECTree alloc] initWithRaceVariable:[inString intValue]];
 		}
 		else
 		{
-			newTree = [[ECTreeNode alloc] initWithConstantValue:[inString doubleValue]];
+			newTree = [[ECTree alloc] initWithConstantValue:[inString doubleValue]];
 		}
 	}
 	
@@ -2449,7 +2341,7 @@ double getRand(int max, int granularity)
 }
 
 
-- (ECTreeNode*)getQuadraticNodeAtLevel:(NSUInteger)level
+- (ECTree*)getQuadraticNodeAtLevel:(NSUInteger)level
                            forStrand:(NSUInteger)dnaStrand
 {
     // creates the form:  a(x^2) + bx + c
@@ -2459,20 +2351,20 @@ double getRand(int max, int granularity)
     double x = getRand(kRandomRange, kRandomGranularity);
     level++;
 
-    ECTreeNode *quadTree                          = [[ECTreeNode alloc] initWithFunctionPointerIndex:kAdditionIndex];       // add
+    ECTree *quadTree                          = [[ECTree alloc] initWithFunctionPointerIndex:kAdditionIndex];       // add
 
     quadTree.leftBranch.leftBranch                = [self createTreeForStrand:dnaStrand
                                                                     atLevel:level+1];                                   // 'a' branch
-    quadTree.leftBranch                          = [[ECTreeNode alloc] initWithFunctionPointerIndex:kMultiplicationIndex]; // mult
-    quadTree.leftBranch.rightBranch               = [[ECTreeNode alloc] initWithConstantValue:x];                           // 'x'
-    quadTree.leftBranch.rightBranch.leftBranch     = [[ECTreeNode alloc] initWithFunctionPointerIndex:kSquareIndex];         // square
+    quadTree.leftBranch                          = [[ECTree alloc] initWithFunctionPointerIndex:kMultiplicationIndex]; // mult
+    quadTree.leftBranch.rightBranch               = [[ECTree alloc] initWithConstantValue:x];                           // 'x'
+    quadTree.leftBranch.rightBranch.leftBranch     = [[ECTree alloc] initWithFunctionPointerIndex:kSquareIndex];         // square
 
 
-    quadTree.rightBranch                         = [[ECTreeNode alloc] initWithFunctionPointerIndex:kAdditionIndex];       // add
+    quadTree.rightBranch                         = [[ECTree alloc] initWithFunctionPointerIndex:kAdditionIndex];       // add
     quadTree.rightBranch.leftBranch.leftBranch     = [self createTreeForStrand:dnaStrand
                                                                     atLevel:level+1];                                   // 'b' branch
-    quadTree.rightBranch.leftBranch               = [[ECTreeNode alloc] initWithFunctionPointerIndex:kMultiplicationIndex]; // multiply
-    quadTree.rightBranch.leftBranch.rightBranch    = [[ECTreeNode alloc] initWithConstantValue:x];                           // 'x'
+    quadTree.rightBranch.leftBranch               = [[ECTree alloc] initWithFunctionPointerIndex:kMultiplicationIndex]; // multiply
+    quadTree.rightBranch.leftBranch.rightBranch    = [[ECTree alloc] initWithConstantValue:x];                           // 'x'
     quadTree.rightBranch.rightBranch              = [self createTreeForStrand:dnaStrand
                                                                     atLevel:level];                                     // 'c' branch
     return quadTree;

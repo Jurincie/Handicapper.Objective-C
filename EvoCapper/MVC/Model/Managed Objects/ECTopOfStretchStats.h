@@ -13,8 +13,8 @@
 
 @interface ECTopOfStretchStats : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * averagePositionFinish;
-@property (nonatomic, retain) NSNumber * position;
-@property (nonatomic, retain) ECDistanceClassStats *distanceClassStats;
+@property (nonatomic, retain) NSNumber				*averagePositionFinish;
+@property (nonatomic, retain) NSNumber				*position;
+@property (nonatomic, retain) ECDistanceClassStats	*distanceClassStats;
 
 @end

@@ -13,8 +13,8 @@
 
 @interface ECSecondTurnStats : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * averagePositionTopOfStretch;
-@property (nonatomic, retain) NSNumber * position;
-@property (nonatomic, retain) ECDistanceClassStats *distanceClassStats;
+@property (nonatomic, retain) NSNumber				*averagePositionTopOfStretch;
+@property (nonatomic, retain) NSNumber				*position;
+@property (nonatomic, retain) ECDistanceClassStats	*distanceClassStats;
 
 @end

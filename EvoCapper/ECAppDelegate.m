@@ -19,7 +19,7 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     // Insert code here to initialize your application
-    self.evolutionManager = [[ECEvolutionManager alloc] init];
+    self.evolutionManager = [[ECEvolutionController alloc] init];
 }
 
 // Returns the directory the application uses to store the Core Data store file.

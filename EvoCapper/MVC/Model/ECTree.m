@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
-#import "ECTreeNode.h"
+#import "ECTree.h"
 
-@implementation ECTreeNode
+@implementation ECTree
 
 @synthesize functionPtr         = _functionPtr;
 @synthesize functionName        = _functionName;

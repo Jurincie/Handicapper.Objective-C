@@ -13,13 +13,14 @@
 
 @interface ECDistanceClassStats : NSManagedObject
 
-@property (nonatomic, retain) NSString * raceClass;
-@property (nonatomic, retain) NSNumber * raceDistance;
-@property (nonatomic, retain) NSSet *postStatistics;
-@property (nonatomic, retain) NSSet *firstTurnStatistics;
-@property (nonatomic, retain) NSSet *secondTurnStatistics;
-@property (nonatomic, retain) NSSet *topOfStretchStatistics;
-@property (nonatomic, retain) ECTrack *track;
+@property (nonatomic, retain) NSString	*raceClass;
+@property (nonatomic, retain) NSNumber	*raceDistance;
+@property (nonatomic, retain) NSSet		*postStatistics;
+@property (nonatomic, retain) NSSet		*firstTurnStatistics;
+@property (nonatomic, retain) NSSet		*secondTurnStatistics;
+@property (nonatomic, retain) NSSet		*topOfStretchStatistics;
+@property (nonatomic, retain) ECTrack	*track;
+
 @end
 
 @interface ECDistanceClassStats (CoreDataGeneratedAccessors)

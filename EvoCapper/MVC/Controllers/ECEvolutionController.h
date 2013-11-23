@@ -1,5 +1,5 @@
 //
-//  ECEvolutionManager.h
+//  ECEvolutionController.h
 //  EvoCapper
 //
 //  Created by Ron Jurincie on 10/23/13.
@@ -8,24 +8,10 @@
 
 #import "stdlib.h"
 #import <Foundation/Foundation.h>
-#import "ECPopulation.h"
-#import "Constants.h"
-#import "ECEntry.h"
-#import "ECTreeNode.h"
-#import "ECHandicapper.h"
-#import "ECRaceRecord.h"
-#import "ECTrainigRaceRecord.h"
-#import "ECPastLineRecord.h"
-#import "ECEntryStrengthFields.h"
-#import "ECPostStatistics.h"
-#import "ECTrack.h"
-#import "ECFirstTurnStats.h"
-#import "ECSecondTurnStats.h"
-#import "ECTopOfStretchStats.h"
 
-@class PastLineRecord;
+@class ECPastLineRecord, ECPopulation, ECHandicapper, ECTrainigRaceRecord, ECTree, ECRacePayouts;
 
-@interface ECEvolutionManager : NSObject
+@interface ECEvolutionController : NSObject
 
 @property (assign)				NSUInteger		trainingPopSize;
 @property (assign)				NSUInteger		populationSize;
@@ -37,9 +23,14 @@
 @property (nonatomic, strong)   NSMutableArray	*rankedPopulation;
 @property (nonatomic, strong)	NSSet			*postStatisticsSet;
 
+#pragma sharedMemory and CoreData methods
 + (id)sharedManager;
 - (void)updateAndSaveData;
 
+#pragma track statistics methods
+- (NSSet*)createPostStatisticsSet;
+
+#pragma darwinian methods
 - (void)createNewPopoulationWithName:(NSString*)name
 						 initialSize:(NSUInteger)initialSize
 						maxTreeDepth:(NSUInteger)maxTreeDepth
@@ -47,42 +38,13 @@
 						mutationRate:(float)mutationRate
 							comments:(NSString*)comments;
 
-- (NSMutableArray*)createNewHandicappers;
-- (NSSet*)createPostStatisticsSet;
 
+- (NSMutableArray*)createNewHandicappers;
 - (ECHandicapper*)createNewHandicapperForPopulation:(ECPopulation*)population
-									forGeneration:(NSUInteger)birthGeneration;
+									  forGeneration:(NSUInteger)birthGeneration;
 
 - (NSArray*)createNewDnaByCrossingOverDnaFrom:(ECHandicapper*)parent1
 								  withDnaFrom:(ECHandicapper*)parent2;
-
-- (ECTreeNode*)createTreeForStrand:(NSUInteger)dnaStrand
-                         atLevel:(NSUInteger)level;
-
-- (ECTreeNode*)recoverTreeFromString:(NSString*)inString;
-- (NSString*)saveTreeToString:(ECTreeNode*)tree;
-
-- (NSUInteger)getParentIndexFromPopulation:(ECPopulation*)population
-				   withOverallFitnessValue:(double)popsSummedFitness;
-
-- (ECTreeNode*)copyTree:(ECTreeNode*)tempTree
-		  withoutBranch:(ECTreeNode*)skipThisBranch;
-
-- (ECTreeNode*)copyTree:parent1Root
-		replacingNode:crossover1
-			 withNode:crossover2;
-
-- (ECTreeNode*)getNodeFromChildAtLevel:(NSUInteger)parent1Level
-						   usingTree:(ECTreeNode*)parent2Root;
-
-- (NSUInteger)getTreeNodeTypeAtLevel:(NSUInteger)level;
-- (void)freeTree:(ECTreeNode*)node;
-
-- (void)trainPopulationForGenerations:(NSUInteger)numberGenerations;
-
-- (void)testPopulation:(ECPopulation*)testPopulation
-	  includingParents:(BOOL)testChildrenOnly
-	belowResultsFolder:(NSString*)path;
 
 - (void)fillWorkingPopulationArrayWithOriginalMembers;
 - (void)replaceOldDnaStringsForChildWithIndex:(NSUInteger)popIndex;
@@ -90,18 +52,41 @@
 - (void)replaceBottomHalfOfPopulationWithNewChildren;
 - (void)mutateChildrenForPopulation:(ECPopulation*)pop;
 - (void)mutateHandicappersDnaTrees:(ECHandicapper*)futureMutant;
+- (void)trainPopulationForGenerations:(NSUInteger)numberGenerations;
 
-- (NSUInteger)getPastLineVariableForDnaStrand:(NSUInteger)dnaStrand;
-- (double)getLeafVariableValueForIndex:(NSUInteger)leafVariableIndex
-					fromPastLineRecord:(PastLineRecord*)pastLineRecord;
+- (void)testPopulation:(ECPopulation*)testPopulation
+	  includingParents:(BOOL)testChildrenOnly
+	belowResultsFolder:(NSString*)path;
 
 - (NSArray*)getWinPredictionsFromPopulation:(ECPopulation*)population
 									forRace:(ECTrainigRaceRecord*)raceRecord;
-- (BOOL)isThisALongLineOfUnderscores:(NSString*)inString;
-- (BOOL)isThisADateString:(NSString*)word;
-- (BOOL)isThisAValidWeightString:(NSString*)word;
-- (BOOL)isThisAValidTimeString:(NSString*)word;
-- (BOOL)isThisWinPayoutString:(NSString*)word;
+
+#pragma tree methods
+- (ECTree*)createTreeForStrand:(NSUInteger)dnaStrand
+					   atLevel:(NSUInteger)level;
+
+- (ECTree*)recoverTreeFromString:(NSString*)inString;
+- (NSString*)saveTreeToString:(ECTree*)tree;
+
+- (NSUInteger)getParentIndexFromPopulation:(ECPopulation*)population
+				   withOverallFitnessValue:(double)popsSummedFitness;
+
+- (ECTree*)copyTree:(ECTree*)tempTree
+		  withoutBranch:(ECTree*)skipThisBranch;
+
+- (ECTree*)copyTree:parent1Root
+		replacingNode:crossover1
+			 withNode:crossover2;
+
+- (ECTree*)getNodeFromChildAtLevel:(NSUInteger)parent1Level
+						   usingTree:(ECTree*)parent2Root;
+
+- (NSUInteger)getTreeNodeTypeAtLevel:(NSUInteger)level;
+- (void)freeTree:(ECTree*)node;
+
+- (NSUInteger)getPastLineVariableForDnaStrand:(NSUInteger)dnaStrand;
+- (double)getLeafVariableValueForIndex:(NSUInteger)leafVariableIndex
+					fromPastLineRecord:(ECPastLineRecord*)pastLineRecord;
 
 - (NSArray*)getPastLinesForEntryFromPastLinesText:(NSString*)pastLinesText;
 - (ECPastLineRecord*)getPastLineRecordFromSubArray:(NSArray*)subArray;

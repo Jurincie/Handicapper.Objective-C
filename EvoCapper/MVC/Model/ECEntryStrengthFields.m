@@ -18,9 +18,10 @@
 @synthesize recentClassStrength			= _recentClassStrength;
 @synthesize earlySpeedRelevanceFactor	= _earlySpeedRelevanceFactor;
 @synthesize otherRelevanceFactor		= _otherRelevanceFactor;
-@synthesize numberOfCollisions			= _numberOfCollisions;
 @synthesize numberPastLines				= _numberPastLines;
-@synthesize insideOutsideTendancy		= _insideOutsideTendancy;
+@synthesize numberInsideComments		= _numberInsideComments;
+@synthesize numberOutsideComments		= _numberOutsideComments;
+@synthesize numberCollisionComments		= _numberCollisionComments;
 
 - (ECEntryStrengthFields*)init
 {
@@ -36,9 +37,11 @@
 		self.recentClassStrength		= 0.0;
 		self.earlySpeedRelevanceFactor	= 0.0;
 		self.otherRelevanceFactor		= 0.0;
-		self.numberOfCollisions			= 0;
+		self.numberCollisionComments	= 0;
 		self.numberPastLines			= 0;
-		self.insideOutsideTendancy		= 0.0;
+		self.numberInsideComments		= 0;
+		self.numberOutsideComments		= 0;
+		self.numberCollisionComments	= 0;
 	}
 	
 	return self;

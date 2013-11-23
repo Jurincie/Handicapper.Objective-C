@@ -1,5 +1,5 @@
 //
-//  TreeNode.h
+//  ECTree.h
 //  GreVolution
 //
 //  Created by Ron Jurincie on 7/1/13.
@@ -9,16 +9,16 @@
 #import <Foundation/Foundation.h>
 #import "Constants.h"
 
-@interface ECTreeNode : NSObject
+@interface ECTree : NSObject
 
-@property (nonatomic, strong)   ECTreeNode		*leftBranch;
-@property (nonatomic, strong)   ECTreeNode		*rightBranch;
-@property (nonatomic, assign)   long double		(*functionPtr)();
-@property (nonatomic, strong)   NSString		*functionName;
-@property (assign)              long double		leafConstant;
-@property (assign)              NSInteger		leafVariableIndex;
-@property (assign)              NSInteger		functionIndex;
-@property (nonatomic, strong)   NSString		*conditionTest;
+@property (nonatomic, strong)   ECTree		*leftBranch;
+@property (nonatomic, strong)   ECTree		*rightBranch;
+@property (nonatomic, assign)   long double	(*functionPtr)();
+@property (nonatomic, strong)   NSString	*functionName;
+@property (assign)              long double	leafConstant;
+@property (assign)              NSInteger	leafVariableIndex;
+@property (assign)              NSInteger	functionIndex;
+@property (nonatomic, strong)   NSString	*conditionTest;
 
 
 - (id) initWithFunctionPointerIndex:(NSUInteger)funcPtrIndex;

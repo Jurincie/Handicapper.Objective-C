@@ -18,8 +18,9 @@
 @property (assign) double		recentClassStrength;
 @property (assign) double		earlySpeedRelevanceFactor;
 @property (assign) double		otherRelevanceFactor;
-@property (assign) NSUInteger	numberOfCollisions;
 @property (assign) NSUInteger	numberPastLines;
-@property (assign) double		insideOutsideTendancy;
+@property (assign) double		numberInsideComments;
+@property (assign) double		numberOutsideComments;
+@property (assign) NSUInteger	numberCollisionComments;
 
 @end

@@ -13,9 +13,9 @@
 
 @interface ECTrack : NSManagedObject
 
-@property (nonatomic, retain) NSString * trackName;
-@property (nonatomic, retain) NSSet *trackStatistics;
-@property (nonatomic, retain) ECPopulation *population;
+@property (nonatomic, retain) NSString		*trackName;
+@property (nonatomic, retain) NSSet			*trackStatistics;
+@property (nonatomic, retain) ECPopulation	*population;
 @end
 
 @interface ECTrack (CoreDataGeneratedAccessors)
