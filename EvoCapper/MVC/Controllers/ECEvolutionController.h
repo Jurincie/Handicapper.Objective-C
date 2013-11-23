@@ -9,7 +9,7 @@
 #import "stdlib.h"
 #import <Foundation/Foundation.h>
 
-@class ECPastLineRecord, ECPopulation, ECHandicapper, ECTrainigRaceRecord, ECTree, ECRacePayouts;
+@class ECPastLineRecord, ECPopulation, ECHandicapper, ECTrainigRaceRecord, ECTree, ECRacePayouts, ECTrack;
 
 @interface ECEvolutionController : NSObject
 
@@ -28,7 +28,7 @@
 - (void)updateAndSaveData;
 
 #pragma track statistics methods
-- (NSSet*)createPostStatisticsSet;
+- (NSSet*)createSetOfStatisticsForTrack:(ECTrack*)track;
 
 #pragma darwinian methods
 - (void)createNewPopoulationWithName:(NSString*)name

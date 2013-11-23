@@ -3,10 +3,10 @@
     <entity name="ECDistanceClassStats" representedClassName="ECDistanceClassStats" syncable="YES">
         <attribute name="raceClass" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="raceDistance" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="firstTurnStatistics" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ECFirstTurnStats" inverseName="distanceClassStats" inverseEntity="ECFirstTurnStats" syncable="YES"/>
-        <relationship name="postStatistics" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ECPostStatistics" inverseName="distanceClassSet" inverseEntity="ECPostStatistics" syncable="YES"/>
-        <relationship name="secondTurnStatistics" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ECSecondTurnStats" inverseName="distanceClassStats" inverseEntity="ECSecondTurnStats" syncable="YES"/>
-        <relationship name="topOfStretchStatistics" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ECTopOfStretchStats" inverseName="distanceClassStats" inverseEntity="ECTopOfStretchStats" syncable="YES"/>
+        <relationship name="firstTurnStatistics" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ECFirstTurnStats" inverseName="distanceClassStats" inverseEntity="ECFirstTurnStats" syncable="YES"/>
+        <relationship name="postStatistics" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ECPostStatistics" inverseName="distanceClassSet" inverseEntity="ECPostStatistics" syncable="YES"/>
+        <relationship name="secondTurnStatistics" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ECSecondTurnStats" inverseName="distanceClassStats" inverseEntity="ECSecondTurnStats" syncable="YES"/>
+        <relationship name="topOfStretchStatistics" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ECTopOfStretchStats" inverseName="distanceClassStats" inverseEntity="ECTopOfStretchStats" syncable="YES"/>
         <relationship name="track" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECTrack" inverseName="trackStatistics" inverseEntity="ECTrack" syncable="YES"/>
     </entity>
     <entity name="ECFirstTurnStats" representedClassName="ECFirstTurnStats" syncable="YES">
@@ -70,13 +70,13 @@
         <relationship name="handicapperPopulation" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="HandicapperPopulation" inverseName="individualHandicappers" inverseEntity="HandicapperPopulation" syncable="YES"/>
     </entity>
     <elements>
+        <element name="ECDistanceClassStats" positionX="-18" positionY="-378" width="128" height="148"/>
+        <element name="ECFirstTurnStats" positionX="-342" positionY="-241" width="128" height="88"/>
         <element name="ECPostStatistics" positionX="-92" positionY="-61" width="128" height="148"/>
+        <element name="ECSecondTurnStats" positionX="63" positionY="-144" width="128" height="88"/>
+        <element name="ECTopOfStretchStats" positionX="-387" positionY="-79" width="128" height="88"/>
+        <element name="ECTrack" positionX="-128" positionY="-486" width="128" height="88"/>
         <element name="HandicapperPopulation" positionX="-317" positionY="-504" width="128" height="208"/>
         <element name="IndividualHandicapper" positionX="-612" positionY="-463" width="128" height="283"/>
-        <element name="ECFirstTurnStats" positionX="-342" positionY="-241" width="128" height="88"/>
-        <element name="ECTopOfStretchStats" positionX="-387" positionY="-79" width="128" height="88"/>
-        <element name="ECSecondTurnStats" positionX="63" positionY="-144" width="128" height="88"/>
-        <element name="ECDistanceClassStats" positionX="-18" positionY="-378" width="128" height="148"/>
-        <element name="ECTrack" positionX="-128" positionY="-486" width="128" height="88"/>
     </elements>
 </model>

@@ -27,6 +27,7 @@
 #import "ECSecondTurnStats.h"
 #import "ECTopOfStretchStats.h"
 #import "NSString+ECStringValidizer.h"
+#import "ECTrack.h"
 
 @implementation ECEvolutionController
 
@@ -95,7 +96,7 @@
 		
 		self.population.track = [NSEntityDescription insertNewObjectForEntityForName:@"ECTrack"
 															  inManagedObjectContext:MOC] ;
-		self.population.track.trackStatistics = [self createPostStatisticsSet];
+		self.population.track.trackStatistics = [self createSetOfStatisticsForTrack:self.population.track];
 	}
 		
 	self.rankedPopulation = [self createNewHandicappers];
@@ -103,11 +104,12 @@
 	[self fillWorkingPopulationArrayWithOriginalMembers];
 }
 
-- (NSSet*)createPostStatisticsSet
+- (NSSet*)createSetOfStatisticsForTrack:(ECTrack*)track
 {
 	NSMutableSet *postStatisticsSet = [NSMutableSet new];
 	
-	ECPostStatistics *post1_550_Maiden = nil;
+	//
+	ECDistanceClassStats *post1_550_Maiden = nil;
 	ECPostStatistics *post2_550_Maiden = nil;
 	ECPostStatistics *post3_550_Maiden = nil;
 	ECPostStatistics *post4_550_Maiden = nil;
