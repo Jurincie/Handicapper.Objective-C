@@ -24,6 +24,8 @@
 @synthesize scratched		= _scratched;
 @synthesize didNotFinish	= _didNotFinish;
 @synthesize matinee			= _matinee;
+@synthesize ranInside		= _ranInside;
+@synthesize ranOutside		= _ranOutside;
 
 @synthesize postPosition			= _postPosition;
 @synthesize breakPosition			= _breakPosition;
@@ -36,7 +38,6 @@
 
 @synthesize entryTime	= _entryTime;
 @synthesize winningTime	= _winningTime;
-
 @synthesize comments	= _comments;
 
 @synthesize deltaPosition1	= _deltaPosition1;  // break position - 1st turn position

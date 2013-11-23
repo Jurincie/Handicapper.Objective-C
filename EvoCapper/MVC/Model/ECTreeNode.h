@@ -11,14 +11,14 @@
 
 @interface ECTreeNode : NSObject
 
-@property (nonatomic, strong)   ECTreeNode    *leftBranch;
-@property (nonatomic, strong)   ECTreeNode    *rightBranch;
-@property (nonatomic, assign)   long double (*functionPtr)();
-@property (nonatomic, strong)   NSString    *functionName;
-@property (assign)              long double leafConstant;
-@property (assign)              NSInteger   leafVariableIndex;
-@property (assign)              NSInteger   functionIndex;
-@property (nonatomic, strong)   NSString    *conditionTest;
+@property (nonatomic, strong)   ECTreeNode		*leftBranch;
+@property (nonatomic, strong)   ECTreeNode		*rightBranch;
+@property (nonatomic, assign)   long double		(*functionPtr)();
+@property (nonatomic, strong)   NSString		*functionName;
+@property (assign)              long double		leafConstant;
+@property (assign)              NSInteger		leafVariableIndex;
+@property (assign)              NSInteger		functionIndex;
+@property (nonatomic, strong)   NSString		*conditionTest;
 
 
 - (id) initWithFunctionPointerIndex:(NSUInteger)funcPtrIndex;

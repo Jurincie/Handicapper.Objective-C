@@ -17,6 +17,11 @@
 #import "ECTrainigRaceRecord.h"
 #import "ECPastLineRecord.h"
 #import "ECEntryStrengthFields.h"
+#import "ECPostStatistics.h"
+#import "ECTrack.h"
+#import "ECFirstTurnStats.h"
+#import "ECSecondTurnStats.h"
+#import "ECTopOfStretchStats.h"
 
 @class PastLineRecord;
 
@@ -30,6 +35,7 @@
 @property (nonatomic, strong)   ECPopulation	*population;
 @property (nonatomic, strong)   NSArray			*workingPopulationDna;  // an array of arrays of dnaTrees
 @property (nonatomic, strong)   NSMutableArray	*rankedPopulation;
+@property (nonatomic, strong)	NSSet			*postStatisticsSet;
 
 + (id)sharedManager;
 - (void)updateAndSaveData;
@@ -42,6 +48,7 @@
 							comments:(NSString*)comments;
 
 - (NSMutableArray*)createNewHandicappers;
+- (NSSet*)createPostStatisticsSet;
 
 - (ECHandicapper*)createNewHandicapperForPopulation:(ECPopulation*)population
 									forGeneration:(NSUInteger)birthGeneration;

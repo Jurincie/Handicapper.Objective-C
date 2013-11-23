@@ -23,6 +23,8 @@
 @property (assign)				BOOL		foundTrouble;
 @property (assign)				BOOL		scratched;
 @property (assign)				BOOL		didNotFinish;
+@property (assign)				BOOL		ranInside;
+@property (assign)				BOOL		ranOutside;
 @property (assign)				BOOL		matinee;
 
 @property (assign)				double		postPosition;

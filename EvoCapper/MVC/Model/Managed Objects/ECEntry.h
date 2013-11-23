@@ -10,7 +10,7 @@
 #import <CoreData/CoreData.h>
 
 
-@interface ECEntry : NSManagedObject
+@interface ECEntry : NSObject
 
 @property (nonatomic, retain) NSDate	*dateOfBirth;
 @property (nonatomic, retain) NSString	*name;

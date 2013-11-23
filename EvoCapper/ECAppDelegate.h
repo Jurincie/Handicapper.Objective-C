@@ -14,16 +14,16 @@
 
 @property (assign) IBOutlet NSWindow *window;
 
-@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-@property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator	*persistentStoreCoordinator;
+@property (readonly, strong, nonatomic) NSManagedObjectModel			*managedObjectModel;
+@property (readonly, strong, nonatomic) NSManagedObjectContext			*managedObjectContext;
 
 @property (strong, nonatomic) ECEvolutionManager    *evolutionManager;
 @property (strong, nonatomic) ECPopulation			*currentPopulation;
 
-- (IBAction)saveAction:(id)sender;
-
 - (IBAction)createNewPopulationButtonTapped:(id)sender;
 - (IBAction)trainPopulationButtonTapped:(id)sender;
+
+- (IBAction)saveAction:(id)sender;
 
 @end

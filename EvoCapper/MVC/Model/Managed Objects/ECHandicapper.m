@@ -1,8 +1,8 @@
 //
-//  Handicapper.m
+//  ECHandicapper.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 11/1/13.
+//  Created by Ron Jurincie on 11/20/13.
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
@@ -12,21 +12,21 @@
 
 @implementation ECHandicapper
 
+@dynamic amountBetOnWinBets;
+@dynamic amountWonOnWinBets1;
 @dynamic birthGeneration;
 @dynamic breakPositionTree;
 @dynamic breakSpeedTree;
 @dynamic earlySpeedRelevanceTree;
 @dynamic earlySpeedTree;
 @dynamic lateSpeedTree;
+@dynamic numberWinBets;
+@dynamic numberWinBetWinners;
 @dynamic otherRelevanceTree;
 @dynamic rank;
 @dynamic recentClassTree;
 @dynamic topSpeedTree;
-@dynamic numberWinBets;
-@dynamic numberWinBetWinners;
-@dynamic amountBetOnWinBets;
-@dynamic amountWonOnWinBets1;
-@dynamic handicapperPopulation;
 @dynamic winThreshold;
+@dynamic handicapperPopulation;
 
 @end

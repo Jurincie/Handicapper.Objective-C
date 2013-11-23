@@ -79,12 +79,40 @@
         self.population.genesisDate     = [NSDate date];
         self.population.mutationRate    = [NSNumber numberWithFloat:mutationRate];
 		
-		self.rankedPopulation = [self createNewHandicappers];
+		self.population.track = [NSEntityDescription insertNewObjectForEntityForName:@"ECTrack"
+															  inManagedObjectContext:MOC] ;
+		self.population.track.trackStatistics = [self createPostStatisticsSet];
+	}
 		
-        [self fillWorkingPopulationArrayWithOriginalMembers];
-    }
+	self.rankedPopulation = [self createNewHandicappers];
+		
+	[self fillWorkingPopulationArrayWithOriginalMembers];
 }
 
+- (NSSet*)createPostStatisticsSet
+{
+	NSMutableSet *postStatisticsSet = [NSMutableSet new];
+	
+	ECPostStatistics *post1_550_Maiden = nil;
+	ECPostStatistics *post2_550_Maiden = nil;
+	ECPostStatistics *post3_550_Maiden = nil;
+	ECPostStatistics *post4_550_Maiden = nil;
+	ECPostStatistics *post5_550_Maiden = nil;
+	ECPostStatistics *post6_550_Maiden = nil;
+	ECPostStatistics *post7_550_Maiden = nil;
+	ECPostStatistics *post8_550_Maiden = nil;
+
+	[postStatisticsSet addObject:post1_550_Maiden];
+	[postStatisticsSet addObject:post2_550_Maiden];
+	[postStatisticsSet addObject:post3_550_Maiden];
+	[postStatisticsSet addObject:post4_550_Maiden];
+	[postStatisticsSet addObject:post5_550_Maiden];
+	[postStatisticsSet addObject:post6_550_Maiden];
+	[postStatisticsSet addObject:post7_550_Maiden];
+	[postStatisticsSet addObject:post8_550_Maiden];
+	
+	return postStatisticsSet;
+}
 
 - (void)fillWorkingPopulationArrayWithOriginalMembers
 {
@@ -915,40 +943,90 @@
 	NSString *dateString	= [NSString stringWithFormat:@"%@%@", datePrefix, dateSuffix];
 	NSDate *pastLineDate	= [NSDate dateWithString:dateString];
 	NSString *tempString	= [lineZero substringFromIndex:10];
-	BOOL matinee			= NO;
-
-	if([tempString characterAtIndex:0] == 'm')
-	{
-		matinee = YES;
-	}
- 
-	pastLineRecord.raceDate					= pastLineDate;
-	pastLineRecord.matinee					= matinee;
-	pastLineRecord.trackName				= [pastLineArray objectAtIndex:1];
-	pastLineRecord.raceDistance				= [[pastLineArray objectAtIndex:2] integerValue];
-	pastLineRecord.trackConditions			= [pastLineArray objectAtIndex:3];
-	pastLineRecord.winningTime				= [[pastLineArray objectAtIndex:4] doubleValue];
-	pastLineRecord.weight					= [[pastLineArray objectAtIndex:5] integerValue];
-	pastLineRecord.postPosition				= [[pastLineArray objectAtIndex:6] integerValue];
-	pastLineRecord.breakPosition			= [[pastLineArray objectAtIndex:7] integerValue];
-	pastLineRecord.firstTurnPosition		= [[pastLineArray objectAtIndex:8] integerValue];
-	pastLineRecord.lengthsLeadFirstTurn		= [[pastLineArray objectAtIndex:9] integerValue];
-	pastLineRecord.topOfStretchPosition		= [[pastLineArray objectAtIndex:10] integerValue];
-	pastLineRecord.lengthsLeadTopOfStretch	= [[pastLineArray objectAtIndex:11] integerValue];
-	pastLineRecord.finishPosition			= [[pastLineArray objectAtIndex:12] integerValue];
-	pastLineRecord.lengthsLeadFinish		= [[pastLineArray objectAtIndex:13] integerValue];
-	pastLineRecord.entryTime				= [[pastLineArray objectAtIndex:14] doubleValue];
-	pastLineRecord.winOdds					= [[pastLineArray objectAtIndex:15] doubleValue];
-	pastLineRecord.comments					= [pastLineArray objectAtIndex:16];
-	pastLineRecord.raceClass				= [pastLineArray objectAtIndex:17];
-	pastLineRecord.numberEntries			= [[pastLineArray objectAtIndex:21] integerValue];
-
-	pastLineRecord.deltaPosition1	= pastLineRecord.breakPosition - pastLineRecord.firstTurnPosition;
-	pastLineRecord.deltaPosition2	= pastLineRecord.firstTurnPosition - pastLineRecord.topOfStretchPosition;
-	pastLineRecord.deltaPosition3	= pastLineRecord.topOfStretchPosition - pastLineRecord.finishPosition;
 	
-	pastLineRecord.deltaLengths1	= pastLineRecord.lengthsLeadFirstTurn - pastLineRecord.lengthsLeadTopOfStretch;
-	pastLineRecord.deltaLengths2	= pastLineRecord.lengthsLeadTopOfStretch - pastLineRecord.lengthsLeadFinish;
+	BOOL matinee = [tempString characterAtIndex:0] == 'm' ? YES:NO;
+	
+	pastLineRecord.foundTrouble		= NO;
+	pastLineRecord.scratched		= NO;
+	pastLineRecord.didNotFinish		= NO;
+	pastLineRecord.ranInside		= NO;
+		pastLineRecord.ranOutside	= NO;
+ 	pastLineRecord.raceDate			= pastLineDate;
+	pastLineRecord.matinee			= matinee;
+	pastLineRecord.trackName		= [pastLineArray objectAtIndex:1];
+	pastLineRecord.raceDistance		= [[pastLineArray objectAtIndex:2] integerValue];
+	pastLineRecord.raceClass		= [pastLineArray objectAtIndex:17];
+	pastLineRecord.trackConditions	= [pastLineArray objectAtIndex:3];
+	pastLineRecord.winningTime		= [[pastLineArray objectAtIndex:4] doubleValue];
+	pastLineRecord.weight			= [[pastLineArray objectAtIndex:5] integerValue];
+	pastLineRecord.postPosition		= [[pastLineArray objectAtIndex:6] integerValue];
+	pastLineRecord.comments			= [pastLineArray objectAtIndex:16];
+	pastLineRecord.numberEntries	= [[pastLineArray objectAtIndex:21] integerValue];
+	
+	pastLineRecord.breakPosition = [[pastLineArray objectAtIndex:7] integerValue];
+	
+	if(pastLineRecord.breakPosition == 0)
+	{
+		pastLineRecord.didNotFinish = YES;
+	}
+	else
+	{
+		pastLineRecord.firstTurnPosition = [[pastLineArray objectAtIndex:8] integerValue];
+		
+		if(pastLineRecord.firstTurnPosition == 0)
+		{
+			pastLineRecord.didNotFinish = YES;
+		}
+		else
+		{
+			pastLineRecord.lengthsLeadFirstTurn	= [[pastLineArray objectAtIndex:9] integerValue];
+			
+			if(pastLineRecord.firstTurnPosition != 1)
+			{
+				pastLineRecord.lengthsLeadFirstTurn *= -1;  // not in lead then this must be a negative value
+			}
+			
+			pastLineRecord.deltaPosition1		= pastLineRecord.breakPosition - pastLineRecord.firstTurnPosition;
+			pastLineRecord.topOfStretchPosition	= [[pastLineArray objectAtIndex:10] integerValue];
+			
+			if(pastLineRecord.topOfStretchPosition == 0)
+			{
+				pastLineRecord.didNotFinish = YES;
+			}
+			else
+			{
+				pastLineRecord.lengthsLeadTopOfStretch	= [[pastLineArray objectAtIndex:11] integerValue];
+				
+				if(pastLineRecord.topOfStretchPosition != 1)
+				{
+					pastLineRecord.lengthsLeadTopOfStretch *= -1;  // not in lead then this must be a negative value
+				}
+				
+				pastLineRecord.deltaLengths1	= pastLineRecord.lengthsLeadFirstTurn - pastLineRecord.lengthsLeadTopOfStretch;
+				pastLineRecord.deltaPosition2	= pastLineRecord.firstTurnPosition - pastLineRecord.topOfStretchPosition;
+				pastLineRecord.finishPosition	= [[pastLineArray objectAtIndex:12] integerValue];
+
+				if(pastLineRecord.finishPosition == 0)
+				{
+					pastLineRecord.didNotFinish = YES;
+				}
+				else
+				{
+					pastLineRecord.lengthsLeadFinish	= [[pastLineArray objectAtIndex:13] integerValue];
+					
+					if(pastLineRecord.finishPosition != 1)
+					{
+						pastLineRecord.lengthsLeadFinish *= -1;  // not in lead then this must be a negative value
+					}
+					
+					pastLineRecord.entryTime		= [[pastLineArray objectAtIndex:14] doubleValue];
+					pastLineRecord.winOdds			= [[pastLineArray objectAtIndex:15] doubleValue];
+					pastLineRecord.deltaPosition3	= pastLineRecord.topOfStretchPosition - pastLineRecord.finishPosition;
+					pastLineRecord.deltaLengths2	= pastLineRecord.lengthsLeadTopOfStretch - pastLineRecord.lengthsLeadFinish;
+				}
+			}
+		}
+	}
 	
 	[self processCommentsForPastLineRecord:pastLineRecord];
 	
@@ -957,14 +1035,15 @@
 
 - (void)processCommentsForPastLineRecord:(ECPastLineRecord*)pastLineRecord
 {
-	pastLineRecord.foundTrouble	= NO;
-	pastLineRecord.scratched	= NO;
-	pastLineRecord.didNotFinish	= NO;
+	// FIX: print up list of unique words used in comments field for every dogs pastLines
+	//		use list to compile more complete list of keyWords below
 	
 	// create arrays here of key words we are looking for in comments string
 	NSArray *collisionWords = [NSArray arrayWithObjects:@"fell", @"trouble", @"collided", @"bumped", @"hit", nil];
 	NSArray *indsideWords	= [NSArray arrayWithObjects:@"rail", @"Rail", @"inside", @"Inside", @"Threat-insid", nil];
 	NSArray *outsideWords	= [NSArray arrayWithObjects:@"outside", @"Outside", @"out", @"Out", nil];
+	NSArray *scratchedWords	= [NSArray arrayWithObjects:@"scratched", @"Scratched", @"SCRATCHED", @"SCR", @"scr", nil];
+	NSArray *dnfWords		= [NSArray arrayWithObjects:@"FELL", @"fell", @"Fell", @"DNF", @"dnf", @"Dnf", nil];
 
 	NSArray *words = [pastLineRecord.comments componentsSeparatedByString:@" "];
 	
@@ -972,17 +1051,27 @@
 	{
 		if([collisionWords containsObject:word])
 		{
-			
+			pastLineRecord.foundTrouble = YES;
 		}
 		
 		if([indsideWords containsObject:word])
 		{
-		
+			pastLineRecord.ranInside = YES;
 		}
-		
+	
 		if([outsideWords containsObject:word])
 		{
-		
+			pastLineRecord.ranOutside = YES;
+		}
+	
+		if([scratchedWords containsObject:word])
+		{
+			pastLineRecord.scratched = YES;
+		}
+	
+		if([dnfWords containsObject:word])
+		{
+			pastLineRecord.didNotFinish = YES;
 		}
 	}
 }
