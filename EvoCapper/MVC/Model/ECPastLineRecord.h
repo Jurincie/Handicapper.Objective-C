@@ -21,11 +21,12 @@
 @property (assign)				double		winOdds;
 
 @property (assign)				BOOL		foundTrouble;
-@property (assign)				BOOL		scratched;
+@property (assign)				BOOL		isMatinee;
 @property (assign)				BOOL		didNotFinish;
 @property (assign)				BOOL		ranInside;
+@property (assign)				BOOL		ranMidtrack;
 @property (assign)				BOOL		ranOutside;
-@property (assign)				BOOL		matinee;
+@property (assign)				BOOL		wasScratched;
 
 @property (assign)				double		postPosition;
 @property (assign)				double		breakPosition;

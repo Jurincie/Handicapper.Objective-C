@@ -2,18 +2,18 @@
 //  ECSecondTurnStats.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 11/21/13.
+//  Created by Ron Jurincie on 11/25/13.
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
 #import "ECSecondTurnStats.h"
-#import "ECDistanceClassStats.h"
+#import "ECTrackStats.h"
 
 
 @implementation ECSecondTurnStats
 
 @dynamic averagePositionTopOfStretch;
-@dynamic position;
-@dynamic distanceClassStats;
+@dynamic secondTurnPosition;
+@dynamic trackRaceDistanceStats;
 
 @end

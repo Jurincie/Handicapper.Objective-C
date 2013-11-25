@@ -1,12 +1,12 @@
 //
-//  ECDistanceClassStats.m
+//  ECTrackStats.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 11/22/13.
+//  Created by Ron Jurincie on 11/25/13.
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
-#import "ECDistanceClassStats.h"
+#import "ECTrackStats.h"
 #import "ECFirstTurnStats.h"
 #import "ECPostStatistics.h"
 #import "ECSecondTurnStats.h"
@@ -14,9 +14,8 @@
 #import "ECTrack.h"
 
 
-@implementation ECDistanceClassStats
+@implementation ECTrackStats
 
-@dynamic raceClass;
 @dynamic raceDistance;
 @dynamic firstTurnStatistics;
 @dynamic postStatistics;

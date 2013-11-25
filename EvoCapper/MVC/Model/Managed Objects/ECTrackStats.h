@@ -1,8 +1,8 @@
 //
-//  ECDistanceClassStats.h
+//  ECTrackStats.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 11/22/13.
+//  Created by Ron Jurincie on 11/25/13.
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
@@ -11,18 +11,17 @@
 
 @class ECFirstTurnStats, ECPostStatistics, ECSecondTurnStats, ECTopOfStretchStats, ECTrack;
 
-@interface ECDistanceClassStats : NSManagedObject
+@interface ECTrackStats : NSManagedObject
 
-@property (nonatomic, retain) NSString * raceClass;
-@property (nonatomic, retain) NSNumber * raceDistance;
-@property (nonatomic, retain) NSOrderedSet *firstTurnStatistics;
-@property (nonatomic, retain) NSOrderedSet *postStatistics;
-@property (nonatomic, retain) NSOrderedSet *secondTurnStatistics;
-@property (nonatomic, retain) NSOrderedSet *topOfStretchStatistics;
-@property (nonatomic, retain) ECTrack *track;
+@property (nonatomic, retain) NSNumber		*raceDistance;
+@property (nonatomic, retain) NSOrderedSet	*firstTurnStatistics;
+@property (nonatomic, retain) NSOrderedSet	*postStatistics;
+@property (nonatomic, retain) NSOrderedSet	*secondTurnStatistics;
+@property (nonatomic, retain) NSOrderedSet	*topOfStretchStatistics;
+@property (nonatomic, retain) ECTrack		*track;
 @end
 
-@interface ECDistanceClassStats (CoreDataGeneratedAccessors)
+@interface ECTrackStats (CoreDataGeneratedAccessors)
 
 - (void)insertObject:(ECFirstTurnStats *)value inFirstTurnStatisticsAtIndex:(NSUInteger)idx;
 - (void)removeObjectFromFirstTurnStatisticsAtIndex:(NSUInteger)idx;

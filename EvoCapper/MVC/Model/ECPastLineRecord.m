@@ -21,10 +21,11 @@
 @synthesize winOdds			= _winOdds;
 
 @synthesize foundTrouble	= _foundTrouble;
-@synthesize scratched		= _scratched;
+@synthesize isMatinee		= _isMatinee;
 @synthesize didNotFinish	= _didNotFinish;
-@synthesize matinee			= _matinee;
+@synthesize wasScratched	= _wasScratched;
 @synthesize ranInside		= _ranInside;
+@synthesize ranMidtrack		= _ranMidtrack;
 @synthesize ranOutside		= _ranOutside;
 
 @synthesize postPosition			= _postPosition;
@@ -100,10 +101,8 @@
 22: Replay
 23:
 24:
- 0: 2012-09-18e14
- 1: SP
- 2: 660
- 3: ...
+
+Note: records without replays are missing line 22, so they are 1 line shorter
 
 */
 

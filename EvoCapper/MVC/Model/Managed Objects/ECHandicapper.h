@@ -14,7 +14,6 @@
 @interface ECHandicapper : NSManagedObject
 
 @property (nonatomic, retain) NSNumber		*amountBetOnWinBets;
-@property (nonatomic, retain) NSNumber		*amountWonOnWinBets1;
 @property (nonatomic, retain) NSNumber		*birthGeneration;
 @property (nonatomic, retain) NSString		*breakPositionTree;
 @property (nonatomic, retain) NSString		*breakSpeedTree;

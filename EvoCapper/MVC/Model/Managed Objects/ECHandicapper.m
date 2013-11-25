@@ -13,7 +13,6 @@
 @implementation ECHandicapper
 
 @dynamic amountBetOnWinBets;
-@dynamic amountWonOnWinBets1;
 @dynamic birthGeneration;
 @dynamic breakPositionTree;
 @dynamic breakSpeedTree;

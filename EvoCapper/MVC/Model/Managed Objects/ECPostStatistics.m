@@ -2,12 +2,12 @@
 //  ECPostStatistics.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 11/21/13.
+//  Created by Ron Jurincie on 11/25/13.
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
 #import "ECPostStatistics.h"
-#import "ECDistanceClassStats.h"
+#import "ECTrackStats.h"
 
 
 @implementation ECPostStatistics
@@ -15,9 +15,8 @@
 @dynamic breakPositionAverage;
 @dynamic finishPositionAverage;
 @dynamic firstTurnPositionAverage;
-@dynamic post;
+@dynamic postNumber;
 @dynamic raceTimeAverage;
-@dynamic topOfStretchPositionAverage;
-@dynamic distanceClassSet;
+@dynamic trackRaceDistanceStats;
 
 @end

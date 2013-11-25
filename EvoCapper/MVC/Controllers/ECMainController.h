@@ -1,5 +1,5 @@
 //
-//  ECEvolutionController.h
+//  ECMainController.h
 //  EvoCapper
 //
 //  Created by Ron Jurincie on 10/23/13.
@@ -9,9 +9,9 @@
 #import "stdlib.h"
 #import <Foundation/Foundation.h>
 
-@class ECPastLineRecord, ECPopulation, ECHandicapper, ECTrainigRaceRecord, ECTree, ECRacePayouts, ECTrack;
+@class ECPastLineRecord, ECPopulation, ECHandicapper, ECTrainigRaceRecord, ECTree, ECRacePayouts, ECTrack, ECTrackStats;
 
-@interface ECEvolutionController : NSObject
+@interface ECMainController : NSObject
 
 @property (assign)				NSUInteger		trainingPopSize;
 @property (assign)				NSUInteger		populationSize;
@@ -21,14 +21,17 @@
 @property (nonatomic, strong)   ECPopulation	*population;
 @property (nonatomic, strong)   NSArray			*workingPopulationDna;  // an array of arrays of dnaTrees
 @property (nonatomic, strong)   NSMutableArray	*rankedPopulation;
-@property (nonatomic, strong)	NSSet			*postStatisticsSet;
+@property (nonatomic, strong)	NSOrderedSet	*postStatisticsSet;
 
 #pragma sharedMemory and CoreData methods
 + (id)sharedManager;
 - (void)updateAndSaveData;
 
 #pragma track statistics methods
-- (NSSet*)createSetOfStatisticsForTrack:(ECTrack*)track;
+- (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrack*)track;
+
+- (void)processStatsFromResultFile:(NSString*)resultFilePath
+				 withStatisticsSet:(NSOrderedSet*)statsSet;
 
 #pragma darwinian methods
 - (void)createNewPopoulationWithName:(NSString*)name

@@ -15,9 +15,9 @@
 	BOOL answer = NO;
 	
 	if([inString characterAtIndex:5] == '_' &&
-	   [inString characterAtIndex:20] == '_' &&
-	   [inString characterAtIndex:25] == '_' &&
-	   [inString characterAtIndex:40] == '_' &&
+	   [inString characterAtIndex:11] == '_' &&
+	   [inString characterAtIndex:22] == '_' &&
+	   [inString characterAtIndex:33] == '_' &&
 	   [inString characterAtIndex:45] == '_')
 	{
 		answer = YES;

@@ -18,7 +18,7 @@
 @synthesize recentClassStrength			= _recentClassStrength;
 @synthesize earlySpeedRelevanceFactor	= _earlySpeedRelevanceFactor;
 @synthesize otherRelevanceFactor		= _otherRelevanceFactor;
-@synthesize numberPastLines				= _numberPastLines;
+@synthesize numberPastLinesUsed				= _numberPastLinesUsed;
 @synthesize numberInsideComments		= _numberInsideComments;
 @synthesize numberOutsideComments		= _numberOutsideComments;
 @synthesize numberCollisionComments		= _numberCollisionComments;
@@ -38,7 +38,7 @@
 		self.earlySpeedRelevanceFactor	= 0.0;
 		self.otherRelevanceFactor		= 0.0;
 		self.numberCollisionComments	= 0;
-		self.numberPastLines			= 0;
+		self.numberPastLinesUsed			= 0;
 		self.numberInsideComments		= 0;
 		self.numberOutsideComments		= 0;
 		self.numberCollisionComments	= 0;

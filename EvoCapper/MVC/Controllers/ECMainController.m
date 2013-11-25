@@ -1,5 +1,5 @@
 //
-//  ECEvolutionManager.m
+//  ECMainController.m
 //  EvoCapper
 //
 //  Created by Ron Jurincie on 10/23/13.
@@ -11,7 +11,7 @@
 
 #define MOC [[NSApp delegate]managedObjectContext]
 
-#import "ECEvolutionController.h"
+#import "ECMainController.h"
 #import "ECPopulation.h"
 #import "Constants.h"
 #import "ECEntry.h"
@@ -29,7 +29,7 @@
 #import "NSString+ECStringValidizer.h"
 #import "ECTrack.h"
 
-@implementation ECEvolutionController
+@implementation ECMainController
 
 @synthesize trainingPopSize			= _trainingPopSize;
 @synthesize populationSize			= _populationSize;
@@ -39,11 +39,10 @@
 @synthesize workingPopulationDna	= _workingPopulationDna;
 @synthesize rankedPopulation		= _rankedPopulation;
 
-#pragma mark Singleton Methods
-
+#pragma sharedMemory and CoreData methods
 + (id)sharedManager
 {
-    static ECEvolutionController *sharedManager = nil;
+    static ECMainController *sharedManager = nil;
     
     static dispatch_once_t onceToken;
     
@@ -51,6 +50,193 @@
     
     return sharedManager;
 }
+
+- (void)updateAndSaveData
+{
+    
+}
+
+#pragma track statistics methods
+- (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrack*)track
+{
+	ECTrackStats *stats550		= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
+																inManagedObjectContext:MOC];
+	
+	ECTrackStats *stats685		= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
+																inManagedObjectContext:MOC];
+	
+	NSOrderedSet *distanceStats = [NSOrderedSet orderedSetWithObjects:stats550, stats685, nil];
+	
+	// iterate through training data to calculate and save statistics
+	NSString *afternoonFolderPath1	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Afternoon/2008";
+	NSString *afternoonFolderPath2	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Afternoon/2009";
+	NSString *afternoonFolderPath3	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Afternoon/2010";
+	NSString *afternoonFolderPath4	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Afternoon/2011";
+	NSString *afternoonFolderPath5	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Afternoon/2012";
+	NSString *afternoonFolderPath6	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Afternoon/2013";
+	
+	NSString *eveningFolderPath1	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Evening/2008";
+	NSString *eveningFolderPath2	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Evening/2009";
+	NSString *eveningFolderPath3	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Evening/2010";
+	NSString *eveningFolderPath4	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Evening/2011";
+	NSString *eveningFolderPath5	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Evening/2012";
+	NSString *eveningFolderPath6	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Evening/2013";
+	
+	NSArray *resultFolderPaths = [NSArray arrayWithObjects:afternoonFolderPath1, afternoonFolderPath2, afternoonFolderPath3,
+															afternoonFolderPath4, afternoonFolderPath5, afternoonFolderPath6,
+															eveningFolderPath1, eveningFolderPath2, eveningFolderPath3,
+															eveningFolderPath4, eveningFolderPath5, eveningFolderPath6, nil];
+	NSError *error					= nil;
+	NSFileManager *localFileManager	= [[NSFileManager alloc] init];
+	
+	for(NSString *directoryPath in resultFolderPaths)
+	{
+		NSDirectoryEnumerator *dirEnum = [localFileManager enumeratorAtPath:directoryPath];
+		NSString *fileName;
+		
+		while(fileName = [dirEnum nextObject])
+		{
+			if([fileName isEqualToString:@".DS_Store"])
+			{
+				continue;
+			}
+		
+			if([[localFileManager attributesOfItemAtPath:directoryPath
+												   error: NULL] fileSize] == 0)
+			{
+				NSLog(@"deleting: %@", directoryPath);
+			
+				[localFileManager removeItemAtPath:directoryPath
+											 error:&error];
+			}
+			else
+			{
+				NSString *filePath = [NSString stringWithFormat:@"%@/%@", directoryPath, fileName];
+				
+				[self processStatsFromResultFile:filePath
+							   withStatisticsSet:distanceStats];
+			}
+		}
+	}
+
+	return distanceStats;
+}
+
+- (void)processStatsFromResultFile:(NSString*)resultFilePath
+				 withStatisticsSet:(NSOrderedSet*)statsSet
+{
+	//		1  <html>
+	//		2  <head>
+	//		3  <title> Rosnet,Inc - Greyhound Racing</title>
+	//		4  </head>
+	//		5  </head>
+	//		6  <body bgcolor="#FFFFFF" text="#000000" vlink="#00FF00" link="#FFFF00">
+	//		7  <font face=Arial Narrow size=3>
+	//		8  <pre>
+	//		9  ____________________________________________________________________________________________________________________________________
+	//		10  DERBY LANE                   Wednesday Nov 05 2008 Afternoon   Race 1    Grade  C   (550)  Time: 31.19
+	//		11  ____________________________________________________________________________________________________________________________________
+	//		12  Don't Sell Short 64  1 5 1 2  1 2  1 1½    31.19 *2.30 Grabbed Lead 1st Turn
+	//		13  Dancin Maddox    68½ 2 8 3    3    2 1½    31.30 12.90 Just Up For Place-midt
+	//		14  Jt Gold N Silver 75½ 8 3 7    5    3 2     31.31 13.70 Trying Hard-showed Rl
+	//		15  Kiowa Manley     71  5 1 2    2    4 2½    31.37 2.50  Factor To Stretch-ins
+	//		16  King Tarik       74½ 3 6 8    7    5 3½    31.44 8.00  Blocked 1st-went Wide
+	//		17  Good Luck Charm  61  4 7 4    4    6 4     31.49 9.50  Some Erly Gain-crwdd
+	//		18  Cold B Be Happy  72  7 2 6    6    7 4½    31.50 3.50  Cls Qtrs Both Turns-rl
+	//		19  Forego Cide      78  6 4 5    8    8 10    31.91 9.90  Went Wide 1st Tn-faded
+	//		20  Alderson Kennel's BD. F 2/17/2006 Dodgem By Design x Sunberry
+	//		21  1 Don't Sell Short  6.60    4.20    2.60     Quin        (1-2)        $45.60
+	//		22  2 Dancin Maddox             10.80   8.00     Perf        (1-2)        $85.80
+	//		23  8 Jt Gold N Silver                  4.80     Tri          (1-2-8)     $417.80
+	//		24  5 Kiowa Manley                               Super       (1-2-8-5)   $4,246.40
+	//		25
+	
+	BOOL isThisNewRecord	= NO;
+	NSError *error			= nil;
+	NSString *fileContents	= [NSString stringWithContentsOfFile:resultFilePath
+													   encoding:NSStringEncodingConversionAllowLossy
+														  error:&error];
+	
+	NSArray *fileContentsLineByLine = [fileContents componentsSeparatedByString:@"\n"];
+		
+	// skip html meta lines
+	NSUInteger startIndex = 8;
+	
+	// takes us to the attendance line
+	NSUInteger endIndex	= fileContentsLineByLine.count - 4;
+	
+	// iterate through file line by line
+	// looking for start of each new race
+	for(NSUInteger i = startIndex; i < endIndex; i++)
+	{
+		NSString *thisLine		= [fileContentsLineByLine objectAtIndex:i];
+		NSString *twoLinesAhead	= [fileContentsLineByLine objectAtIndex:i+2];
+		
+		if([NSString isThisALongLineOfUnderscores:thisLine] && [NSString isThisALongLineOfUnderscores:twoLinesAhead])
+		{
+			// reset
+			isThisNewRecord		= NO;
+			NSString *raceInfoLine	= [fileContentsLineByLine objectAtIndex:i+1];
+			NSString *modifiedLine	= [self removeExtraSpacesFromString:raceInfoLine];
+			NSArray *tokens			= [modifiedLine componentsSeparatedByString:@" "];
+			NSUInteger index		= 0;
+		
+			for(NSString *word in tokens)
+			{
+				if([word isEqualToString:@"Grade"])
+				{
+					break;
+				}
+			
+				index++;
+			}
+		
+			NSString *suffix = [[tokens objectAtIndex:index+2] substringFromIndex:1];
+			NSString *raceDxString = [suffix substringToIndex:suffix.length-1];
+			
+			ECTrackStats *trackStats = nil;
+			
+			if([raceDxString isEqualToString:@"550"])
+			{
+				trackStats = [statsSet objectAtIndex:0];
+			}
+			else if([raceDxString isEqualToString:@"685"])
+			{
+				trackStats = [statsSet objectAtIndex:1];
+			}
+				
+			// create thisRaceLineByLine and add the line starting with trackName (lines 10)
+			NSMutableArray *thisRaceLineByLine = [NSMutableArray new];
+			
+			// skips 2nd longLine...
+			NSUInteger thisRaceLineNumber = 3;
+			
+			// loop until next race start found
+			while(i + thisRaceLineNumber < endIndex)
+			{
+				thisLine		= [fileContentsLineByLine objectAtIndex:i + thisRaceLineNumber++];
+				isThisNewRecord	= [NSString isThisALongLineOfUnderscores:thisLine];
+				
+				if(isThisNewRecord)
+				{
+					break;  // new record found
+				}
+				
+				else
+				{
+					[thisRaceLineByLine addObject:thisLine];
+				}
+			}
+			
+			NSLog(@"%@", [thisRaceLineByLine description]);
+		
+			// increment i so we don't reread this race
+			i += thisRaceLineNumber - 2;
+		}
+	}
+}
+
+#pragma custom class methods
 
 - (id)init
 {
@@ -68,8 +254,6 @@
     return self;
 }
 
-#pragma custom class methods
-
 - (void)createNewPopoulationWithName:(NSString*)name
 						 initialSize:(NSUInteger)initialSize
 						maxTreeDepth:(NSUInteger)maxTreeDepth
@@ -83,10 +267,13 @@
 	self.generationsEvolved = [self.population.generationNumber unsignedIntegerValue];
     self.population			= [NSEntityDescription insertNewObjectForEntityForName:@"HandicapperPopulation"
 															inManagedObjectContext:MOC];
-	self.populationSize		= initialSize;
-	
-    if(self.population)
-    {
+		
+	if(self.population)
+	{
+		self.populationSize = initialSize;
+
+		self.population.track			= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrack"
+																		inManagedObjectContext:MOC] ;
 		self.population.populationName  = @"NewPopulationTest 1.0.0.0";
         self.population.initialSize     = [NSNumber numberWithInteger:initialSize];
         self.population.minTreeDepth    = [NSNumber numberWithInteger:mintreeDepth];
@@ -94,9 +281,7 @@
         self.population.genesisDate     = [NSDate date];
         self.population.mutationRate    = [NSNumber numberWithFloat:mutationRate];
 		
-		self.population.track = [NSEntityDescription insertNewObjectForEntityForName:@"ECTrack"
-															  inManagedObjectContext:MOC] ;
-		self.population.track.trackStatistics = [self createSetOfStatisticsForTrack:self.population.track];
+		self.population.track.trackRaceDistanceStats = [self createSetOfStatisticsForTrack:self.population.track];
 	}
 		
 	self.rankedPopulation = [self createNewHandicappers];
@@ -104,31 +289,6 @@
 	[self fillWorkingPopulationArrayWithOriginalMembers];
 }
 
-- (NSSet*)createSetOfStatisticsForTrack:(ECTrack*)track
-{
-	NSMutableSet *postStatisticsSet = [NSMutableSet new];
-	
-	//
-	ECDistanceClassStats *post1_550_Maiden = nil;
-	ECPostStatistics *post2_550_Maiden = nil;
-	ECPostStatistics *post3_550_Maiden = nil;
-	ECPostStatistics *post4_550_Maiden = nil;
-	ECPostStatistics *post5_550_Maiden = nil;
-	ECPostStatistics *post6_550_Maiden = nil;
-	ECPostStatistics *post7_550_Maiden = nil;
-	ECPostStatistics *post8_550_Maiden = nil;
-
-	[postStatisticsSet addObject:post1_550_Maiden];
-	[postStatisticsSet addObject:post2_550_Maiden];
-	[postStatisticsSet addObject:post3_550_Maiden];
-	[postStatisticsSet addObject:post4_550_Maiden];
-	[postStatisticsSet addObject:post5_550_Maiden];
-	[postStatisticsSet addObject:post6_550_Maiden];
-	[postStatisticsSet addObject:post7_550_Maiden];
-	[postStatisticsSet addObject:post8_550_Maiden];
-	
-	return postStatisticsSet;
-}
 
 - (void)fillWorkingPopulationArrayWithOriginalMembers
 {
@@ -838,15 +998,13 @@
 	NSDate *pastLineDate	= [NSDate dateWithString:dateString];
 	NSString *tempString	= [lineZero substringFromIndex:10];
 	
-	BOOL matinee = [tempString characterAtIndex:0] == 'm' ? YES:NO;
-	
+	pastLineRecord.isMatinee		= [tempString characterAtIndex:0] == 'm' ? YES:NO;
 	pastLineRecord.foundTrouble		= NO;
-	pastLineRecord.scratched		= NO;
+	pastLineRecord.wasScratched		= NO;
 	pastLineRecord.didNotFinish		= NO;
 	pastLineRecord.ranInside		= NO;
 		pastLineRecord.ranOutside	= NO;
  	pastLineRecord.raceDate			= pastLineDate;
-	pastLineRecord.matinee			= matinee;
 	pastLineRecord.trackName		= [pastLineArray objectAtIndex:1];
 	pastLineRecord.raceDistance		= [[pastLineArray objectAtIndex:2] integerValue];
 	pastLineRecord.raceClass		= [pastLineArray objectAtIndex:17];
@@ -932,10 +1090,17 @@
 	// FIX: print up list of unique words used in comments field for every dogs pastLines
 	//		use list to compile more complete list of keyWords below
 	
+	//	ADD THESE:
+	// INSIDE WORDS: Stretch-in , Improvement-rail, Cut In
+	// OUTSIDE WORDS:
+	// MIDTRACK WORDS: Turn-mid
+
+				
 	// create arrays here of key words we are looking for in comments string
 	NSArray *collisionWords = [NSArray arrayWithObjects:@"fell", @"trouble", @"collided", @"bumped", @"hit", nil];
 	NSArray *indsideWords	= [NSArray arrayWithObjects:@"rail", @"Rail", @"inside", @"Inside", @"Threat-insid", nil];
 	NSArray *outsideWords	= [NSArray arrayWithObjects:@"outside", @"Outside", @"out", @"Out", nil];
+	NSArray *midtrackWords	= [NSArray arrayWithObjects:@"Midtrack", @"mid", @"midtrack", @"Mid", nil];
 	NSArray *scratchedWords	= [NSArray arrayWithObjects:@"scratched", @"Scratched", @"SCRATCHED", @"SCR", @"scr", nil];
 	NSArray *dnfWords		= [NSArray arrayWithObjects:@"FELL", @"fell", @"Fell", @"DNF", @"dnf", @"Dnf", nil];
 
@@ -953,6 +1118,11 @@
 			pastLineRecord.ranInside = YES;
 		}
 	
+		if([midtrackWords containsObject:word])
+		{
+			pastLineRecord.ranMidtrack = YES;
+		}
+		
 		if([outsideWords containsObject:word])
 		{
 			pastLineRecord.ranOutside = YES;
@@ -960,7 +1130,7 @@
 	
 		if([scratchedWords containsObject:word])
 		{
-			pastLineRecord.scratched = YES;
+			pastLineRecord.wasScratched = YES;
 		}
 	
 		if([dnfWords containsObject:word])
@@ -1109,10 +1279,9 @@
 	ECHandicapper *newHandicapper = [NSEntityDescription insertNewObjectForEntityForName:@"Handicapper"
 																inManagedObjectContext:MOC];
 	
-	newHandicapper.numberWinBets			= [NSNumber numberWithInteger:0];
-	newHandicapper.numberWinBetWinners		= [NSNumber numberWithInteger:0];
-	newHandicapper.amountBetOnWinBets		= [NSNumber numberWithDouble:0.0];
-	newHandicapper.amountWonOnWinBets1		= [NSNumber numberWithDouble:0.0];
+	newHandicapper.numberWinBets		= [NSNumber numberWithInteger:0];
+	newHandicapper.numberWinBetWinners	= [NSNumber numberWithInteger:0];
+	newHandicapper.amountBetOnWinBets	= [NSNumber numberWithDouble:0.0];
 	
 	NSArray *newChildsDnaTreesArray = [self createNewDnaByCrossingOverDnaFrom:parent1
 																  withDnaFrom:parent2];
@@ -2372,10 +2541,6 @@ double getRand(int max, int granularity)
     return quadTree;
 }
 
-- (void)updateAndSaveData
-{
-    
-}
 
 
 @end
