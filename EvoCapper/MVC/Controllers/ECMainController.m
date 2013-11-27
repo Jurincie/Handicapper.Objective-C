@@ -21,13 +21,13 @@
 #import "ECTrainigRaceRecord.h"
 #import "ECPastLineRecord.h"
 #import "ECEntryStrengthFields.h"
-#import "ECPostStatistics.h"
+#import "ECPostStats.h"
 #import "ECTrack.h"
 #import "ECFirstTurnStats.h"
 #import "ECSecondTurnStats.h"
-#import "ECTopOfStretchStats.h"
 #import "NSString+ECStringValidizer.h"
 #import "ECTrack.h"
+#import "ECTrackStats.h"
 
 @implementation ECMainController
 
@@ -38,6 +38,7 @@
 @synthesize generationsThisCycle	= _generationsThisCycle;
 @synthesize workingPopulationDna	= _workingPopulationDna;
 @synthesize rankedPopulation		= _rankedPopulation;
+
 
 #pragma sharedMemory and CoreData methods
 + (id)sharedManager
@@ -59,13 +60,54 @@
 #pragma track statistics methods
 - (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrack*)track
 {
-	ECTrackStats *stats550		= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
-																inManagedObjectContext:MOC];
 	
-	ECTrackStats *stats685		= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
-																inManagedObjectContext:MOC];
+	ECTrackStats *stats550	= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
+														   inManagedObjectContext:MOC];
 	
-	NSOrderedSet *distanceStats = [NSOrderedSet orderedSetWithObjects:stats550, stats685, nil];
+	ECTrackStats *stats685	= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
+														   inManagedObjectContext:MOC];
+				
+	NSOrderedSet *statsSet	= [NSOrderedSet orderedSetWithObjects:stats550, stats685, nil];
+
+	// Each of the ECTrackStats objects (550 and 685 for now) needs 3 ordered arrays of kMaximumNumberEntries
+	// postStatsitics, firstTurnStatistics and secondTurnStatistics
+	NSOrderedSet *postStats550			= [NSOrderedSet new];
+	NSOrderedSet *firstTurnStats550		= [NSOrderedSet new];
+	NSOrderedSet *secondTurnStats550	= [NSOrderedSet new];
+	NSOrderedSet *postStats685			= [NSOrderedSet new];
+	NSOrderedSet *firstTurnStats685		= [NSOrderedSet new];
+	NSOrderedSet *secondTurnStats685	= [NSOrderedSet new];
+	
+	for(NSUInteger index = 0; index < kMaximumNumberEntries; index++)
+	{
+		ECPostStats *newPostStat550		= [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats"
+																		inManagedObjectContext:MOC];
+		ECFirstTurnStats *newFtStat550	= [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats"
+																		inManagedObjectContext:MOC];
+		ECSecondTurnStats *newStStat550	= [NSEntityDescription insertNewObjectForEntityForName:@"ECSecondTurnStats"
+																		inManagedObjectContext:MOC];
+		
+		ECPostStats *newPostStat685		= [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats"
+																		inManagedObjectContext:MOC];
+		ECFirstTurnStats *newFtStat685	= [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats"
+																		inManagedObjectContext:MOC];
+		ECSecondTurnStats *newStStat685	= [NSEntityDescription insertNewObjectForEntityForName:@"ECSecondTurnStats"
+																		inManagedObjectContext:MOC];
+				
+		[postStats550		insertValue:newPostStat550	atIndex:index inPropertyWithKey:nil];
+		[postStats685		insertValue:newPostStat685	atIndex:index inPropertyWithKey:nil];
+		[firstTurnStats550	insertValue:newFtStat550	atIndex:index inPropertyWithKey:nil];
+		[firstTurnStats685	insertValue:newFtStat685	atIndex:index inPropertyWithKey:nil];
+		[secondTurnStats550	insertValue:newStStat550	atIndex:index inPropertyWithKey:nil];
+		[secondTurnStats685	insertValue:newStStat685	atIndex:index inPropertyWithKey:nil];
+	}
+	
+	stats550.postStatistics			= postStats550;
+	stats550.firstTurnStatistics	= firstTurnStats550;
+	stats550.secondTurnStatistics	= secondTurnStats550;
+	stats685.postStatistics			= postStats685;
+	stats685.firstTurnStatistics	= firstTurnStats685;
+	stats685.secondTurnStatistics	= secondTurnStats685;
 	
 	// iterate through training data to calculate and save statistics
 	NSString *afternoonFolderPath1	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Afternoon/2008";
@@ -74,7 +116,6 @@
 	NSString *afternoonFolderPath4	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Afternoon/2011";
 	NSString *afternoonFolderPath5	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Afternoon/2012";
 	NSString *afternoonFolderPath6	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Afternoon/2013";
-	
 	NSString *eveningFolderPath1	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Evening/2008";
 	NSString *eveningFolderPath2	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Evening/2009";
 	NSString *eveningFolderPath3	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Evening/2010";
@@ -88,6 +129,19 @@
 															eveningFolderPath4, eveningFolderPath5, eveningFolderPath6, nil];
 	NSError *error					= nil;
 	NSFileManager *localFileManager	= [[NSFileManager alloc] init];
+	
+	// create a 2D arrry of integers
+	//		and init all to 0
+	int counterArray[kMaximumNumberEntries][kNumberRaceDataPoints];
+	
+	for(int member = 0; member < kMaximumNumberEntries; member++)
+	{
+		for(int dataPoint = 0; dataPoint < kNumberRaceDataPoints; dataPoint++)
+		{
+			counterArray[member][dataPoint] = 0;
+		}
+	}
+	
 	
 	for(NSString *directoryPath in resultFolderPaths)
 	{
@@ -114,16 +168,18 @@
 				NSString *filePath = [NSString stringWithFormat:@"%@/%@", directoryPath, fileName];
 				
 				[self processStatsFromResultFile:filePath
-							   withStatisticsSet:distanceStats];
+							   withStatisticsSet:statsSet
+								 andCounterArray:&counterArray[kMaximumNumberEntries][kNumberRaceDataPoints]];
 			}
 		}
 	}
 
-	return distanceStats;
+	return statsSet;
 }
 
 - (void)processStatsFromResultFile:(NSString*)resultFilePath
 				 withStatisticsSet:(NSOrderedSet*)statsSet
+				 andCounterArray:(int*)counterArray
 {
 	//		1  <html>
 	//		2  <head>
@@ -175,7 +231,7 @@
 		if([NSString isThisALongLineOfUnderscores:thisLine] && [NSString isThisALongLineOfUnderscores:twoLinesAhead])
 		{
 			// reset
-			isThisNewRecord		= NO;
+			isThisNewRecord			= NO;
 			NSString *raceInfoLine	= [fileContentsLineByLine objectAtIndex:i+1];
 			NSString *modifiedLine	= [self removeExtraSpacesFromString:raceInfoLine];
 			NSArray *tokens			= [modifiedLine componentsSeparatedByString:@" "];
@@ -228,12 +284,73 @@
 				}
 			}
 			
-			NSLog(@"%@", [thisRaceLineByLine description]);
+			//	iterate through all entries via thisRaceLineByLine
+			for(NSString *line in thisRaceLineByLine)
+			{
+				[self setStatsForLine:line
+					withStatisticsSet:statsSet
+					  andCounterArray:counterArray];
+			}
+			
 		
 			// increment i so we don't reread this race
 			i += thisRaceLineNumber - 2;
 		}
 	}
+}
+
+- (void)setStatsForLine:(NSString*)resultFileLine
+	  withStatisticsSet:(NSOrderedSet*)statsSet
+		andCounterArray:(int*)counterArray
+{
+	/*
+		King Tarik 74½ 3 6 8 7 5 3½ 31.44 8.00 Blocked 1st-went Wide
+	*/
+	
+	// first get the post and break positions
+	NSArray *tokens = [resultFileLine componentsSeparatedByString:@" "];
+	
+	NSUInteger index = 0;
+		
+	for(; index < tokens.count; index++)
+	{
+		NSString *word = [tokens objectAtIndex:index];
+		
+		if([NSString isThisAValidWeightString:word])
+		{
+			break;
+		}
+	}
+	
+	NSString *postWord			= [tokens objectAtIndex:++index];
+	NSString *breakWord			= [tokens objectAtIndex:++index];
+	NSString *firstTurnWord		= [tokens objectAtIndex:++index];
+	
+	if([firstTurnWord isEqualToString:@"1"])
+	{
+		index++;
+	}
+	
+	NSString *secondTurnWord = [tokens objectAtIndex:++index];
+	
+	if([secondTurnWord isEqualToString:@"1"])
+	{
+		index++;
+	}
+	
+	NSString *finishWord = [tokens objectAtIndex:++index];
+	
+	index += 2;
+	NSString *finishTimeWord = [tokens objectAtIndex:index];
+	
+	NSUInteger postPosition			= (NSUInteger)[postWord integerValue];
+	NSUInteger breakPosition		= (NSUInteger)[breakWord integerValue];
+	NSUInteger firstTurnPosition	= (NSUInteger)[firstTurnWord integerValue];
+	NSUInteger secondTurnPosition	= (NSUInteger)[secondTurnWord integerValue];
+	NSUInteger finishPosition		= (NSUInteger)[finishWord integerValue];
+	double finishTime				= (NSUInteger)[finishTimeWord integerValue];
+	
+	// use these values to add to statSet
 }
 
 #pragma custom class methods
@@ -982,7 +1099,6 @@
 		[pastLineArray addObject:pastLineRecord];
 	}
 	
-		
 	return pastLineArray;
 }
 
@@ -1089,51 +1205,59 @@
 {
 	// FIX: print up list of unique words used in comments field for every dogs pastLines
 	//		use list to compile more complete list of keyWords below
+
+	// Note: MANY times words are combined with a hyphen:
+	// e.g.: Erly-caught-plc, Stretch-in, Improvement-rail
+	// splitting these words to create multiple words to check
 	
-	//	ADD THESE:
-	// INSIDE WORDS: Stretch-in , Improvement-rail, Cut In
-	// OUTSIDE WORDS:
-	// MIDTRACK WORDS: Turn-mid
-
-				
+	
 	// create arrays here of key words we are looking for in comments string
-	NSArray *collisionWords = [NSArray arrayWithObjects:@"fell", @"trouble", @"collided", @"bumped", @"hit", nil];
-	NSArray *indsideWords	= [NSArray arrayWithObjects:@"rail", @"Rail", @"inside", @"Inside", @"Threat-insid", nil];
-	NSArray *outsideWords	= [NSArray arrayWithObjects:@"outside", @"Outside", @"out", @"Out", nil];
-	NSArray *midtrackWords	= [NSArray arrayWithObjects:@"Midtrack", @"mid", @"midtrack", @"Mid", nil];
-	NSArray *scratchedWords	= [NSArray arrayWithObjects:@"scratched", @"Scratched", @"SCRATCHED", @"SCR", @"scr", nil];
-	NSArray *dnfWords		= [NSArray arrayWithObjects:@"FELL", @"fell", @"Fell", @"DNF", @"dnf", @"Dnf", nil];
+	NSArray *collisionWords = [NSArray arrayWithObjects:@"fell", @"trouble", @"collided", @"bumped", @"hit", @"blocked", @"crowded", nil];
+	NSArray *indsideWords	= [NSArray arrayWithObjects:@"rail", @"inside", @"insid", @"in", nil];
+	NSArray *outsideWords	= [NSArray arrayWithObjects:@"outside", @"out", @"wide", nil];
+	NSArray *midtrackWords	= [NSArray arrayWithObjects:@"midtrack", @"mid", nil];
+	NSArray *scratchedWords	= [NSArray arrayWithObjects:@"scratched", @"scr", nil];
+	NSArray *dnfWords		= [NSArray arrayWithObjects:@"fell", @"dnf", nil];
 
-	NSArray *words = [pastLineRecord.comments componentsSeparatedByString:@" "];
+	// Note: MANY times words are combined with a hyphen:
+	// e.g.: Erly-caught-plc, Stretch-in, Improvement-rail
+	// replace @"-" sttrings with @" " strings
+	// split line on @" "
+	
+	NSString *tokens = [pastLineRecord.comments stringByReplacingOccurrencesOfString:@"-"
+																		  withString:@" "];
+	NSArray *words = [tokens componentsSeparatedByString:@" "];
 	
 	for(NSString *word in words)
 	{
-		if([collisionWords containsObject:word])
+		NSString *lowerCaseWord = [word lowercaseString];
+	
+		if([collisionWords containsObject:lowerCaseWord])
 		{
 			pastLineRecord.foundTrouble = YES;
 		}
 		
-		if([indsideWords containsObject:word])
+		if([indsideWords containsObject:lowerCaseWord])
 		{
 			pastLineRecord.ranInside = YES;
 		}
 	
-		if([midtrackWords containsObject:word])
+		if([midtrackWords containsObject:lowerCaseWord])
 		{
 			pastLineRecord.ranMidtrack = YES;
 		}
 		
-		if([outsideWords containsObject:word])
+		if([outsideWords containsObject:lowerCaseWord])
 		{
 			pastLineRecord.ranOutside = YES;
 		}
 	
-		if([scratchedWords containsObject:word])
+		if([scratchedWords containsObject:lowerCaseWord])
 		{
 			pastLineRecord.wasScratched = YES;
 		}
 	
-		if([dnfWords containsObject:word])
+		if([dnfWords containsObject:lowerCaseWord])
 		{
 			pastLineRecord.didNotFinish = YES;
 		}
@@ -1149,8 +1273,7 @@
 	
 	/***********************************
 	 
-	 Multiprocess Here
-	 devoting 1 core per Handicapper
+	 Multiprocess Here: Devoting 1 core per Handicapper
 	 
 	 ************************************/
 	 

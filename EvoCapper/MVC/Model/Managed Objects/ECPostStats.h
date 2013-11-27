@@ -11,7 +11,7 @@
 
 @class ECTrackStats;
 
-@interface ECPostStatistics : NSManagedObject
+@interface ECPostStats : NSManagedObject
 
 @property (nonatomic, retain) NSNumber		*breakPositionAverage;
 @property (nonatomic, retain) NSNumber		*finishPositionAverage;

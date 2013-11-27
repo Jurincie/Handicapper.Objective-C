@@ -25,9 +25,8 @@
 		7AAB7F641843B86A00658D6A /* ECTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AAB7F631843B86A00658D6A /* ECTrack.m */; };
 		7AAB7F6A1843DE3600658D6A /* ECTrackStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AAB7F691843DE3600658D6A /* ECTrackStats.m */; };
 		7AAB7F6D1843E08800658D6A /* ECSecondTurnStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AAB7F6C1843E08800658D6A /* ECSecondTurnStats.m */; };
-		7AAB7F701843E08900658D6A /* ECTopOfStretchStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AAB7F6F1843E08900658D6A /* ECTopOfStretchStats.m */; };
-		7AAB7F761843E08900658D6A /* ECPostStatistics.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AAB7F751843E08900658D6A /* ECPostStatistics.m */; };
 		7AAB7F791843E16000658D6A /* ECFirstTurnStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AAB7F781843E16000658D6A /* ECFirstTurnStats.m */; };
+		7AAB7F7B184692BE00658D6A /* ECPostStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AAB7F7A184692BE00658D6A /* ECPostStats.m */; };
 		7AB3B3B3182EFE740089C80C /* ECRaceRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3B2182EFE740089C80C /* ECRaceRecord.m */; };
 		7AB3B3B9182F02B00089C80C /* ECRaceResults.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3B8182F02B00089C80C /* ECRaceResults.m */; };
 		7AB3B3BC182F03200089C80C /* ECRacePayouts.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3BB182F03200089C80C /* ECRacePayouts.m */; };
@@ -83,12 +82,10 @@
 		7AAB7F691843DE3600658D6A /* ECTrackStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECTrackStats.m; path = "MVC/Model/Managed Objects/ECTrackStats.m"; sourceTree = "<group>"; };
 		7AAB7F6B1843E08800658D6A /* ECSecondTurnStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECSecondTurnStats.h; path = "MVC/Model/Managed Objects/ECSecondTurnStats.h"; sourceTree = "<group>"; };
 		7AAB7F6C1843E08800658D6A /* ECSecondTurnStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECSecondTurnStats.m; path = "MVC/Model/Managed Objects/ECSecondTurnStats.m"; sourceTree = "<group>"; };
-		7AAB7F6E1843E08900658D6A /* ECTopOfStretchStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECTopOfStretchStats.h; path = "MVC/Model/Managed Objects/ECTopOfStretchStats.h"; sourceTree = "<group>"; };
-		7AAB7F6F1843E08900658D6A /* ECTopOfStretchStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECTopOfStretchStats.m; path = "MVC/Model/Managed Objects/ECTopOfStretchStats.m"; sourceTree = "<group>"; };
-		7AAB7F741843E08900658D6A /* ECPostStatistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECPostStatistics.h; path = "MVC/Model/Managed Objects/ECPostStatistics.h"; sourceTree = "<group>"; };
-		7AAB7F751843E08900658D6A /* ECPostStatistics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECPostStatistics.m; path = "MVC/Model/Managed Objects/ECPostStatistics.m"; sourceTree = "<group>"; };
+		7AAB7F741843E08900658D6A /* ECPostStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECPostStats.h; path = "MVC/Model/Managed Objects/ECPostStats.h"; sourceTree = "<group>"; };
 		7AAB7F771843E16000658D6A /* ECFirstTurnStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECFirstTurnStats.h; path = "MVC/Model/Managed Objects/ECFirstTurnStats.h"; sourceTree = "<group>"; };
 		7AAB7F781843E16000658D6A /* ECFirstTurnStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECFirstTurnStats.m; path = "MVC/Model/Managed Objects/ECFirstTurnStats.m"; sourceTree = "<group>"; };
+		7AAB7F7A184692BE00658D6A /* ECPostStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECPostStats.m; path = "MVC/Model/Managed Objects/ECPostStats.m"; sourceTree = "<group>"; };
 		7AB3B3B1182EFE740089C80C /* ECRaceRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRaceRecord.h; path = MVC/Model/ECRaceRecord.h; sourceTree = "<group>"; };
 		7AB3B3B2182EFE740089C80C /* ECRaceRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRaceRecord.m; path = MVC/Model/ECRaceRecord.m; sourceTree = "<group>"; };
 		7AB3B3B7182F02B00089C80C /* ECRaceResults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRaceResults.h; path = MVC/Model/ECRaceResults.h; sourceTree = "<group>"; };
@@ -282,14 +279,12 @@
 			children = (
 				7AAB7F681843DE3600658D6A /* ECTrackStats.h */,
 				7AAB7F691843DE3600658D6A /* ECTrackStats.m */,
-				7AAB7F741843E08900658D6A /* ECPostStatistics.h */,
-				7AAB7F751843E08900658D6A /* ECPostStatistics.m */,
+				7AAB7F741843E08900658D6A /* ECPostStats.h */,
+				7AAB7F7A184692BE00658D6A /* ECPostStats.m */,
 				7AAB7F771843E16000658D6A /* ECFirstTurnStats.h */,
 				7AAB7F781843E16000658D6A /* ECFirstTurnStats.m */,
 				7AAB7F6B1843E08800658D6A /* ECSecondTurnStats.h */,
 				7AAB7F6C1843E08800658D6A /* ECSecondTurnStats.m */,
-				7AAB7F6E1843E08900658D6A /* ECTopOfStretchStats.h */,
-				7AAB7F6F1843E08900658D6A /* ECTopOfStretchStats.m */,
 			);
 			name = "Track Statistics";
 			sourceTree = "<group>";
@@ -414,6 +409,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7AB3B3C51836ACE40089C80C /* ECEntryStrengthFields.m in Sources */,
+				7AAB7F7B184692BE00658D6A /* ECPostStats.m in Sources */,
 				7A98B3CD18170ECD0013F43D /* ECAppDelegate.m in Sources */,
 				7AAB7F6D1843E08800658D6A /* ECSecondTurnStats.m in Sources */,
 				7AB3B3B9182F02B00089C80C /* ECRaceResults.m in Sources */,
@@ -431,8 +427,6 @@
 				7A699BAD1840530A0000E6B8 /* ECPopulation.m in Sources */,
 				7AF3591C183D213500BFFD26 /* EvoCapper.xcdatamodeld in Sources */,
 				7AF35918183D210B00BFFD26 /* ECEntry.m in Sources */,
-				7AAB7F761843E08900658D6A /* ECPostStatistics.m in Sources */,
-				7AAB7F701843E08900658D6A /* ECTopOfStretchStats.m in Sources */,
 				7AB3B3C21835507E0089C80C /* ECPastLineRecord.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

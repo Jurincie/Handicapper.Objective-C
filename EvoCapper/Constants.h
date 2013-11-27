@@ -23,6 +23,8 @@
 #ifndef EvoCapper_Constants_h
 #define EvoCapper_Constants_h
 
+#define kNumberRaceDataPoints 4 // post position, 1st turn position, , 2nd turn position, top of stretch position
+
 #define kMaximumNumberEntries 8
 #define kRandomRange 2.0
 #define kRandomGranularity 8

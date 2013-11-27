@@ -8,9 +8,8 @@
 
 #import "ECTrackStats.h"
 #import "ECFirstTurnStats.h"
-#import "ECPostStatistics.h"
+#import "ECPostStats.h"
 #import "ECSecondTurnStats.h"
-#import "ECTopOfStretchStats.h"
 #import "ECTrack.h"
 
 

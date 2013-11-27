@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class ECFirstTurnStats, ECPostStatistics, ECSecondTurnStats, ECTopOfStretchStats, ECTrack;
+@class ECFirstTurnStats, ECPostStats, ECSecondTurnStats, ECTopOfStretchStats, ECTrack;
 
 @interface ECTrackStats : NSManagedObject
 
@@ -33,14 +33,14 @@
 - (void)removeFirstTurnStatisticsObject:(ECFirstTurnStats *)value;
 - (void)addFirstTurnStatistics:(NSOrderedSet *)values;
 - (void)removeFirstTurnStatistics:(NSOrderedSet *)values;
-- (void)insertObject:(ECPostStatistics *)value inPostStatisticsAtIndex:(NSUInteger)idx;
+- (void)insertObject:(ECPostStats *)value inPostStatisticsAtIndex:(NSUInteger)idx;
 - (void)removeObjectFromPostStatisticsAtIndex:(NSUInteger)idx;
 - (void)insertPostStatistics:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
 - (void)removePostStatisticsAtIndexes:(NSIndexSet *)indexes;
-- (void)replaceObjectInPostStatisticsAtIndex:(NSUInteger)idx withObject:(ECPostStatistics *)value;
+- (void)replaceObjectInPostStatisticsAtIndex:(NSUInteger)idx withObject:(ECPostStats *)value;
 - (void)replacePostStatisticsAtIndexes:(NSIndexSet *)indexes withPostStatistics:(NSArray *)values;
-- (void)addPostStatisticsObject:(ECPostStatistics *)value;
-- (void)removePostStatisticsObject:(ECPostStatistics *)value;
+- (void)addPostStatisticsObject:(ECPostStats *)value;
+- (void)removePostStatisticsObject:(ECPostStats *)value;
 - (void)addPostStatistics:(NSOrderedSet *)values;
 - (void)removePostStatistics:(NSOrderedSet *)values;
 - (void)insertObject:(ECSecondTurnStats *)value inSecondTurnStatisticsAtIndex:(NSUInteger)idx;
@@ -63,4 +63,5 @@
 - (void)removeTopOfStretchStatisticsObject:(ECTopOfStretchStats *)value;
 - (void)addTopOfStretchStatistics:(NSOrderedSet *)values;
 - (void)removeTopOfStretchStatistics:(NSOrderedSet *)values;
+
 @end

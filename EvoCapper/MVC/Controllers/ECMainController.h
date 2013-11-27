@@ -9,7 +9,8 @@
 #import "stdlib.h"
 #import <Foundation/Foundation.h>
 
-@class ECPastLineRecord, ECPopulation, ECHandicapper, ECTrainigRaceRecord, ECTree, ECRacePayouts, ECTrack, ECTrackStats;
+@class ECPastLineRecord, ECPopulation, ECHandicapper, ECTrainigRaceRecord, ECTree, ECRacePayouts;
+@class ECTrack, ECTrackStats, ECPostStats, ECFirstTurnStats, ECSecondTurnStats;
 
 @interface ECMainController : NSObject
 
@@ -31,7 +32,12 @@
 - (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrack*)track;
 
 - (void)processStatsFromResultFile:(NSString*)resultFilePath
-				 withStatisticsSet:(NSOrderedSet*)statsSet;
+				 withStatisticsSet:(NSOrderedSet*)statsSet
+				   andCounterArray:(int*)counterArray;
+
+- (void)setStatsForLine:(NSString*)line
+	  withStatisticsSet:(NSOrderedSet*)statsSet
+		andCounterArray:(int*)counterArray;
 
 #pragma darwinian methods
 - (void)createNewPopoulationWithName:(NSString*)name
