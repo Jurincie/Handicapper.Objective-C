@@ -32,12 +32,22 @@
 - (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrack*)track;
 
 - (void)processStatsFromResultFile:(NSString*)resultFilePath
-				 withStatisticsSet:(NSOrderedSet*)statsSet
+				 withStatisticsArray:(double*)statsArray
 				   andCounterArray:(int*)counterArray;
 
-- (void)setStatsForLine:(NSString*)line
-	  withStatisticsSet:(NSOrderedSet*)statsSet
-		andCounterArray:(int*)counterArray;
+- (double)setStatsForLine:(NSString*)resultFileLine
+	  withStatisticsArray:(double*)statsArray
+		  andCounterArray:(int*)counterArray
+		 withMaxTimeForDx:(double)maxTimeForDistance
+	  andCurrentWorstTime:(double)worstTime
+		   forRaceDxIndex:(NSUInteger)raceDx;
+
+- (NSUInteger)getIndexOfPostPosition:(NSArray*)tokens;
+- (BOOL)isThisCharADigit:(char)c;
+- (BOOL)isThisADecimalWord:(NSString*)word;
+
+
+
 
 #pragma darwinian methods
 - (void)createNewPopoulationWithName:(NSString*)name

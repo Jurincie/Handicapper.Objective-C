@@ -59,14 +59,19 @@
 
 + (BOOL)isThisAValidWeightString:(NSString*)word
 {
-	double minWeight	= 45.00;
-	double maxWeight	= 105.00;
-	BOOL isValidWeight	= NO;
-	double weightValue	= [word doubleValue];
+
+	BOOL isValidWeight = NO;
 	
-	if(weightValue > minWeight &&  weightValue < maxWeight)
+	if(word.length >= 2)
 	{
-		isValidWeight = YES;
+		double minWeight	= 45.00;
+		double maxWeight	= 105.00;
+		double weightValue	= [word doubleValue];
+	
+		if(weightValue > minWeight &&  weightValue < maxWeight)
+		{
+			isValidWeight = YES;
+		}
 	}
 	
 	return isValidWeight;

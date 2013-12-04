@@ -60,54 +60,53 @@
 #pragma track statistics methods
 - (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrack*)track
 {
-	
-	ECTrackStats *stats550	= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
-														   inManagedObjectContext:MOC];
-	
-	ECTrackStats *stats685	= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
-														   inManagedObjectContext:MOC];
-				
-	NSOrderedSet *statsSet	= [NSOrderedSet orderedSetWithObjects:stats550, stats685, nil];
-
+//	ECTrackStats *stats550	= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
+//														   inManagedObjectContext:MOC];
+//	
+//	ECTrackStats *stats685	= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
+//														   inManagedObjectContext:MOC];
+//				
+//	NSOrderedSet *statsSet	= [NSOrderedSet orderedSetWithObjects:stats550, stats685, nil];
+//
 	// Each of the ECTrackStats objects (550 and 685 for now) needs 3 ordered arrays of kMaximumNumberEntries
 	// postStatsitics, firstTurnStatistics and secondTurnStatistics
-	NSOrderedSet *postStats550			= [NSOrderedSet new];
-	NSOrderedSet *firstTurnStats550		= [NSOrderedSet new];
-	NSOrderedSet *secondTurnStats550	= [NSOrderedSet new];
-	NSOrderedSet *postStats685			= [NSOrderedSet new];
-	NSOrderedSet *firstTurnStats685		= [NSOrderedSet new];
-	NSOrderedSet *secondTurnStats685	= [NSOrderedSet new];
-	
-	for(NSUInteger index = 0; index < kMaximumNumberEntries; index++)
-	{
-		ECPostStats *newPostStat550		= [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats"
-																		inManagedObjectContext:MOC];
-		ECFirstTurnStats *newFtStat550	= [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats"
-																		inManagedObjectContext:MOC];
-		ECSecondTurnStats *newStStat550	= [NSEntityDescription insertNewObjectForEntityForName:@"ECSecondTurnStats"
-																		inManagedObjectContext:MOC];
-		
-		ECPostStats *newPostStat685		= [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats"
-																		inManagedObjectContext:MOC];
-		ECFirstTurnStats *newFtStat685	= [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats"
-																		inManagedObjectContext:MOC];
-		ECSecondTurnStats *newStStat685	= [NSEntityDescription insertNewObjectForEntityForName:@"ECSecondTurnStats"
-																		inManagedObjectContext:MOC];
-				
-		[postStats550		insertValue:newPostStat550	atIndex:index inPropertyWithKey:nil];
-		[postStats685		insertValue:newPostStat685	atIndex:index inPropertyWithKey:nil];
-		[firstTurnStats550	insertValue:newFtStat550	atIndex:index inPropertyWithKey:nil];
-		[firstTurnStats685	insertValue:newFtStat685	atIndex:index inPropertyWithKey:nil];
-		[secondTurnStats550	insertValue:newStStat550	atIndex:index inPropertyWithKey:nil];
-		[secondTurnStats685	insertValue:newStStat685	atIndex:index inPropertyWithKey:nil];
-	}
-	
-	stats550.postStatistics			= postStats550;
-	stats550.firstTurnStatistics	= firstTurnStats550;
-	stats550.secondTurnStatistics	= secondTurnStats550;
-	stats685.postStatistics			= postStats685;
-	stats685.firstTurnStatistics	= firstTurnStats685;
-	stats685.secondTurnStatistics	= secondTurnStats685;
+//	NSOrderedSet *postStats550			= [NSOrderedSet new];
+//	NSOrderedSet *firstTurnStats550		= [NSOrderedSet new];
+//	NSOrderedSet *secondTurnStats550	= [NSOrderedSet new];
+//	NSOrderedSet *postStats685			= [NSOrderedSet new];
+//	NSOrderedSet *firstTurnStats685		= [NSOrderedSet new];
+//	NSOrderedSet *secondTurnStats685	= [NSOrderedSet new];
+//	
+//	for(NSUInteger index = 0; index < kMaximumNumberEntries; index++)
+//	{
+//		ECPostStats *newPostStat550		= [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats"
+//																		inManagedObjectContext:MOC];
+//		ECFirstTurnStats *newFtStat550	= [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats"
+//																		inManagedObjectContext:MOC];
+//		ECSecondTurnStats *newStStat550	= [NSEntityDescription insertNewObjectForEntityForName:@"ECSecondTurnStats"
+//																		inManagedObjectContext:MOC];
+//		
+//		ECPostStats *newPostStat685		= [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats"
+//																		inManagedObjectContext:MOC];
+//		ECFirstTurnStats *newFtStat685	= [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats"
+//																		inManagedObjectContext:MOC];
+//		ECSecondTurnStats *newStStat685	= [NSEntityDescription insertNewObjectForEntityForName:@"ECSecondTurnStats"
+//																		inManagedObjectContext:MOC];
+//				
+//		[postStats550		insertValue:newPostStat550	atIndex:index inPropertyWithKey:nil];
+//		[postStats685		insertValue:newPostStat685	atIndex:index inPropertyWithKey:nil];
+//		[firstTurnStats550	insertValue:newFtStat550	atIndex:index inPropertyWithKey:nil];
+//		[firstTurnStats685	insertValue:newFtStat685	atIndex:index inPropertyWithKey:nil];
+//		[secondTurnStats550	insertValue:newStStat550	atIndex:index inPropertyWithKey:nil];
+//		[secondTurnStats685	insertValue:newStStat685	atIndex:index inPropertyWithKey:nil];
+//	}
+//	
+//	stats550.postStatistics			= postStats550;
+//	stats550.firstTurnStatistics	= firstTurnStats550;
+//	stats550.secondTurnStatistics	= secondTurnStats550;
+//	stats685.postStatistics			= postStats685;
+//	stats685.firstTurnStatistics	= firstTurnStats685;
+//	stats685.secondTurnStatistics	= secondTurnStats685;
 	
 	// iterate through training data to calculate and save statistics
 	NSString *afternoonFolderPath1	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane/Afternoon/2008";
@@ -131,17 +130,22 @@
 	NSFileManager *localFileManager	= [[NSFileManager alloc] init];
 	
 	// create a 2D arrry of integers
-	//		and init all to 0
-	int counterArray[kMaximumNumberEntries][kNumberRaceDataPoints];
+	//		and init all to 0  (just in case)
+	int statsCountrerArray[kNumberRaceDistances][kMaximumNumberEntries][kNumberStatFields];			// do not incriment point or past where entry falls
+	double statsAccumulatorArray[kNumberRaceDistances][kMaximumNumberEntries][kNumberStatFields];	// accumulates values to be divided by value above to get avgs.
 	
-	for(int member = 0; member < kMaximumNumberEntries; member++)
+	// initiailize both arrays to 0
+	for(int raceDx = 0; raceDx < kNumberRaceDistances; raceDx++)
 	{
-		for(int dataPoint = 0; dataPoint < kNumberRaceDataPoints; dataPoint++)
+		for(int position = 0; position < kMaximumNumberEntries; position++)
 		{
-			counterArray[member][dataPoint] = 0;
+			for(int dataPoint = 0; dataPoint < kNumberStatFields; dataPoint++)
+			{
+				statsCountrerArray[raceDx][position][dataPoint] = 0;
+				statsAccumulatorArray[raceDx][position][dataPoint] = 0.0;
+			}
 		}
 	}
-	
 	
 	for(NSString *directoryPath in resultFolderPaths)
 	{
@@ -167,19 +171,22 @@
 			{
 				NSString *filePath = [NSString stringWithFormat:@"%@/%@", directoryPath, fileName];
 				
+				int *counterArrayPtr = &statsCountrerArray[0][0][0];
+				double *statArrayPtr = &statsAccumulatorArray[0][0][0];
+				
 				[self processStatsFromResultFile:filePath
-							   withStatisticsSet:statsSet
-								 andCounterArray:&counterArray[kMaximumNumberEntries][kNumberRaceDataPoints]];
+							 withStatisticsArray:statArrayPtr
+								 andCounterArray:counterArrayPtr];
 			}
 		}
 	}
 
-	return statsSet;
+	return nil;
 }
 
 - (void)processStatsFromResultFile:(NSString*)resultFilePath
-				 withStatisticsSet:(NSOrderedSet*)statsSet
-				 andCounterArray:(int*)counterArray
+			   withStatisticsArray:(double*)statsAccumulatorArray
+				   andCounterArray:(int*)statsCounterArray;
 {
 	//		1  <html>
 	//		2  <head>
@@ -207,16 +214,16 @@
 	//		24  5 Kiowa Manley                               Super       (1-2-8-5)   $4,246.40
 	//		25
 	
-	BOOL isThisNewRecord	= NO;
-	NSError *error			= nil;
-	NSString *fileContents	= [NSString stringWithContentsOfFile:resultFilePath
-													   encoding:NSStringEncodingConversionAllowLossy
-														  error:&error];
+	BOOL isThisNewRaceRecord	= NO;
+	NSError *error				= nil;
+	NSString *fileContents		= [NSString stringWithContentsOfFile:resultFilePath
+														encoding:NSStringEncodingConversionAllowLossy
+														   error:&error];
 	
 	NSArray *fileContentsLineByLine = [fileContents componentsSeparatedByString:@"\n"];
 		
 	// skip html meta lines
-	NSUInteger startIndex = 8;
+	NSUInteger startIndex = kNumberHtmlMetaLinesToSkip;
 	
 	// takes us to the attendance line
 	NSUInteger endIndex	= fileContentsLineByLine.count - 4;
@@ -231,7 +238,7 @@
 		if([NSString isThisALongLineOfUnderscores:thisLine] && [NSString isThisALongLineOfUnderscores:twoLinesAhead])
 		{
 			// reset
-			isThisNewRecord			= NO;
+			isThisNewRaceRecord		= NO;
 			NSString *raceInfoLine	= [fileContentsLineByLine objectAtIndex:i+1];
 			NSString *modifiedLine	= [self removeExtraSpacesFromString:raceInfoLine];
 			NSArray *tokens			= [modifiedLine componentsSeparatedByString:@" "];
@@ -250,15 +257,19 @@
 			NSString *suffix = [[tokens objectAtIndex:index+2] substringFromIndex:1];
 			NSString *raceDxString = [suffix substringToIndex:suffix.length-1];
 			
-			ECTrackStats *trackStats = nil;
+			// identify race distance to trim arrays passed
+			int raceDxIndex = 0;
 			
-			if([raceDxString isEqualToString:@"550"])
+			if([raceDxString isEqualToString:@"685"])
 			{
-				trackStats = [statsSet objectAtIndex:0];
+				raceDxIndex = 1;
 			}
-			else if([raceDxString isEqualToString:@"685"])
+			
+			double maxTimeForDistance = kMaxTimeFor550Race;
+			
+			if(raceDxIndex == 1)
 			{
-				trackStats = [statsSet objectAtIndex:1];
+				maxTimeForDistance = kMaxTimeFor685Race;
 			}
 				
 			// create thisRaceLineByLine and add the line starting with trackName (lines 10)
@@ -270,10 +281,10 @@
 			// loop until next race start found
 			while(i + thisRaceLineNumber < endIndex)
 			{
-				thisLine		= [fileContentsLineByLine objectAtIndex:i + thisRaceLineNumber++];
-				isThisNewRecord	= [NSString isThisALongLineOfUnderscores:thisLine];
+				thisLine			= [fileContentsLineByLine objectAtIndex:i + thisRaceLineNumber++];
+				isThisNewRaceRecord	= [NSString isThisALongLineOfUnderscores:thisLine];
 				
-				if(isThisNewRecord)
+				if(isThisNewRaceRecord)
 				{
 					break;  // new record found
 				}
@@ -284,73 +295,281 @@
 				}
 			}
 			
+			// since entries who fall have no race time to track
+			// keep track of the worst time race and assign that plus a penalty (10%) to all dogs who fall
+			double worstTime	= 0.0;
+			double raceTime		= 0.0;
+			
 			//	iterate through all entries via thisRaceLineByLine
 			for(NSString *line in thisRaceLineByLine)
 			{
-				[self setStatsForLine:line
-					withStatisticsSet:statsSet
-					  andCounterArray:counterArray];
+				// modify line by removing extra white space
+				NSString *modifiedLine = [self removeExtraSpacesFromString:line];
+			
+				raceTime = [self setStatsForLine:modifiedLine
+							 withStatisticsArray:statsAccumulatorArray
+								 andCounterArray:statsCounterArray
+								withMaxTimeForDx:maxTimeForDistance
+							 andCurrentWorstTime:worstTime
+								  forRaceDxIndex:raceDxIndex];
+				
+				// if the entry does not finish race of is out of picture 'dnf' 'oop'
+				//	assign worstTime + kNotFinishingPenalty
+				
+				if(raceTime > worstTime)
+				{
+					worstTime = raceTime;
+				}
 			}
 			
-		
 			// increment i so we don't reread this race
 			i += thisRaceLineNumber - 2;
 		}
 	}
 }
 
-- (void)setStatsForLine:(NSString*)resultFileLine
-	  withStatisticsSet:(NSOrderedSet*)statsSet
-		andCounterArray:(int*)counterArray
+- (double)setStatsForLine:(NSString*)resultFileLine
+	  withStatisticsArray:(double*)statsAccumulatorArray
+		  andCounterArray:(int*)statsCounterArray
+		 withMaxTimeForDx:(double)maxTimeForDistance
+	  andCurrentWorstTime:(double)worstTime
+		   forRaceDxIndex:(NSUInteger)raceDxIndex
 {
 	/*
-		King Tarik 74½ 3 6 8 7 5 3½ 31.44 8.00 Blocked 1st-went Wide
+	 NORMAL EXAMPLE:
+	 King Tarik 74½ 3 6 8 7 5 3½ 31.44 8.00 Blocked 1st-went Wide
+	 
+	 EXAMLES of dnf entry line:
+	 
+	 Deco Alamo Rojo      2 0 0    0    8       94.00 -----
+	 Hessian Soldier  73½ 7 6 7    7    7       91.00 9.90  Collided 1st Turn-fell
+	 Bow Sassy Circle 59½ 2 2 8    8    8       92.00 4.10  Clipped 1st Turn-fell
 	*/
 	
-	// first get the post and break positions
-	NSArray *tokens = [resultFileLine componentsSeparatedByString:@" "];
+	// assign zero to all fields, so that falling at any point is covered
+	BOOL didNotFinishRace			= NO;
+	NSUInteger postPosition			= 0;
+	NSUInteger breakPosition		= 0;
+	NSUInteger firstTurnPosition	= 0;
+	NSUInteger secondTurnPosition	= 0;
+	NSUInteger finishPosition		= 0;
+	double actualFinishTime			= 0.0;
+	double adjustedFinishTime		= 0.0;
+	double returnFinishTime			= 0.0;
+	double maxTimeForThisDistance	= 0.0;
 	
-	NSUInteger index = 0;
+	// get the post and break positions
+	NSArray *tokens		= [resultFileLine componentsSeparatedByString:@" "];
+	NSUInteger index	= [self getIndexOfPostPosition:tokens];
+	
+	if(index == 0)
+	{
+		didNotFinishRace = YES;
+	}
+	else
+	{
+		NSString *postWord	= [tokens objectAtIndex:index];
+		NSString *breakWord	= [tokens objectAtIndex:++index];
 		
+		if([breakWord isEqualToString:@"0"] || [postWord isEqualToString:@"0"])
+		{
+			didNotFinishRace = YES;
+		}
+		else
+		{
+			NSString *firstTurnWord	= [tokens objectAtIndex:++index];
+			
+			if([firstTurnWord isEqualToString:@"0"])
+			{
+				didNotFinishRace = YES;
+			}
+			else
+			{
+				if([firstTurnWord isEqualToString:@"1"])
+				{
+					index++;
+				}
+				
+				NSString *secondTurnWord = [tokens objectAtIndex:++index];
+				
+				if([secondTurnWord isEqualToString:@"0"])
+				{
+					didNotFinishRace = YES;
+				}
+				else
+				{
+					if([secondTurnWord isEqualToString:@"1"])
+					{
+						index++;
+					}
+					
+					NSString *finishWord		= [tokens objectAtIndex:++index];
+					NSString *finishTimeWord	= [tokens objectAtIndex:index];
+					
+					actualFinishTime = [finishTimeWord doubleValue];
+					
+					// some times arbitrary very long times are assigned
+					// lower this to our own maxTime
+					if(actualFinishTime > maxTimeForThisDistance)
+					{
+						didNotFinishRace	= YES;
+					}
+					else
+					{
+						postPosition		= (NSUInteger)[postWord integerValue];
+						breakPosition		= (NSUInteger)[breakWord integerValue];
+						firstTurnPosition	= (NSUInteger)[firstTurnWord integerValue];
+						secondTurnPosition	= (NSUInteger)[secondTurnWord integerValue];
+						finishPosition		= (NSUInteger)[finishWord integerValue];
+						actualFinishTime	= (double)[finishTimeWord doubleValue];
+						returnFinishTime	= actualFinishTime;
+						adjustedFinishTime	= actualFinishTime;
+					}
+				}
+			}
+		}
+	}
+	
+	// need to fix finishTime for all falls etc. by assigning penalty to worst time
+	if(didNotFinishRace == YES)
+	{
+		adjustedFinishTime	= worstTime + kNotFinishingPenalty;
+		returnFinishTime	= worstTime;
+	}
+	
+	// work backwards from finish stats
+	// statFields
+	//	0: average breakPosition for post
+	//	1: average firstTurnPosition for post
+	//	2: average secondTurnPosition for firstTurnPosition
+	//	3: average finishPosition for secondTurnPosition
+	//	4: average time for post
+	
+	#define kBreakPositionFromPostStatField 0
+	#define kFirstTurnPositionFromPostStatField 1
+	#define kSecondTurnPositionFromFirstTurnStatField 2
+	#define kFinishPositionFromSecondTurnStatField 3
+	#define kFinishTimeFromPostStatField 4
+	
+	if(adjustedFinishTime > 0)
+	{
+		NSUInteger timeOffset	= raceDxIndex * kNumberRaceDistances + postPosition * kMaximumNumberEntries + kFinishTimeFromPostStatField;
+		double *timeStatPtr		= statsAccumulatorArray + timeOffset;
+		int *timeCounterPtr		= statsCounterArray + timeOffset;
+		
+		*timeCounterPtr		+= 1;
+		*timeStatPtr		+= adjustedFinishTime;
+	}
+	
+	if(finishPosition > 0)
+	{
+		NSUInteger finishOffset	= raceDxIndex * kNumberRaceDistances + postPosition * kMaximumNumberEntries + kFinishPositionFromSecondTurnStatField;
+		double *finishStatPtr	= statsAccumulatorArray + finishOffset;
+		int *finishCounterPtr	= statsCounterArray + finishOffset;
+
+		*finishCounterPtr	+= 1;
+		*finishStatPtr		+= (double)finishPosition;
+	}
+	
+	if(secondTurnPosition > 0)
+	{
+		NSUInteger secondTurnPositionOffset	= raceDxIndex * kNumberRaceDistances + firstTurnPosition * kMaximumNumberEntries + kSecondTurnPositionFromFirstTurnStatField;
+		double *secondTurnPositionStatPtr	= statsAccumulatorArray + secondTurnPositionOffset;
+		int *secondTurnCounterPtr			= statsCounterArray + secondTurnPositionOffset;
+		
+		*secondTurnCounterPtr		+= 1;
+		*secondTurnPositionStatPtr	+= (double)secondTurnPosition;
+	}
+	
+	
+	if(firstTurnPosition > 0)
+	{
+		NSUInteger firstTurnPositionOffset	= raceDxIndex * kNumberRaceDistances + postPosition * kMaximumNumberEntries + kFirstTurnPositionFromPostStatField;
+		double *firstTurnPositionStatPtr	= statsAccumulatorArray + firstTurnPositionOffset;
+		int *firstTurnCounterPtr			= statsCounterArray + firstTurnPositionOffset;
+		
+		*firstTurnCounterPtr		+= 1;
+		*firstTurnPositionStatPtr	+= (double)firstTurnPosition;
+	}
+	
+	if(breakPosition > 0)
+	{
+		NSUInteger breakPositionOffset	= raceDxIndex * kNumberRaceDistances + postPosition * kMaximumNumberEntries + kFirstTurnPositionFromPostStatField;
+		double *breakPositionStatPtr	= statsAccumulatorArray + breakPositionOffset;
+		int *breakCounterPtr			= statsCounterArray + breakPositionOffset;
+		
+		*breakCounterPtr		+= 1;
+		*breakPositionStatPtr	+= (double)breakPosition;
+	}
+	
+	return returnFinishTime;
+}
+
+- (NSUInteger)getIndexOfPostPosition:(NSArray*)tokens
+{
+	// return 0 if dnf situation is encountered
+	// otherwise return the index of the post postion word
+	
+	/*
+	 NORMAL EXAMPLE:
+	 King Tarik 74½ 3 6 8 7 5 3½ 31.44 8.00 Blocked 1st-went Wide
+	 
+	 DNF EXAMPLES:
+(1)	 Deco Alamo Rojo      2 0 0    0    8       94.00 -----
+(2)	 Hessian Soldier  73½ 7 6 7    7    7       91.00 9.90  Collided 1st Turn-fell
+(3)	 Bow Sassy Circle 59½ 2 2 8    8    8       92.00 4.10  Clipped 1st Turn-fell
+	 
+	 Use first char of word to find first number
+	 
+	 */
+
+	NSUInteger index	= 0;
+	char firstCharacter	= '?';
+	
 	for(; index < tokens.count; index++)
 	{
 		NSString *word = [tokens objectAtIndex:index];
+		firstCharacter = [word characterAtIndex:0];
 		
-		if([NSString isThisAValidWeightString:word])
+		if([self isThisCharADigit:firstCharacter])
 		{
+			if([NSString isThisAValidWeightString:word] == NO)
+			{
+				// see DNF EXAMPLE (1) above
+				index = 0;
+			}
+			else
+			{
+				// post should otherwise be the next word
+				index++;
+			}
+			
 			break;
 		}
 	}
 	
-	NSString *postWord			= [tokens objectAtIndex:++index];
-	NSString *breakWord			= [tokens objectAtIndex:++index];
-	NSString *firstTurnWord		= [tokens objectAtIndex:++index];
+	return index;
+}
+
+- (BOOL)isThisCharADigit:(char)c
+{
+	BOOL answer = NO;
 	
-	if([firstTurnWord isEqualToString:@"1"])
+	if(c >= '0' && c <= '9')
 	{
-		index++;
+		answer = YES;
 	}
 	
-	NSString *secondTurnWord = [tokens objectAtIndex:++index];
+	return answer;
+}
+
+- (BOOL)isThisADecimalWord:(NSString*)word
+{
+	BOOL answer = NO;
 	
-	if([secondTurnWord isEqualToString:@"1"])
-	{
-		index++;
-	}
 	
-	NSString *finishWord = [tokens objectAtIndex:++index];
 	
-	index += 2;
-	NSString *finishTimeWord = [tokens objectAtIndex:index];
-	
-	NSUInteger postPosition			= (NSUInteger)[postWord integerValue];
-	NSUInteger breakPosition		= (NSUInteger)[breakWord integerValue];
-	NSUInteger firstTurnPosition	= (NSUInteger)[firstTurnWord integerValue];
-	NSUInteger secondTurnPosition	= (NSUInteger)[secondTurnWord integerValue];
-	NSUInteger finishPosition		= (NSUInteger)[finishWord integerValue];
-	double finishTime				= (NSUInteger)[finishTimeWord integerValue];
-	
-	// use these values to add to statSet
+	return answer;
 }
 
 #pragma custom class methods

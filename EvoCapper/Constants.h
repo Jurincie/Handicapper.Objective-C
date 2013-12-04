@@ -6,8 +6,17 @@
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
-// define reprocuction type AND fitness selection method
+#define kNumberHtmlMetaLinesToSkip 8
 
+#define kMaxTimeFor550Race 38.00
+#define kMaxTimeFor685Race 45.00
+
+#define kNumberStatFields 6		// post-break, post-1stTurn, post-finish, post-time, 1stTurn-2ndTurn, 2ndTurn-finsh
+#define kNumberRaceDistances 2	// 550, 685
+
+#define kNotFinishingPenalty 2.5  // add 2.5 second penalty to worst entry time in race for entrys not finishing race
+
+// define reprocuction type AND fitness selection method
 #define kLinearFitnessSelection 0
 #define kSuaredFitnessSelection 1
 
@@ -22,8 +31,6 @@
 
 #ifndef EvoCapper_Constants_h
 #define EvoCapper_Constants_h
-
-#define kNumberRaceDataPoints 4 // post position, 1st turn position, , 2nd turn position, top of stretch position
 
 #define kMaximumNumberEntries 8
 #define kRandomRange 2.0
