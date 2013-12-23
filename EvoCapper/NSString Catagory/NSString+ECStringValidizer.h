@@ -16,5 +16,6 @@
 + (BOOL)isThisAValidTimeString:(NSString*)word;
 + (BOOL)isThisWinPayoutString:(NSString*)word;
 + (BOOL)isThisWinningKennelLine:(NSString*)word;
++ (BOOL)doesThisLineContainDateString:(NSString*)line;
 
 @end

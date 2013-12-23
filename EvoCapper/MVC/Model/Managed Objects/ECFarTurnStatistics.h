@@ -1,8 +1,8 @@
 //
-//  ECFirstTurnStats.h
+//  ECFarTurnStatistics.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 12/8/13.
+//  Created by Ron Jurincie on 12/22/13.
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
@@ -11,10 +11,10 @@
 
 @class ECTrackStats;
 
-@interface ECFirstTurnStats : NSManagedObject
+@interface ECFarTurnStatistics : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * averagePositionSecondTurn;
-@property (nonatomic, retain) NSNumber * firstTurnPosition;
+@property (nonatomic, retain) NSNumber * farTurnPosition;
+@property (nonatomic, retain) NSNumber * averageFinishPosition;
 @property (nonatomic, retain) ECTrackStats *trackRaceDistanceStats;
 
 @end

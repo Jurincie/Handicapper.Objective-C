@@ -2,23 +2,24 @@
 //  ECTrackStats.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 11/25/13.
+//  Created by Ron Jurincie on 12/22/13.
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class ECFirstTurnStats, ECPostStats, ECSecondTurnStats, ECTopOfStretchStats, ECTrack;
+@class ECFarTurnStatistics, ECFirstTurnStats, ECPostStats, ECTrack;
 
 @interface ECTrackStats : NSManagedObject
 
-@property (nonatomic, retain) NSNumber		*raceDistance;
-@property (nonatomic, retain) NSOrderedSet	*firstTurnStatistics;
-@property (nonatomic, retain) NSOrderedSet	*postStatistics;
-@property (nonatomic, retain) NSOrderedSet	*secondTurnStatistics;
-@property (nonatomic, retain) NSOrderedSet	*topOfStretchStatistics;
-@property (nonatomic, retain) ECTrack		*track;
+@property (nonatomic, retain) NSNumber * raceDistance;
+@property (nonatomic, retain) NSNumber * averageTime;
+@property (nonatomic, retain) NSNumber * trackRecord;
+@property (nonatomic, retain) NSOrderedSet *firstTurnStatistics;
+@property (nonatomic, retain) NSOrderedSet *postStatistics;
+@property (nonatomic, retain) NSOrderedSet *farTurnStatistics;
+@property (nonatomic, retain) ECTrack *track;
 @end
 
 @interface ECTrackStats (CoreDataGeneratedAccessors)
@@ -43,25 +44,14 @@
 - (void)removePostStatisticsObject:(ECPostStats *)value;
 - (void)addPostStatistics:(NSOrderedSet *)values;
 - (void)removePostStatistics:(NSOrderedSet *)values;
-- (void)insertObject:(ECSecondTurnStats *)value inSecondTurnStatisticsAtIndex:(NSUInteger)idx;
-- (void)removeObjectFromSecondTurnStatisticsAtIndex:(NSUInteger)idx;
-- (void)insertSecondTurnStatistics:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
-- (void)removeSecondTurnStatisticsAtIndexes:(NSIndexSet *)indexes;
-- (void)replaceObjectInSecondTurnStatisticsAtIndex:(NSUInteger)idx withObject:(ECSecondTurnStats *)value;
-- (void)replaceSecondTurnStatisticsAtIndexes:(NSIndexSet *)indexes withSecondTurnStatistics:(NSArray *)values;
-- (void)addSecondTurnStatisticsObject:(ECSecondTurnStats *)value;
-- (void)removeSecondTurnStatisticsObject:(ECSecondTurnStats *)value;
-- (void)addSecondTurnStatistics:(NSOrderedSet *)values;
-- (void)removeSecondTurnStatistics:(NSOrderedSet *)values;
-- (void)insertObject:(ECTopOfStretchStats *)value inTopOfStretchStatisticsAtIndex:(NSUInteger)idx;
-- (void)removeObjectFromTopOfStretchStatisticsAtIndex:(NSUInteger)idx;
-- (void)insertTopOfStretchStatistics:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
-- (void)removeTopOfStretchStatisticsAtIndexes:(NSIndexSet *)indexes;
-- (void)replaceObjectInTopOfStretchStatisticsAtIndex:(NSUInteger)idx withObject:(ECTopOfStretchStats *)value;
-- (void)replaceTopOfStretchStatisticsAtIndexes:(NSIndexSet *)indexes withTopOfStretchStatistics:(NSArray *)values;
-- (void)addTopOfStretchStatisticsObject:(ECTopOfStretchStats *)value;
-- (void)removeTopOfStretchStatisticsObject:(ECTopOfStretchStats *)value;
-- (void)addTopOfStretchStatistics:(NSOrderedSet *)values;
-- (void)removeTopOfStretchStatistics:(NSOrderedSet *)values;
-
+- (void)insertObject:(ECFarTurnStatistics *)value inFarTurnStatsAtIndex:(NSUInteger)idx;
+- (void)removeObjectFromFarTurnStatsAtIndex:(NSUInteger)idx;
+- (void)insertFarTurnStats:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
+- (void)removeFarTurnStatsAtIndexes:(NSIndexSet *)indexes;
+- (void)replaceObjectInFarTurnStatsAtIndex:(NSUInteger)idx withObject:(ECFarTurnStatistics *)value;
+- (void)replaceFarTurnStatsAtIndexes:(NSIndexSet *)indexes withFarTurnStats:(NSArray *)values;
+- (void)addFarTurnStatsObject:(ECFarTurnStatistics *)value;
+- (void)removeFarTurnStatsObject:(ECFarTurnStatistics *)value;
+- (void)addFarTurnStats:(NSOrderedSet *)values;
+- (void)removeFarTurnStats:(NSOrderedSet *)values;
 @end

@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 
 @class ECPastLineRecord, ECPopulation, ECHandicapper, ECTrainigRaceRecord, ECTree, ECRacePayouts;
-@class ECTrack, ECTrackStats, ECPostStats, ECFirstTurnStats, ECSecondTurnStats;
+@class ECTrack, ECTrackStats, ECPostStats, ECFirstTurnStats, ECFarTurnStatistics;
 
 @interface ECMainController : NSObject
 
@@ -26,14 +26,25 @@
 
 #pragma sharedMemory and CoreData methods
 + (id)sharedManager;
-- (void)updateAndSaveData;
 
-#pragma track statistics methods
-- (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrack*)track;
++ (void)updateAndSaveData;
+
+#pragma traverse 
+- (void)processDirectoryAtPath:(NSString*)directoryPath
+				withStatsArray:(double*)statsArray
+			   andCounterArray:(int*)counterArray;
 
 - (void)processStatsFromResultFile:(NSString*)resultFilePath
-				 withStatisticsArray:(double*)statsArray
+			   withStatisticsArray:(double*)statsArray
 				   andCounterArray:(int*)counterArray;
+
+- (BOOL)isThisLineDeclaredNoRace:(NSString*)firstLine;
+
+
+
+#pragma track statistics methods
+
+- (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrack*)track;
 
 - (double)setStatsForLine:(NSString*)resultFileLine
 	  withStatisticsArray:(double*)statsArray
@@ -42,12 +53,13 @@
 	  andCurrentWorstTime:(double)worstTime
 		   forRaceDxIndex:(NSUInteger)raceDx;
 
+- (NSOrderedSet*)transferStatsFromArray:(double*)statsAccumulatorArray
+						andCounterArray:(int*)statsCountrerArray;
+
 - (NSUInteger)getIndexOfPostPosition:(NSArray*)tokens;
 - (BOOL)isThisCharADigit:(char)c;
 - (BOOL)isThisADecimalWord:(NSString*)word;
-
-
-
+- (void)printArrayWith:(double*)statsAccumulatorArray;
 
 #pragma darwinian methods
 - (void)createNewPopoulationWithName:(NSString*)name

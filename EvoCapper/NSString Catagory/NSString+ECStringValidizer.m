@@ -139,4 +139,24 @@
 }
 
 
++ (BOOL)doesThisLineContainDateString:(NSString*)line
+{
+	BOOL answer = NO;
+	
+	NSArray *tokens = [line componentsSeparatedByString:@" "];
+	
+	for(NSString *word in tokens)
+	{
+		if([self isThisADateString:word])
+		{
+			answer = YES;
+			break;
+		}
+	}
+	
+	return  answer;
+}
+
+
+
 @end
