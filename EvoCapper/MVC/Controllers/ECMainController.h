@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 
 @class ECPastLineRecord, ECPopulation, ECHandicapper, ECTrainigRaceRecord, ECTree, ECRacePayouts;
-@class ECTrack, ECTrackStats, ECPostStats, ECFirstTurnStats, ECFarTurnStatistics;
+@class ECTrack, ECRaceDistanceStats, ECPostStats, ECFirstTurnStats, ECFarTurnStatistics;
 
 @interface ECMainController : NSObject
 
@@ -46,12 +46,13 @@
 
 - (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrack*)track;
 
-- (double)setStatsForLine:(NSString*)resultFileLine
-	  withStatisticsArray:(double*)statsArray
-		  andCounterArray:(int*)counterArray
-		 withMaxTimeForDx:(double)maxTimeForDistance
-	  andCurrentWorstTime:(double)worstTime
-		   forRaceDxIndex:(NSUInteger)raceDx;
+- (double)setStatsForString:(NSString*)resultFileLine
+					 ofType:(NSUInteger)fileType
+		withStatisticsArray:(double*)statsAccumulatorArray
+			andCounterArray:(int*)statsCounterArray
+		   withMaxTimeForDx:(double)maxTimeForDistance
+		andCurrentWorstTime:(double)worstTime
+			 forRaceDxIndex:(NSUInteger)raceDxIndex;
 
 - (NSOrderedSet*)transferStatsFromArray:(double*)statsAccumulatorArray
 						andCounterArray:(int*)statsCountrerArray;

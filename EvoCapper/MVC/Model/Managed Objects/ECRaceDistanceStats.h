@@ -1,5 +1,5 @@
 //
-//  ECTrackStats.h
+//  ECRaceDistanceStats.h
 //  EvoCapper
 //
 //  Created by Ron Jurincie on 12/22/13.
@@ -11,18 +11,18 @@
 
 @class ECFarTurnStatistics, ECFirstTurnStats, ECPostStats, ECTrack;
 
-@interface ECTrackStats : NSManagedObject
+@interface ECRaceDistanceStats : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * raceDistance;
-@property (nonatomic, retain) NSNumber * averageTime;
-@property (nonatomic, retain) NSNumber * trackRecord;
-@property (nonatomic, retain) NSOrderedSet *firstTurnStatistics;
-@property (nonatomic, retain) NSOrderedSet *postStatistics;
-@property (nonatomic, retain) NSOrderedSet *farTurnStatistics;
-@property (nonatomic, retain) ECTrack *track;
+@property (nonatomic, retain) NSNumber		*raceDistance;
+@property (nonatomic, retain) NSNumber		*averageTime;
+@property (nonatomic, retain) NSNumber		*trackRecord;
+@property (nonatomic, retain) NSOrderedSet	*firstTurnStatistics;
+@property (nonatomic, retain) NSOrderedSet	*postStatistics;
+@property (nonatomic, retain) NSOrderedSet	*farTurnStatistics;
+@property (nonatomic, retain) ECTrack		*track;
 @end
 
-@interface ECTrackStats (CoreDataGeneratedAccessors)
+@interface ECRaceDistanceStats (CoreDataGeneratedAccessors)
 
 - (void)insertObject:(ECFirstTurnStats *)value inFirstTurnStatisticsAtIndex:(NSUInteger)idx;
 - (void)removeObjectFromFirstTurnStatisticsAtIndex:(NSUInteger)idx;

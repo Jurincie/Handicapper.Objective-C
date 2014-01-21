@@ -7,7 +7,7 @@
 //
 
 #import "ECPostStats.h"
-#import "ECTrackStats.h"
+#import "ECRaceDistanceStats.h"
 
 
 @implementation ECPostStats

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class ECTrackStats;
+@class ECRaceDistanceStats;
 
 @interface ECPostStats : NSManagedObject
 
@@ -18,6 +18,6 @@
 @property (nonatomic, retain) NSNumber * firstTurnPositionAverage;
 @property (nonatomic, retain) NSNumber * postNumber;
 @property (nonatomic, retain) NSNumber * raceTimeAverage;
-@property (nonatomic, retain) ECTrackStats *trackRaceDistanceStats;
+@property (nonatomic, retain) ECRaceDistanceStats *trackRaceDistanceStats;
 
 @end

@@ -9,12 +9,12 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class ECTrackStats;
+@class ECRaceDistanceStats;
 
 @interface ECFarTurnStatistics : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * farTurnPosition;
 @property (nonatomic, retain) NSNumber * averageFinishPosition;
-@property (nonatomic, retain) ECTrackStats *trackRaceDistanceStats;
+@property (nonatomic, retain) ECRaceDistanceStats *trackRaceDistanceStats;
 
 @end

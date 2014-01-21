@@ -7,7 +7,7 @@
 //
 
 #import "ECFarTurnStatistics.h"
-#import "ECTrackStats.h"
+#import "ECRaceDistanceStats.h"
 
 
 @implementation ECFarTurnStatistics
