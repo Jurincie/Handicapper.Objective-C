@@ -2,8 +2,8 @@
 //  ECFarTurnStatistics.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 12/22/13.
-//  Copyright (c) 2013 Ron Jurincie. All rights reserved.
+//  Created by Ron Jurincie on 1/23/14.
+//  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -13,8 +13,8 @@
 
 @interface ECFarTurnStatistics : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * farTurnPosition;
 @property (nonatomic, retain) NSNumber * averageFinishPosition;
-@property (nonatomic, retain) ECRaceDistanceStats *trackRaceDistanceStats;
+@property (nonatomic, retain) NSNumber * farTurnPosition;
+@property (nonatomic, retain) ECRaceDistanceStats *raceDistanceStats;
 
 @end

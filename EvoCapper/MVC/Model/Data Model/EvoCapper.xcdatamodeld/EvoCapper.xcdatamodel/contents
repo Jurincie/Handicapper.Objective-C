@@ -6,40 +6,38 @@
         <attribute name="averageWinTime2Turns" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="averageWinTime3Turns" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="raceClass" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="trackStats" maxCount="1" deletionRule="Nullify" destinationEntity="ECTrack" inverseName="raceDistanceStats" inverseEntity="ECTrack" syncable="YES"/>
+        <relationship name="trackStats" maxCount="1" deletionRule="Nullify" destinationEntity="ECTrackStats" inverseName="classStats" inverseEntity="ECTrackStats" syncable="YES"/>
     </entity>
-    <entity name="ECFarTurnStatistics" representedClassName="ECFarTurnStatistics" syncable="YES">
+    <entity name="ECFarTurnStats" representedClassName="ECFarTurnStatistics" syncable="YES">
         <attribute name="averageFinishPosition" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="farTurnPosition" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="trackRaceDistanceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECRaceDistanceStats" inverseName="farTurnStatsistics" inverseEntity="ECRaceDistanceStats" syncable="YES"/>
+        <relationship name="raceDistanceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECRaceDistanceStats" inverseName="farTurnStats" inverseEntity="ECRaceDistanceStats" syncable="YES"/>
     </entity>
     <entity name="ECFirstTurnStats" representedClassName="ECFirstTurnStats" syncable="YES">
         <attribute name="averagePositionSecondTurn" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="firstTurnPosition" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="trackRaceDistanceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECRaceDistanceStats" inverseName="firstTurnStatistics" inverseEntity="ECRaceDistanceStats" syncable="YES"/>
+        <relationship name="raceDistanceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECRaceDistanceStats" inverseName="firstTurnStats" inverseEntity="ECRaceDistanceStats" syncable="YES"/>
     </entity>
     <entity name="ECPostStats" representedClassName="ECPostStats" syncable="YES">
         <attribute name="breakPositionAverage" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="finishPositionAverage" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="firstTurnPositionAverage" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="postNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="raceTimeAverage" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <relationship name="trackRaceDistanceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECRaceDistanceStats" inverseName="postStatistics" inverseEntity="ECRaceDistanceStats" syncable="YES"/>
+        <relationship name="raceDistanceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECRaceDistanceStats" inverseName="postStats" inverseEntity="ECRaceDistanceStats" syncable="YES"/>
     </entity>
     <entity name="ECRaceDistanceStats" representedClassName="ECRaceDistanceStats" syncable="YES">
-        <attribute name="averageTime" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="raceDistance" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="trackRecord" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <relationship name="farTurnStatsistics" toMany="YES" minCount="8" deletionRule="Nullify" ordered="YES" destinationEntity="ECFarTurnStatistics" inverseName="trackRaceDistanceStats" inverseEntity="ECFarTurnStatistics" syncable="YES"/>
-        <relationship name="firstTurnStatistics" toMany="YES" minCount="8" maxCount="8" deletionRule="Nullify" ordered="YES" destinationEntity="ECFirstTurnStats" inverseName="trackRaceDistanceStats" inverseEntity="ECFirstTurnStats" syncable="YES"/>
-        <relationship name="postStatistics" toMany="YES" minCount="8" maxCount="8" deletionRule="Nullify" ordered="YES" destinationEntity="ECPostStats" inverseName="trackRaceDistanceStats" inverseEntity="ECPostStats" syncable="YES"/>
-        <relationship name="track" maxCount="1" deletionRule="Nullify" destinationEntity="ECTrack" inverseName="raceDistanceStats" inverseEntity="ECTrack" syncable="YES"/>
+        <relationship name="farTurnStats" optional="YES" toMany="YES" minCount="8" maxCount="8" deletionRule="Nullify" ordered="YES" destinationEntity="ECFarTurnStats" inverseName="raceDistanceStats" inverseEntity="ECFarTurnStats" syncable="YES"/>
+        <relationship name="firstTurnStats" toMany="YES" minCount="8" maxCount="8" deletionRule="Nullify" ordered="YES" destinationEntity="ECFirstTurnStats" inverseName="raceDistanceStats" inverseEntity="ECFirstTurnStats" syncable="YES"/>
+        <relationship name="postStats" toMany="YES" minCount="8" maxCount="8" deletionRule="Nullify" ordered="YES" destinationEntity="ECPostStats" inverseName="raceDistanceStats" inverseEntity="ECPostStats" syncable="YES"/>
+        <relationship name="trackStats" maxCount="1" deletionRule="Nullify" destinationEntity="ECTrackStats" inverseName="raceDistanceStats" inverseEntity="ECTrackStats" syncable="YES"/>
     </entity>
-    <entity name="ECTrack" representedClassName="ECTrack" syncable="YES">
+    <entity name="ECTrackStats" representedClassName="ECTrackStats" syncable="YES">
+        <attribute name="raceClasses" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="trackName" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="classStats" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ECClassStats" syncable="YES"/>
-        <relationship name="population" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HandicapperPopulation" inverseName="track" inverseEntity="HandicapperPopulation" syncable="YES"/>
-        <relationship name="raceDistanceStats" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ECClassStats" inverseName="trackStats" inverseEntity="ECClassStats" syncable="YES"/>
+        <relationship name="classStats" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ECClassStats" inverseName="trackStats" inverseEntity="ECClassStats" syncable="YES"/>
+        <relationship name="population" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HandicapperPopulation" inverseName="trackStats" inverseEntity="HandicapperPopulation" syncable="YES"/>
+        <relationship name="raceDistanceStats" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ECRaceDistanceStats" inverseName="trackStats" inverseEntity="ECRaceDistanceStats" syncable="YES"/>
     </entity>
     <entity name="HandicapperPopulation" representedClassName="ECPopulation" syncable="YES">
         <attribute name="comments" optional="YES" attributeType="String" syncable="YES"/>
@@ -52,7 +50,7 @@
         <attribute name="populationName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="populationSize" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="individualHandicappers" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="IndividualHandicapper" inverseName="handicapperPopulation" inverseEntity="IndividualHandicapper" syncable="YES"/>
-        <relationship name="track" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECTrack" inverseName="population" inverseEntity="ECTrack" syncable="YES"/>
+        <relationship name="trackStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECTrackStats" inverseName="population" inverseEntity="ECTrackStats" syncable="YES"/>
     </entity>
     <entity name="IndividualHandicapper" representedClassName="ECHandicapper" syncable="YES">
         <attribute name="amountBetOnWinBets" optional="YES" attributeType="Float" defaultValueString="0" syncable="YES"/>
@@ -72,13 +70,13 @@
         <relationship name="handicapperPopulation" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="HandicapperPopulation" inverseName="individualHandicappers" inverseEntity="HandicapperPopulation" syncable="YES"/>
     </entity>
     <elements>
-        <element name="ECClassStats" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="ECFarTurnStatistics" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="ECFirstTurnStats" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="ECPostStats" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="ECRaceDistanceStats" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="ECTrack" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="HandicapperPopulation" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="IndividualHandicapper" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="ECClassStats" positionX="-407" positionY="441" width="128" height="135"/>
+        <element name="ECFarTurnStats" positionX="63" positionY="378" width="128" height="88"/>
+        <element name="ECFirstTurnStats" positionX="52" positionY="486" width="128" height="90"/>
+        <element name="ECPostStats" positionX="25" positionY="611" width="128" height="118"/>
+        <element name="ECRaceDistanceStats" positionX="-234" positionY="414" width="128" height="118"/>
+        <element name="ECTrackStats" positionX="-209" positionY="855" width="128" height="135"/>
+        <element name="HandicapperPopulation" positionX="-441" positionY="729" width="128" height="208"/>
+        <element name="IndividualHandicapper" positionX="-693" positionY="711" width="128" height="268"/>
     </elements>
 </model>

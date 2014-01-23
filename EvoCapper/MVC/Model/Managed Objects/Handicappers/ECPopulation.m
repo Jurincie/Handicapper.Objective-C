@@ -2,13 +2,13 @@
 //  ECPopulation.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 11/21/13.
-//  Copyright (c) 2013 Ron Jurincie. All rights reserved.
+//  Created by Ron Jurincie on 1/23/14.
+//  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
 #import "ECPopulation.h"
 #import "ECHandicapper.h"
-#import "ECTrack.h"
+#import "ECTrackStats.h"
 
 
 @implementation ECPopulation
@@ -23,6 +23,6 @@
 @dynamic populationName;
 @dynamic populationSize;
 @dynamic individualHandicappers;
-@dynamic track;
+@dynamic trackStats;
 
 @end

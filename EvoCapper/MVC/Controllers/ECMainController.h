@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 
 @class ECPastLineRecord, ECPopulation, ECHandicapper, ECTrainigRaceRecord, ECTree, ECRacePayouts;
-@class ECTrack, ECRaceDistanceStats, ECPostStats, ECFirstTurnStats, ECFarTurnStatistics;
+@class ECTrackStats, ECRaceDistanceStats, ECPostStats, ECFirstTurnStats, ECFarTurnStatistics;
 
 @interface ECMainController : NSObject
 
@@ -44,7 +44,7 @@
 
 #pragma track statistics methods
 
-- (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrack*)track;
+- (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrackStats*)track;
 
 - (double)setStatsForString:(NSString*)resultFileLine
 					 ofType:(NSUInteger)fileType

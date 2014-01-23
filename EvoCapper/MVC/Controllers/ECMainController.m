@@ -22,11 +22,11 @@
 #import "ECPastLineRecord.h"
 #import "ECEntryStrengthFields.h"
 #import "ECPostStats.h"
-#import "ECTrack.h"
+#import "ECTrackStats.h"
 #import "ECFirstTurnStats.h"
 #import "ECFarTurnStatistics.h"
 #import "NSString+ECStringValidizer.h"
-#import "ECTrack.h"
+#import "ECTrackStats.h"
 #import "ECRaceDistanceStats.h"
 
 @implementation ECMainController
@@ -58,7 +58,7 @@
 }
 
 #pragma track statistics methods
-- (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrack*)track
+- (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrackStats*)track
 {
 	NSOrderedSet *distanceStats = nil;
 
@@ -813,9 +813,7 @@
 				
 	// initialize bestTime fields with very very bad time
 	// FIX:
-	_550.trackRecord = [NSNumber numberWithDouble:99.99];
-	_660.trackRecord = [NSNumber numberWithDouble:99.99];
-				
+
 	ECPostStats *post550_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
 	ECPostStats *post550_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
 	ECPostStats *post550_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
@@ -878,13 +876,13 @@
 	NSArray *stStats660		= [[NSArray alloc] initWithObjects:st660_1, st660_2, st660_3, st660_4, st660_5, st660_6, st660_7, st660_8, nil];
 
 		
-	_550.postStatistics			= [[NSOrderedSet alloc] initWithArray:postStats550 copyItems:NO];
-	_550.firstTurnStatistics	= [[NSOrderedSet alloc] initWithArray:ftStats550 copyItems:NO];
-	_550.farTurnStatistics		= [[NSOrderedSet alloc] initWithArray:stStats550 copyItems:NO];
+	_550.postStats		= [[NSOrderedSet alloc] initWithArray:postStats550 copyItems:NO];
+	_550.firstTurnStats	= [[NSOrderedSet alloc] initWithArray:ftStats550 copyItems:NO];
+	_550.farTurnStats	= [[NSOrderedSet alloc] initWithArray:stStats550 copyItems:NO];
 	
-	_660.postStatistics			= [[NSOrderedSet alloc] initWithArray:postStats660 copyItems:NO];
-	_660.firstTurnStatistics	= [[NSOrderedSet alloc] initWithArray:ftStats660 copyItems:NO];
-	_660.farTurnStatistics		= [[NSOrderedSet alloc] initWithArray:stStats660 copyItems:NO];
+	_660.postStats		= [[NSOrderedSet alloc] initWithArray:postStats660 copyItems:NO];
+	_660.firstTurnStats	= [[NSOrderedSet alloc] initWithArray:ftStats660 copyItems:NO];
+	_660.farTurnStats	= [[NSOrderedSet alloc] initWithArray:stStats660 copyItems:NO];
 
 	allDistances = [NSOrderedSet orderedSetWithObjects:_550, _660, nil];
 
@@ -895,9 +893,9 @@
 		
 		for(int position = 0; position < kMaximumNumberEntries; position++)
 		{
-			postStats	= [dxStats.postStatistics objectAtIndex:position];
-			ftStats		= [dxStats.firstTurnStatistics objectAtIndex:position];
-			fartStats	= [dxStats.farTurnStatistics objectAtIndex:position];
+			postStats	= [dxStats.postStats objectAtIndex:position];
+			ftStats		= [dxStats.firstTurnStats objectAtIndex:position];
+			fartStats	= [dxStats.farTurnStats objectAtIndex:position];
 			
 			for(int fieldNumber = kBreakPositionFromPostStatField; fieldNumber < kFinishPositionFromSecondTurnStatField; fieldNumber++)
 			{
@@ -929,7 +927,6 @@
 				postStats.breakPositionAverage		= [NSNumber numberWithDouble:breakAverageFromPost];
 				postStats.firstTurnPositionAverage	= [NSNumber numberWithDouble:firstTurnAverageFromPost];
 				postStats.finishPositionAverage		= [NSNumber numberWithDouble:finishPositionAverageFromPost];
-				postStats.raceTimeAverage			= [NSNumber numberWithDouble:finishTimeAverageFromPost];
 				ftStats.averagePositionSecondTurn	= [NSNumber numberWithDouble:secondTurnAverageFromFirstTurn];
 				fartStats.averageFinishPosition		= [NSNumber numberWithDouble:finishPositionAverageFromSecondTurn];
 			}
@@ -996,7 +993,7 @@
 	{
 		self.populationSize = initialSize;
 
-		self.population.track			= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrack"
+		self.population.trackStats			= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrack"
 																		inManagedObjectContext:MOC] ;
 		self.population.populationName  = @"NewPopulationTest 1.0.0.0";
         self.population.initialSize     = [NSNumber numberWithInteger:initialSize];
@@ -1005,7 +1002,7 @@
         self.population.genesisDate     = [NSDate date];
         self.population.mutationRate    = [NSNumber numberWithFloat:mutationRate];
 		
-		self.population.track.raceDistanceStats = [self createSetOfStatisticsForTrack:self.population.track];
+		self.population.trackStats.raceDistanceStats = [self createSetOfStatisticsForTrack:self.population.trackStats];
 	}
 		
 	self.rankedPopulation = [self createNewHandicappers];
