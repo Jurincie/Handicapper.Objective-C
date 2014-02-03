@@ -6,6 +6,10 @@
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
+#ifndef EvoCapper_Constants_h
+#define EvoCapper_Constants_h
+
+
 #define kBreakPositionFromPostStatField 0
 #define kFirstTurnPositionFromPostStatField 1
 #define kFinishPositionFromPostStatField 2
@@ -15,35 +19,36 @@
 
 #define kNumberHtmlMetaLinesToSkip 8
 
-#define kMaxTimeFor550Race 38.00
-#define kMaxTimeFor660Race 45.00
+#define kNoIndex 999
 
-#define kNumberStatFields 6		// post-break, post-1stTurn, post-finish, post-time, 1stTurn-2ndTurn, 2ndTurn-finsh
-#define kNumberRaceDistances 2	// 550, 660
+#define kNormalResultFileType 1
+#define kDerbyLaneResultFileType 2
 
-#define kNotFinishingPenalty 2.5  // add 2.5 second penalty to worst entry time in race for entrys not finishing race
+#define kMinimumTime 27.00
+#define kMaxTimeFor2TurnRace 35.00
+#define kMaxTimeFor3TurnRace 45.00
+
+// post->break, post->1stTurn, post->finish, post->time, 1stTurn->2ndTurn, 2ndTurn->finsh
+#define kNumberStatFields 6
+
+// 550, 678 ignoring all others (for now) FIX: later
+#define kNumberRaceDistances 2
 
 // define reprocuction type AND fitness selection method
 #define kLinearFitnessSelection 0
 #define kSuaredFitnessSelection 1
 
 #define kMonogomousPairsMethod 0
-#define kAlphasMalesDominateMethod 1
+#define kAlphasDominateMethod 1
 #define kOrgyMethod 1
 
 #define kSelectionMethod kSuaredFitnessSelection
 #define kReproductionType kMonogomousPairsMethod
 
-///////////////////////////
-
-#ifndef EvoCapper_Constants_h
-#define EvoCapper_Constants_h
-
 #define kMaximumNumberEntries 8
 #define kRandomRange 2.0
 #define kRandomGranularity 8
 #define kLowestTolerableValue 1.0 / pow(10,kRandomGranularity)
-
 
 #define kMaximumNumberEntries 8
 #define kNumberDnaStrands 8

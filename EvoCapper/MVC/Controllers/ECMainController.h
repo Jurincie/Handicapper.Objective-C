@@ -29,14 +29,19 @@
 
 + (void)updateAndSaveData;
 
-#pragma traverse 
+#pragma traverse
 - (void)processDirectoryAtPath:(NSString*)directoryPath
-				withStatsArray:(double*)statsArray
-			   andCounterArray:(int*)counterArray;
+			  withDxStatsArray:(double*)statsArray
+		andDxStatsCounterArray:(int*)counterArray
+	   winTimeAccumulatorArray:(double*)averageWinTimeAccumulatorArray
+	  showTimeAccumulatorArray:(double*)averageShowTimeAccumulatorArray
+	  numRacesAccumulatorArray:(int*)numRacesAccumulatorArray
+				 andClassArray:(NSArray*)classArray;
 
 - (void)processStatsFromResultFile:(NSString*)resultFilePath
 			   withStatisticsArray:(double*)statsArray
-				   andCounterArray:(int*)counterArray;
+				   andCounterArray:(int*)counterArray
+					 andClassArray:(NSArray*)classArray;
 
 - (BOOL)isThisLineDeclaredNoRace:(NSString*)firstLine;
 
@@ -44,18 +49,28 @@
 
 #pragma track statistics methods
 
-- (NSOrderedSet*)createSetOfStatisticsForTrack:(ECTrackStats*)track;
+- (void)setStatsForTrack:(ECTrackStats*)track;
+- (NSArray*)getClassesForTrack:(NSString*)trackName;
 
-- (double)setStatsForString:(NSString*)resultFileLine
-					 ofType:(NSUInteger)fileType
-		withStatisticsArray:(double*)statsAccumulatorArray
-			andCounterArray:(int*)statsCounterArray
-		   withMaxTimeForDx:(double)maxTimeForDistance
-		andCurrentWorstTime:(double)worstTime
-			 forRaceDxIndex:(NSUInteger)raceDxIndex;
+- (void)processRace:(NSString*)singleRaceString
+			 ofType:(NSUInteger)resultFileType
+withStatisticsArray:(double*)statsAccumulatorArray
+	andCounterArray:(int*)statsCounterArray
+	   winTimeArray:(double*)averageRaceTimeAccumulatorArray
+	  showTimeArray:(double*)averageWinningRaceTimeAccumulatorArray
+	  numRacesArray:(int*)raceCounterArray
+   withMaxTimeForDx:(double)maxTimeForDistance
+	 forRaceDxIndex:(NSUInteger)raceDxIndex
+	usingClassArray:(NSArray*)classArray;
 
-- (NSOrderedSet*)transferStatsFromArray:(double*)statsAccumulatorArray
-						andCounterArray:(int*)statsCountrerArray;
+- (NSOrderedSet*)getDistanceStatsFromArray:(double*)statsAccumulatorArray
+						   andCounterArray:(int*)statsCountrerArray;
+
+- (NSOrderedSet*)getClassStatsFromArray:(double*)accumulatedWinTimesArray
+							   andArray:(double*)accumulateShowTimesArray
+						andCounterArray:(int*)raceCounterArray
+						   forTrackName:(NSString*)trackName
+						  andTrackStats:(ECTrackStats*)trackStats;
 
 - (NSUInteger)getIndexOfPostPosition:(NSArray*)tokens;
 - (BOOL)isThisCharADigit:(char)c;
@@ -68,7 +83,8 @@
 						maxTreeDepth:(NSUInteger)maxTreeDepth
 						minTreeDepth:(NSUInteger)mintreeDepth
 						mutationRate:(float)mutationRate
-							comments:(NSString*)comments;
+							comments:(NSString*)comments
+							andTrackName:(NSString*)trackName;
 
 
 - (NSMutableArray*)createNewHandicappers;
@@ -132,6 +148,7 @@
 - (NSUInteger)getIndexOfFirstDateToken:(NSArray*)lineZeroTokens;
 - (NSUInteger)getRaceDistanceFromString:(NSString*)raceNumberString;
 - (NSString*)getMmSubstringFromSpelledMonth:(NSString*)spelledMonthString;
+- (NSString*)getRaceDistanceStringFromString:(NSString*)fileNameString;
 
 - (void)useResultLineArray:(NSArray*)tokens
 	toGetValueForEntryName:(NSString**)entryNameString

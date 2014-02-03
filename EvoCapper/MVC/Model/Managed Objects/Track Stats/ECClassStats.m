@@ -2,7 +2,7 @@
 //  ECClassStats.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 1/23/14.
+//  Created by Ron Jurincie on 2/3/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
@@ -12,11 +12,12 @@
 
 @implementation ECClassStats
 
-@dynamic averageTime2Turns;
-@dynamic averageTime3Turns;
+@dynamic averageShowTime2Turns;
+@dynamic averageShowTime3Turns;
 @dynamic averageWinTime2Turns;
 @dynamic averageWinTime3Turns;
 @dynamic raceClass;
+@dynamic raceClassIndex;
 @dynamic trackStats;
 
 @end

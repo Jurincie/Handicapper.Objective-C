@@ -244,6 +244,7 @@
 }
 
 
+
 // Custon code
 
 - (IBAction)createNewPopulationButtonTapped:(id)sender
@@ -258,13 +259,16 @@
     // resent a modal window to get user input for new population values
 
 	self.evolutionManager.populationSize = 16;
+	
+	NSString *trackName = @"WheelingSmall";
 
     [self.evolutionManager createNewPopoulationWithName:@"Test Name"
                                             initialSize:self.evolutionManager.populationSize
                                            maxTreeDepth:8
                                            minTreeDepth:5
-                                           mutationRate:.01
-                                               comments:@"Initial Population TEST 1.0.0"];
+                                           mutationRate:.02
+                                               comments:@"Initial Population TEST 1.0.0"
+										   andTrackName:trackName];
 
     self.currentPopulation = self.evolutionManager.population;
 	
