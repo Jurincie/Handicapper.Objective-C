@@ -260,7 +260,7 @@
 
 	self.evolutionManager.populationSize = 16;
 	
-	NSString *trackName = @"WheelingSmall";
+	NSString *trackName = @"Wheeling";
 
     [self.evolutionManager createNewPopoulationWithName:@"Test Name"
                                             initialSize:self.evolutionManager.populationSize

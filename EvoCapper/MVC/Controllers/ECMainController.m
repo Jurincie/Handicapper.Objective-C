@@ -166,8 +166,8 @@
 - (void)processDirectoryAtPath:(NSString*)directoryPath
 			  withDxStatsArray:(double*)statsArray
 		andDxStatsCounterArray:(int*)counterArray
-	   winTimeAccumulatorArray:(double*)averageWinTimeAccumulatorArray
-	  showTimeAccumulatorArray:(double*)averageShowTimeAccumulatorArray
+	   winTimeAccumulatorArray:(double*)winTimeAccumulatorArray
+	  showTimeAccumulatorArray:(double*)showTimeAccumulatorArray
 	  numRacesAccumulatorArray:(int*)numRacesAccumulatorArray
 				 andClassArray:(NSArray*)classArray
 {
@@ -203,8 +203,8 @@
 			[self processDirectoryAtPath:fullPath
 						withDxStatsArray:statsArray
 				  andDxStatsCounterArray:counterArray
-				 winTimeAccumulatorArray:averageWinTimeAccumulatorArray
-				showTimeAccumulatorArray:averageShowTimeAccumulatorArray
+				 winTimeAccumulatorArray:winTimeAccumulatorArray
+				showTimeAccumulatorArray:showTimeAccumulatorArray
 				numRacesAccumulatorArray:numRacesAccumulatorArray
 						   andClassArray:(NSArray*)classArray];
 		}
@@ -273,8 +273,8 @@
 						   ofType:1
 			  withStatisticsArray:statsArray
 				  andCounterArray:counterArray
-					 winTimeArray:averageWinTimeAccumulatorArray
-					showTimeArray:averageShowTimeAccumulatorArray
+					 winTimeArray:winTimeAccumulatorArray
+					showTimeArray:showTimeAccumulatorArray
 					numRacesArray:numRacesAccumulatorArray
 				 withMaxTimeForDx:maxRaceTimeForDx
 				   forRaceDxIndex:raceDxIndex
@@ -500,6 +500,8 @@ withStatisticsArray:(double*)statsAccumulatorArray
 	NSUInteger finishPosition		= 0;
 	double actualFinishTime			= 0.0;
 	double adjustedFinishTime		= 0.0;
+	double timeForWinner			= 0.0;
+	double timeForShowFinisher		= 0.0;
 	
 	if(resultFileType == kNormalResultFileType)
 	{
@@ -585,8 +587,13 @@ withStatisticsArray:(double*)statsAccumulatorArray
 		thisLine			= lines[++index];
 		actualFinishTime	= [thisLine doubleValue];
 		
-		NSString *showTimeLine		= lines[index + 26];
-		double timeForShowFinisher	= [showTimeLine doubleValue];
+		NSString *showTimeLine	= lines[index + 26];
+		timeForShowFinisher		= [showTimeLine doubleValue];
+		
+		if(finishPosition == 1)
+		{
+			timeForWinner = actualFinishTime;
+		}
 	
 		if(actualFinishTime > maxTimeForDistance)
 		{
@@ -602,25 +609,31 @@ withStatisticsArray:(double*)statsAccumulatorArray
 			//
 		}
 		
+		if(raceDxIndex > 1)
+		{
+			NSLog(@"%lu $$$", raceDxIndex);
+		}
+		
 		index += 2;
+		
+		if(timeForWinner > timeForShowFinisher)
+		{
+			NSLog(@"Huh?");
+		}
+		
 		NSString *raceClass		= lines[index];
 		NSUInteger classIndex	= [classArray indexOfObject:raceClass];
-		NSUInteger offset		= (raceDxIndex * classArray.count) + classIndex;
+		NSUInteger arrayIndex	= (raceDxIndex * classArray.count) + classIndex;
 	
-		int *raceCounterPtr		= raceCounterArray + offset;
-		int currentCounterValue	= *raceCounterPtr;
-		*raceCounterPtr			= currentCounterValue + 1;
-		currentCounterValue		= *raceCounterPtr;
+		int numberRacesAtThisDxAndClass	= raceCounterArray[arrayIndex];
+		numberRacesAtThisDxAndClass++;
+		raceCounterArray[arrayIndex] = numberRacesAtThisDxAndClass;
 		
-		double *winTimeAccPtr				= winTimeAccumulatorArray + offset;
-		double accumulatedWinTimesThisClass	= *winTimeAccPtr;
-		*winTimeAccPtr						= accumulatedWinTimesThisClass + actualFinishTime;
-		accumulatedWinTimesThisClass		= *winTimeAccPtr;
-		
-		double *showTimeAccPtr					= showTimeAccumulatorArray + offset;
-		double accumulatedShowTimesThisClass	= *showTimeAccPtr;
-		*showTimeAccPtr							= accumulatedShowTimesThisClass + timeForShowFinisher;
-		accumulatedShowTimesThisClass			= *showTimeAccPtr;
+		double accumulatedWinTimesThisClassAndDx	= winTimeAccumulatorArray[arrayIndex] ;
+		winTimeAccumulatorArray[arrayIndex]			= accumulatedWinTimesThisClassAndDx + timeForWinner;
+	
+		double accumulatedShowTimesThisClassAndDx	= showTimeAccumulatorArray[arrayIndex];
+		showTimeAccumulatorArray[arrayIndex]		= accumulatedShowTimesThisClassAndDx + timeForShowFinisher;
 	}
 	else if(resultFileType == kDerbyLaneResultFileType)
 	{
@@ -831,21 +844,19 @@ withStatisticsArray:(double*)statsAccumulatorArray
 	
 	// Class Stats
 	// post by post average times and average win times
-	NSArray *classArray	= [self getClassesForTrack:track.trackName];
+	NSArray *raceClassArray	= [self getClassesForTrack:track.trackName];
+	NSUInteger arraySize	= kNumberRaceDistances * raceClassArray.count;
 	
-	double	winRaceTimeAccumulatorArray[kNumberRaceDistances][classArray.count];
-	double	showFinishRaceTimeAccumulatorArray[kNumberRaceDistances][classArray.count];
-	int		raceCounterArray[kNumberRaceDistances][classArray.count];
+	double	winTimeAccumulatorArray[arraySize];
+	double	showTimeAccumulatorArray[arraySize];
+	int		raceCounterArray[arraySize];
 	
 	// initialize accumulators to zero
-	for(int raceDxIndex = 0; raceDxIndex < kNumberRaceDistances; raceDxIndex++)
+	for(int index = 0; index < arraySize; index++)
 	{
-		for(int classIndex = 0; classIndex < classArray.count; classIndex++)
-		{
-			raceCounterArray[raceDxIndex][classIndex]					= 0;
-			showFinishRaceTimeAccumulatorArray[raceDxIndex][classIndex] = 0.0;
-			winRaceTimeAccumulatorArray[raceDxIndex][classIndex]		= 0.0;
-		}
+		raceCounterArray[index]			= 0;
+		showTimeAccumulatorArray[index]	= 0.0;
+		winTimeAccumulatorArray[index]	= 0.0;
 	}
 	
 	// build results folder path
@@ -862,16 +873,16 @@ withStatisticsArray:(double*)statsAccumulatorArray
 	[self processDirectoryAtPath:resultsFolderPath
 				withDxStatsArray:&dxStatsAccumulatorArray[0][0][0]
 		  andDxStatsCounterArray:&dxRaceCounterArray[0][0][0]
-		 winTimeAccumulatorArray:&winRaceTimeAccumulatorArray[0][0]
-		showTimeAccumulatorArray:&showFinishRaceTimeAccumulatorArray[0][0]
-		numRacesAccumulatorArray:&raceCounterArray[0][0]
-				   andClassArray:classArray];
+		 winTimeAccumulatorArray:winTimeAccumulatorArray
+		showTimeAccumulatorArray:showTimeAccumulatorArray
+		numRacesAccumulatorArray:raceCounterArray
+				   andClassArray:raceClassArray];
 	
-	classStats = [self getClassStatsFromArray:&winRaceTimeAccumulatorArray[0][0]
-									 andArray:&showFinishRaceTimeAccumulatorArray[0][0]
-							  andCounterArray:&raceCounterArray[0][0]
-								 forTrackName:track.trackName
-								andTrackStats:trackStats];
+	classStats = [self getClassStatsFromWinTimesArray:winTimeAccumulatorArray
+									   showTimesArray:showTimeAccumulatorArray
+									 raceCounterArray:raceCounterArray
+										 forTrackName:track.trackName
+										andTrackStats:trackStats];
 	
 	distanceStats = [self getDistanceStatsFromArray:&dxStatsAccumulatorArray[0][0][0]
 									andCounterArray:&dxRaceCounterArray[0][0][0]];
@@ -948,56 +959,67 @@ withStatisticsArray:(double*)statsAccumulatorArray
 	return index;
 }
 
-- (NSOrderedSet*)getClassStatsFromArray:(double*)accumulatedShowTimesArray
-							   andArray:(double*)accumulatedWinTimesArray
-						   andCounterArray:(int*)raceCounterArray
-						   forTrackName:(NSString*)trackName
-						   andTrackStats:(ECTrackStats*)trackStats
+- (NSOrderedSet*)getClassStatsFromWinTimesArray:(double*)accumulatedWinTimesArray
+								 showTimesArray:(double*)accumulatedShowTimesArray
+							   raceCounterArray:(int*)raceCounterArray
+								   forTrackName:(NSString*)trackName
+								  andTrackStats:(ECTrackStats*)trackStats
 {
-	NSOrderedSet *classStats = [NSOrderedSet new];
+	NSMutableOrderedSet *classStats = [NSMutableOrderedSet new];
+	NSArray *raceClassArray			= [self getClassesForTrack:trackName];
+	NSUInteger arraySize			= raceClassArray.count * kNumberRaceDistances;
+	double averageShowTime2Turns	= 0.0;
+	double averageWinTime2Turns		= 0.0;
+	double averageShowTime3Turns	= 0.0;
+	double averageWinTime3Turns		= 0.0;
+	NSUInteger raceClassIndex		= 0;
+	NSString *className				= nil;
 	
-	NSArray *raceClassArray = [self getClassesForTrack:trackName];
-	
-	for(NSUInteger classIndex = 0; classIndex < raceClassArray.count; classIndex++)
+	for(NSUInteger index = 0; index < arraySize; index++)
 	{
 		ECClassStats *newClassStats = [NSEntityDescription insertNewObjectForEntityForName:@"ECClassStats"
 																 inManagedObjectContext:MOC];
+		raceClassIndex	= index < raceClassArray.count ? index : index - raceClassArray.count;
+		className		= [raceClassArray objectAtIndex:raceClassIndex];
 		
-		NSUInteger twoTurnOffset	= classIndex;
-		NSUInteger threeTurnOffset	= raceClassArray.count + classIndex;
-		
-		double *show2TurnsPtr	= accumulatedWinTimesArray  + twoTurnOffset;
-		double *win2TurnsPtr	= accumulatedWinTimesArray + twoTurnOffset;
-		double *show3TurnsPtr	= accumulatedShowTimesArray + threeTurnOffset;
-		double *win3TurnsPtr	= accumulatedShowTimesArray + threeTurnOffset;
-		
-		double accumulatedShowTimes2Turns	= *show2TurnsPtr;
-		double accumulatedShowTimes3Turns	= *show3TurnsPtr;
-		double accumulatedWinTimes2Turns	= *win2TurnsPtr;
-		double accumulatedWinTimes3Turns	= *win3TurnsPtr;
-		
-		int *numRacesPtr;
-		int numRaces;
-		
-		numRacesPtr						= raceCounterArray + twoTurnOffset;
-		numRaces						= *numRacesPtr;
-		double averageShowTime2Turns	= accumulatedShowTimes2Turns / numRaces;
-		double averageWinTime2Turns		= accumulatedWinTimes2Turns / numRaces;
-	
-		numRacesPtr						= raceCounterArray + threeTurnOffset;
-		numRaces						= *numRacesPtr;
-		double averageShowTime3Turns	= accumulatedShowTimes3Turns / numRaces;
-		double averageWinTime3Turns		= accumulatedWinTimes3Turns / numRaces;
-		
+		if(index < raceClassArray.count)  // 2 turn races
+		{
+			NSUInteger num2TurnRacesThisClass = raceCounterArray[index];
+			
+			if(num2TurnRacesThisClass > 0)
+			{
+				double accumulatedShowTimes2Turns	= accumulatedShowTimesArray[index];
+				double accumulatedWinTimes2Turns	= accumulatedWinTimesArray[index];
+				averageShowTime2Turns				= accumulatedShowTimes2Turns / num2TurnRacesThisClass;
+				averageWinTime2Turns				= accumulatedWinTimes2Turns / num2TurnRacesThisClass;
+			}
+			
+			raceClassIndex = 0;
+		}
+		else	// 3 turn races
+		{
+			NSUInteger num3TurnRacesThisClass = raceCounterArray[index];
+
+			if(num3TurnRacesThisClass > 0)
+			{
+				double accumulatedShowTimes3Turns	= accumulatedShowTimesArray[index];
+				double accumulatedWinTimes3Turns	= accumulatedWinTimesArray[index];
+				averageShowTime3Turns				= accumulatedShowTimes3Turns / num3TurnRacesThisClass;
+				averageWinTime3Turns				= accumulatedWinTimes3Turns / num3TurnRacesThisClass;
+			}
+			
+			raceClassIndex = 1;
+		}
+				
 		newClassStats.raceClass				= trackName;
 		newClassStats.trackStats			= trackStats;
 		newClassStats.averageShowTime2Turns	= [NSNumber numberWithDouble:averageShowTime2Turns];
 		newClassStats.averageShowTime3Turns	= [NSNumber numberWithDouble:averageShowTime3Turns];
 		newClassStats.averageWinTime2Turns	= [NSNumber numberWithDouble:averageWinTime2Turns];
 		newClassStats.averageWinTime2Turns	= [NSNumber numberWithDouble:averageWinTime3Turns];
-		newClassStats.raceClassIndex		= [NSNumber numberWithInt:classIndex];
+		newClassStats.raceClassIndex		= [NSNumber numberWithInt:raceClassIndex];
 		
-		[classStats insertValue:newClassStats inPropertyWithKey:trackName];
+		[classStats addObject:newClassStats];
 	}
 	
 	return classStats;

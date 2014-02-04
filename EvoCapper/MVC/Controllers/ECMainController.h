@@ -66,11 +66,11 @@ withStatisticsArray:(double*)statsAccumulatorArray
 - (NSOrderedSet*)getDistanceStatsFromArray:(double*)statsAccumulatorArray
 						   andCounterArray:(int*)statsCountrerArray;
 
-- (NSOrderedSet*)getClassStatsFromArray:(double*)accumulatedWinTimesArray
-							   andArray:(double*)accumulateShowTimesArray
-						andCounterArray:(int*)raceCounterArray
-						   forTrackName:(NSString*)trackName
-						  andTrackStats:(ECTrackStats*)trackStats;
+- (NSOrderedSet*)getClassStatsFromWinTimesArray:(double*)accumulatedShowTimesArray
+								 showTimesArray:(double*)accumulatedWinTimesArray
+							   raceCounterArray:(int*)raceCounterArray
+								   forTrackName:(NSString*)trackName
+								  andTrackStats:(ECTrackStats*)trackStats;
 
 - (NSUInteger)getIndexOfPostPosition:(NSArray*)tokens;
 - (BOOL)isThisCharADigit:(char)c;
