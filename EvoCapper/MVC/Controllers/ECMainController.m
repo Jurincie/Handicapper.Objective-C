@@ -24,7 +24,7 @@
 #import "ECPostStats.h"
 #import "ECTrackStats.h"
 #import "ECFirstTurnStats.h"
-#import "ECFarTurnStatistics.h"
+#import "ECTopOFStretchStats.h"
 #import "ECClassStats.h"
 #import "NSString+ECStringValidizer.h"
 #import "ECTrackStats.h"
@@ -262,12 +262,7 @@
 					continue;
 				}
 				
-				double maxRaceTimeForDx	= kMaxTimeFor2TurnRace;
-				
-				if(raceDxIndex == 1)
-				{
-					maxRaceTimeForDx = kMaxTimeFor3TurnRace;
-				}
+				double maxRaceTimeForDx	= raceDxIndex == 0 ? kMaxTimeFor2TurnRace : kMaxTimeFor3TurnRace;
 				
 				[self processRace:singleRaceString
 						   ofType:1
@@ -453,7 +448,9 @@
 	NSString *secondFromLastWord	= [words objectAtIndex:words.count-3];
 	BOOL answer						= NO;
 	
-	if([secondFromLastWord isEqualToString:@"Declared"] && [nextToLastWord isEqualToString:@"No"] && [lastWord isEqualToString:@"Race"])
+	if([secondFromLastWord isEqualToString:@"Declared"] &&
+	[nextToLastWord isEqualToString:@"No"] &&
+	[lastWord isEqualToString:@"Race"])
 	{
 		answer = YES;
 	}
@@ -463,8 +460,8 @@
 
 - (void)processRace:(NSString*)singleRaceString
 			 ofType:(NSUInteger)resultFileType
-withStatisticsArray:(double*)statsAccumulatorArray
-	andCounterArray:(int*)statsCounterArray
+withStatisticsArray:(double*)dxStatsAccumulatorArray
+	andCounterArray:(int*)dxStatsRaceCounterArray
 	   winTimeArray:(double*)winTimeAccumulatorArray
 	  showTimeArray:(double*)showTimeAccumulatorArray
 	  numRacesArray:(int*)raceCounterArray
@@ -492,7 +489,6 @@ withStatisticsArray:(double*)statsAccumulatorArray
 	*/
 	
 	// assign zero to all fields, so that falling at any point is covered
-	BOOL didNotFinishRace			= NO;
 	NSUInteger postPosition			= 0;
 	NSUInteger breakPosition		= 0;
 	NSUInteger firstTurnPosition	= 0;
@@ -520,132 +516,127 @@ withStatisticsArray:(double*)statsAccumulatorArray
 			index++;
 		}
 		
-		// ignore empty lines
-		thisLine = lines[++index];
-		
-		while (thisLine.length == 0 || [thisLine isEqualToString:@" "])
+		// loop here
+		for(NSUInteger finishPosition = 1; finishPosition <= kMaximumNumberEntries; finishPosition++)
 		{
+			// ignore empty lines
 			thisLine = lines[++index];
-		}
+			
+			while (thisLine.length == 0 || [thisLine isEqualToString:@" "])
+			{
+				thisLine = lines[++index];
+			}
+			
+			// we ignore dog name (since its not relevant to track stats)
+	//		NSString *dogName	= lines[index];
+			thisLine			= lines[++index];
+			postPosition		= [thisLine integerValue];
+			
+			if(postPosition > 0)
+			{
+				breakPosition			= kMaximumNumberEntries + 1;
+				firstTurnPosition		= kMaximumNumberEntries + 1;
+				topOfStretchPosition	= kMaximumNumberEntries + 1;
+				finishPosition			= kMaximumNumberEntries + 1;
+			}
+			else
+			{
+				NSLog(@"post position number error");
+				return; // means ignore race
+			}
+			
+			thisLine		= lines[++index];
+			breakPosition	= [thisLine integerValue];
+			thisLine		= lines[++index];
+			
+			if(thisLine.length > 1)
+			{
+				NSString *substring = [thisLine substringToIndex:1];
+				firstTurnPosition	= [substring integerValue];
+			}
+			else
+			{
+				firstTurnPosition = [thisLine integerValue];
+			}
+			
+			thisLine = lines[++index];
 		
-		// we ignonre dog name (since its not relevant to track stats)
-		thisLine		= lines[++index];
-		postPosition	= [thisLine integerValue];
+			if(thisLine.length > 1)
+			{
+				NSString *substring		= [thisLine substringToIndex:1];
+				topOfStretchPosition	= [substring integerValue];
+			}
+			else
+			{
+				topOfStretchPosition = [thisLine integerValue];
+			}
 		
-		if(postPosition > 0)
-		{
-			breakPosition			= kMaximumNumberEntries + 1;
-			firstTurnPosition		= kMaximumNumberEntries + 1;
-			topOfStretchPosition	= kMaximumNumberEntries + 1;
-			finishPosition			= kMaximumNumberEntries + 1;
-			didNotFinishRace		= NO;
-		}
-		else
-		{
-			NSLog(@"post position number error");
-			return; // means ignore race
-		}
+			thisLine = lines[++index];
+			
+			if(thisLine.length > 1)
+			{
+				NSString *substring = [thisLine substringToIndex:1];
+				finishPosition		= [substring integerValue];
+			}
+			else
+			{
+				finishPosition = [thisLine integerValue];
+			}
 		
-		thisLine		= lines[++index];
-		breakPosition	= [thisLine integerValue];
-		thisLine		= lines[++index];
-		
-		if(thisLine.length > 1)
-		{
-			NSString *substring = [thisLine substringToIndex:1];
-			firstTurnPosition	= [substring integerValue];
+			thisLine			= lines[++index];
+			actualFinishTime	= [thisLine doubleValue];
+			
+			if(actualFinishTime > maxTimeForDistance)
+			{
+				adjustedFinishTime = maxTimeForDistance;
+			}
+			else
+			{
+				adjustedFinishTime = actualFinishTime;
+			}
+			
+			if(finishPosition == 1)
+			{
+				// get class stats here from first entries entrysRaceLineResultsString
+				timeForWinner			= actualFinishTime;
+				NSString *showTimeLine	= lines[index + 26];
+				timeForShowFinisher		= [showTimeLine doubleValue];
+			
+				index += 2;
+
+				NSString *raceClass		= lines[index];
+				NSUInteger classIndex	= [classArray indexOfObject:raceClass];
+				NSUInteger arrayIndex	= (raceDxIndex * classArray.count) + classIndex;
+				
+				int numberRacesAtThisDxAndClass	= raceCounterArray[arrayIndex];
+				numberRacesAtThisDxAndClass++;
+				raceCounterArray[arrayIndex] = numberRacesAtThisDxAndClass;
+				
+				double accumulatedWinTimesThisClassAndDx	= winTimeAccumulatorArray[arrayIndex] ;
+				winTimeAccumulatorArray[arrayIndex]			= accumulatedWinTimesThisClassAndDx + timeForWinner;
+				
+				double accumulatedShowTimesThisClassAndDx	= showTimeAccumulatorArray[arrayIndex];
+				showTimeAccumulatorArray[arrayIndex]		= accumulatedShowTimesThisClassAndDx + timeForShowFinisher;
+			}
+			
+			[self addStatsForEntryAtPost:postPosition
+					 withbreakAtPosition:breakPosition
+					   firstTurnPosition:firstTurnPosition
+					topOfStretchPosition:topOfStretchPosition
+						   finalPosition:finishPosition
+							withRaceTime:adjustedFinishTime
+						   atRaceDxIndex:raceDxIndex
+				withStatAccumulatorArray:dxStatsAccumulatorArray
+					 andRaceCounterArray:dxStatsRaceCounterArray];
 		}
-		else
-		{
-			firstTurnPosition = [thisLine integerValue];
-		}
-		
-		thisLine = lines[++index];
-	
-		if(thisLine.length > 1)
-		{
-			NSString *substring		= [thisLine substringToIndex:1];
-			topOfStretchPosition	= [substring integerValue];
-		}
-		else
-		{
-			topOfStretchPosition = [thisLine integerValue];
-		}
-	
-		thisLine = lines[++index];
-		
-		if(thisLine.length > 1)
-		{
-			NSString *substring = [thisLine substringToIndex:1];
-			finishPosition		= [substring integerValue];
-		}
-		else
-		{
-			finishPosition = [thisLine integerValue];
-		}
-	
-		thisLine			= lines[++index];
-		actualFinishTime	= [thisLine doubleValue];
-		
-		NSString *showTimeLine	= lines[index + 26];
-		timeForShowFinisher		= [showTimeLine doubleValue];
-		
-		if(finishPosition == 1)
-		{
-			timeForWinner = actualFinishTime;
-		}
-	
-		if(actualFinishTime > maxTimeForDistance)
-		{
-			didNotFinishRace = YES;
-		}
-		else
-		{
-			adjustedFinishTime = actualFinishTime;
-		
-			// NSLog(@"\nPost: %d\nBreak: %d\n1st Turn: %d\n2nd Turn: %d\nFinish: %d\nTime: %lf", (int)postPosition, (int)breakPosition,
-			//																		 (int)firstTurnPosition, (int)secondTurnPosition,
-			//																		 (int)finishPosition, actualFinishTime);
-			//
-		}
-		
-		if(raceDxIndex > 1)
-		{
-			NSLog(@"%lu $$$", raceDxIndex);
-		}
-		
-		index += 2;
-		
-		if(timeForWinner > timeForShowFinisher)
-		{
-			NSLog(@"Huh?");
-		}
-		
-		NSString *raceClass		= lines[index];
-		NSUInteger classIndex	= [classArray indexOfObject:raceClass];
-		NSUInteger arrayIndex	= (raceDxIndex * classArray.count) + classIndex;
-	
-		int numberRacesAtThisDxAndClass	= raceCounterArray[arrayIndex];
-		numberRacesAtThisDxAndClass++;
-		raceCounterArray[arrayIndex] = numberRacesAtThisDxAndClass;
-		
-		double accumulatedWinTimesThisClassAndDx	= winTimeAccumulatorArray[arrayIndex] ;
-		winTimeAccumulatorArray[arrayIndex]			= accumulatedWinTimesThisClassAndDx + timeForWinner;
-	
-		double accumulatedShowTimesThisClassAndDx	= showTimeAccumulatorArray[arrayIndex];
-		showTimeAccumulatorArray[arrayIndex]		= accumulatedShowTimesThisClassAndDx + timeForShowFinisher;
 	}
-	else if(resultFileType == kDerbyLaneResultFileType)
+	else if(resultFileType == kDerbyLaneResultFileType) // FIX:
 	{
 		// get the post and break positions
 		NSArray *tokens		= [singleRaceString componentsSeparatedByString:@" "];
 		NSUInteger index	= [self getIndexOfPostPosition:tokens];
 		
-		if(index == 0)
-		{
-			didNotFinishRace = YES;
-		}
-		else
+		if(index != 0)
 		{
 			NSString *postWord = [tokens objectAtIndex:index];
 			
@@ -687,11 +678,7 @@ withStatisticsArray:(double*)statsAccumulatorArray
 			
 				// some times arbitrary very long times are assigned
 				// lower this to our own maxTime
-				if(actualFinishTime > maxTimeForDistance)
-				{
-					didNotFinishRace = YES;
-				}
-				else
+				if(actualFinishTime < maxTimeForDistance)
 				{
 					postPosition			= (NSUInteger)[postWord integerValue];
 					breakPosition			= (NSUInteger)[breakWord integerValue];
@@ -700,16 +687,23 @@ withStatisticsArray:(double*)statsAccumulatorArray
 					finishPosition			= (NSUInteger)[finishWord integerValue];
 					actualFinishTime		= (double)[finishTimeWord doubleValue];
 					adjustedFinishTime		= actualFinishTime;
-				
-					// NSLog(@"\nPost: %d\nBreak: %d\n1st Turn: %d\n2nd Turn: %d\nFinish: %d\nTime: %lf", (int)postPosition, (int)breakPosition,
-					//																		 (int)firstTurnPosition, (int)secondTurnPosition,
-					//																		 (int)finishPosition, actualFinishTime);
-					//
 				}
 			}
 		}
 	}
+}
 
+- (void)addStatsForEntryAtPost:(NSUInteger)postPosition
+		   withbreakAtPosition:(NSUInteger)breakPosition
+			 firstTurnPosition:(NSUInteger)firstTurnPosition
+		  topOfStretchPosition:(NSUInteger)topOfStretchPosition
+				 finalPosition:(NSUInteger)finalPosition
+				  withRaceTime:(double)raceTimeForEntry
+				 atRaceDxIndex:(NSUInteger)raceDxIndex
+	  withStatAccumulatorArray:(double*)statAccumulatorArray
+		   andRaceCounterArray:(int*)raceCounterArray
+{
+	
 	if(postPosition == 0 || postPosition > kMaximumNumberEntries)
 	{
 		NSLog(@"post position number error");
@@ -725,94 +719,73 @@ withStatisticsArray:(double*)statsAccumulatorArray
 		NSLog(@"2nd turn position number error");
 		return;
 	}
-	if(finishPosition == 0 || finishPosition > kMaximumNumberEntries)
+	if(finalPosition == 0 || finalPosition > kMaximumNumberEntries)
 	{
 		NSLog(@"finish position number error");
 		return;
-	}
-	
-	if(actualFinishTime < kMinimumTime || actualFinishTime > maxTimeForDistance)
-	{
-		NSLog(@"finish time  error");
-		didNotFinishRace = YES;
 	}
 	
 	NSUInteger postPositionIndex			= postPosition - 1;
 	NSUInteger firstTurnPositionIndex		= firstTurnPosition - 1;
 	NSUInteger topOfStretchPositionIndex	= topOfStretchPosition - 1;
 	
+	NSUInteger mainOffset = (raceDxIndex * kNumberRaceDistances * kNumberStatFields) + (postPositionIndex * kNumberStatFields);
+	
 	if(breakPosition > 0)	// based on post position
 	{
-		NSUInteger breakPositionOffset	= (raceDxIndex * kNumberRaceDistances * kNumberStatFields) +
-											(postPositionIndex * kNumberStatFields) + kBreakPositionFromPostStatField;
-		double *breakPositionStatPtr	= statsAccumulatorArray + breakPositionOffset;
-		int *breakCounterPtr			= statsCounterArray + breakPositionOffset;
+		NSUInteger index							= mainOffset + kBreakPositionFromPostStatField;
+		double accumulatedBreakValuesAtDxAndPost	= statAccumulatorArray[index];
+		accumulatedBreakValuesAtDxAndPost			+= breakPosition;
+		statAccumulatorArray[index]					= accumulatedBreakValuesAtDxAndPost;
 		
-		*breakCounterPtr		+= 1;
-		*breakPositionStatPtr	+= (double)breakPosition;
+		// increment racesAtThisDx here
+		NSUInteger racesAtThisDxAndPost	= raceCounterArray[index];
+		racesAtThisDxAndPost++;
+		raceCounterArray[index]			= (int)racesAtThisDxAndPost;
 	}
 	
 	if(firstTurnPosition > 0)	// based on post position
 	{
-		NSUInteger firstTurnPositionOffset	= (raceDxIndex * kNumberRaceDistances * kNumberStatFields) +
-														(postPositionIndex * kNumberStatFields) +
-														kFirstTurnPositionFromPostStatField;
-		double *firstTurnPositionStatPtr	= statsAccumulatorArray + firstTurnPositionOffset;
-		int *firstTurnCounterPtr			= statsCounterArray + firstTurnPositionOffset;
-		
-		*firstTurnCounterPtr		+= 1;
-		*firstTurnPositionStatPtr	+= (double)firstTurnPosition;
+		NSUInteger index						= mainOffset + kFirstTurnPositionFromPostStatField;
+		double accumulatedFTValuesAtDxAndPost	= statAccumulatorArray[index];
+		accumulatedFTValuesAtDxAndPost			+= firstTurnPosition;
+		statAccumulatorArray[index]				= accumulatedFTValuesAtDxAndPost;
 	}
 	
-	if(finishPosition > 0)	// based on post
+	if(finalPosition > 0)	// based on post position
 	{
-		NSUInteger finishOffset = (raceDxIndex * kNumberRaceDistances * kNumberStatFields) +
-										(postPositionIndex * kNumberStatFields) +
-										kFinishPositionFromPostStatField;
-				
-		double *finishStatPtr	= statsAccumulatorArray + finishOffset;
-		int *finishCounterPtr	= statsCounterArray + finishOffset;
-	
-		*finishCounterPtr	+= 1;
-		*finishStatPtr		+= (double)finishPosition;
+		NSUInteger index									= mainOffset + kFinishPositionFromPostStatField;
+		double accumulatedFinalPositionValuesForDxAndPost	= statAccumulatorArray[index];
+		accumulatedFinalPositionValuesForDxAndPost			+= finalPosition;
+		statAccumulatorArray[index]							= accumulatedFinalPositionValuesForDxAndPost;
 	}
-			
-	if(adjustedFinishTime > 0)	// based on post position
+	
+	if(raceTimeForEntry > 0)	// based on post position
 	{
-		NSUInteger timeOffset	= (raceDxIndex * kNumberRaceDistances * kNumberStatFields) +
-										(postPositionIndex * kNumberStatFields) +
-										kFinishTimeFromPostStatField;
-		double *timeStatPtr		= statsAccumulatorArray + timeOffset;
-		int *timeCounterPtr		= statsCounterArray + timeOffset;
-		
-		*timeCounterPtr	+= 1;
-		*timeStatPtr	+= adjustedFinishTime;
+		NSUInteger index								= mainOffset + kFinishTimeFromPostStatField;
+		double finishTimeAccumulatedValueAtDxAndPost	= statAccumulatorArray[index];
+		finishTimeAccumulatedValueAtDxAndPost			+= raceTimeForEntry;
+		statAccumulatorArray[index]						= finishTimeAccumulatedValueAtDxAndPost;
 	}
 	
 	if(topOfStretchPositionIndex > 0)	// based on 1st turn position
 	{
-		NSUInteger secondTurnPositionOffset = (raceDxIndex * kNumberRaceDistances * kNumberStatFields) +
-													(firstTurnPositionIndex * kNumberStatFields) +
-													kSecondTurnPositionFromFirstTurnStatField;
-				
-		double *secondTurnPositionStatPtr	= statsAccumulatorArray + secondTurnPositionOffset;
-		int *secondTurnCounterPtr			= statsCounterArray + topOfStretchPositionIndex;
+		mainOffset = (raceDxIndex * kNumberRaceDistances * kNumberStatFields) + (firstTurnPositionIndex * kNumberStatFields);
 		
-		*secondTurnCounterPtr		+= 1;
-		*secondTurnPositionStatPtr	+= (double)topOfStretchPosition;
+		NSUInteger index								= mainOffset + kTopOFStretchPositionFromFirstTurnStatField;
+		double accumulatedTosValueFromFtPositionAndDx	= statAccumulatorArray[index];
+		accumulatedTosValueFromFtPositionAndDx			+= topOfStretchPosition;
+		statAccumulatorArray[index]						= accumulatedTosValueFromFtPositionAndDx;
 	}
 	
-	if(finishPosition > 0)	// based on 2nd turn position
+	if(finalPosition > 0)	// based on top of stretch position
 	{
-		NSUInteger finishOffset = (raceDxIndex * kNumberRaceDistances * kNumberStatFields) +
-										(topOfStretchPositionIndex * kNumberStatFields) +
-										kFinishPositionFromSecondTurnStatField;
-	
-		double *finishStatPtr	= statsAccumulatorArray + finishOffset;
-		int *finishCounterPtr	= statsCounterArray + finishOffset;
+		mainOffset = (raceDxIndex * kNumberRaceDistances * kNumberStatFields) + (topOfStretchPositionIndex * kNumberStatFields);
 		
-		*finishCounterPtr	+= 1;
-		*finishStatPtr		+= (double)finishPosition;
+		NSUInteger index									= mainOffset + kFinishPositionFromTopOfStretchStatField;
+		double accumulatedFinalPositonsFromTosPositionAndDx	= statAccumulatorArray[index];
+		accumulatedFinalPositonsFromTosPositionAndDx		+= finalPosition;
+		statAccumulatorArray[index]							= accumulatedFinalPositonsFromTosPositionAndDx;
 	}
 }
 
@@ -820,39 +793,32 @@ withStatisticsArray:(double*)statsAccumulatorArray
 {
 	// Each raceClass 2-Turn and 3-Turn stats are kept for:
 	//	averageWinTime and averageShowTime
-	ECTrackStats *trackStats	= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
+	ECTrackStats *trackStats = [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
 															 inManagedObjectContext:MOC];
-	NSOrderedSet *distanceStats = [NSOrderedSet new];
-	NSOrderedSet *classStats	= [NSOrderedSet new];
-	
 	// Distance Stats
-	int		dxRaceCounterArray[kNumberRaceDistances][kMaximumNumberEntries][kNumberStatFields];
-	double	dxStatsAccumulatorArray[kNumberRaceDistances][kMaximumNumberEntries][kNumberStatFields];
+	NSUInteger dxArraySize = kNumberRaceDistances * kMaximumNumberEntries * kNumberStatFields;
+	
+	int		dxRaceCounterArray[dxArraySize];
+	double	dxStatsAccumulatorArray[dxArraySize];
 	
 	// initialize accumulators to zero
-	for(int raceDxIndex = 0; raceDxIndex < kNumberRaceDistances; raceDxIndex++)
+	for(int index = 0; index < dxArraySize; index++)
 	{
-		for(int entryNumber = 0; entryNumber < kMaximumNumberEntries; entryNumber++)
-		{
-			for(int statFieldNumber = 0; statFieldNumber < kNumberStatFields; statFieldNumber++)
-			{
-				dxStatsAccumulatorArray[raceDxIndex][entryNumber][statFieldNumber]	= 0.0;
-				dxRaceCounterArray[raceDxIndex][entryNumber][statFieldNumber]		= 0.0;
-			}
-		}
+		dxStatsAccumulatorArray[index]	= 0.0;
+		dxRaceCounterArray[index]		= 0.0;
 	}
 	
 	// Class Stats
 	// post by post average times and average win times
-	NSArray *raceClassArray	= [self getClassesForTrack:track.trackName];
-	NSUInteger arraySize	= kNumberRaceDistances * raceClassArray.count;
+	NSArray *raceClassArray		= [self getClassesForTrack:track.trackName];
+	NSUInteger classArraySize	= kNumberRaceDistances * raceClassArray.count;
 	
-	double	winTimeAccumulatorArray[arraySize];
-	double	showTimeAccumulatorArray[arraySize];
-	int		raceCounterArray[arraySize];
+	double	winTimeAccumulatorArray[classArraySize];
+	double	showTimeAccumulatorArray[classArraySize];
+	int		raceCounterArray[classArraySize];
 	
 	// initialize accumulators to zero
-	for(int index = 0; index < arraySize; index++)
+	for(int index = 0; index < classArraySize; index++)
 	{
 		raceCounterArray[index]			= 0;
 		showTimeAccumulatorArray[index]	= 0.0;
@@ -871,21 +837,21 @@ withStatisticsArray:(double*)statsAccumulatorArray
 	NSString *resultsFolderPath = [NSString stringWithFormat:@"%@%@%@", prefix, track.trackName, suffix];
 	
 	[self processDirectoryAtPath:resultsFolderPath
-				withDxStatsArray:&dxStatsAccumulatorArray[0][0][0]
-		  andDxStatsCounterArray:&dxRaceCounterArray[0][0][0]
+				withDxStatsArray:dxStatsAccumulatorArray
+		  andDxStatsCounterArray:dxRaceCounterArray
 		 winTimeAccumulatorArray:winTimeAccumulatorArray
 		showTimeAccumulatorArray:showTimeAccumulatorArray
 		numRacesAccumulatorArray:raceCounterArray
 				   andClassArray:raceClassArray];
 	
-	classStats = [self getClassStatsFromWinTimesArray:winTimeAccumulatorArray
-									   showTimesArray:showTimeAccumulatorArray
-									 raceCounterArray:raceCounterArray
-										 forTrackName:track.trackName
-										andTrackStats:trackStats];
+	NSOrderedSet *classStats = [self getClassStatsFromWinTimesArray:winTimeAccumulatorArray
+													 showTimesArray:showTimeAccumulatorArray
+												   raceCounterArray:raceCounterArray
+													   forTrackName:track.trackName
+													  andTrackStats:trackStats];
 	
-	distanceStats = [self getDistanceStatsFromArray:&dxStatsAccumulatorArray[0][0][0]
-									andCounterArray:&dxRaceCounterArray[0][0][0]];
+	NSOrderedSet *distanceStats	= [self getDistanceStatsFromArray:dxStatsAccumulatorArray
+												  andCounterArray:dxRaceCounterArray];
 	
 	self.population.trackStats.raceDistanceStats	= distanceStats;
 	self.population.trackStats.classStats			= classStats;
@@ -959,11 +925,11 @@ withStatisticsArray:(double*)statsAccumulatorArray
 	return index;
 }
 
-- (NSOrderedSet*)getClassStatsFromWinTimesArray:(double*)accumulatedWinTimesArray
-								 showTimesArray:(double*)accumulatedShowTimesArray
-							   raceCounterArray:(int*)raceCounterArray
-								   forTrackName:(NSString*)trackName
-								  andTrackStats:(ECTrackStats*)trackStats
+- (NSMutableOrderedSet*)getClassStatsFromWinTimesArray:(double*)accumulatedWinTimesArray
+										showTimesArray:(double*)accumulatedShowTimesArray
+									  raceCounterArray:(int*)raceCounterArray
+										  forTrackName:(NSString*)trackName
+										 andTrackStats:(ECTrackStats*)trackStats
 {
 	NSMutableOrderedSet *classStats = [NSMutableOrderedSet new];
 	NSArray *raceClassArray			= [self getClassesForTrack:trackName];
@@ -1025,23 +991,10 @@ withStatisticsArray:(double*)statsAccumulatorArray
 	return classStats;
 }
 
-- (NSOrderedSet*)getDistanceStatsFromArray:(double*)acccumulatedStatsArray
+- (NSOrderedSet*)getDistanceStatsFromArray:(double*)accumulatedStatsArray
 						   andCounterArray:(int*)accumulatedCounterArray
 {
-	// from Constants.h
-	
-	//	#define kBreakPositionFromPostStatField 0
-	//	#define kFirstTurnPositionFromPostStatField 1
-	//	#define kFinishPositionFromPostStatField 2
-	//	#define kFinishTimeFromPostStatField 3
-	//	#define kSecondTurnPositionFromFirstTurnStatField 4
-	//	#define kFinishPositionFromSecondTurnStatField 5
-
-	ECRaceDistanceStats *dxStats				= nil;
-	ECPostStats *postStats						= nil;
-	ECFirstTurnStats *ftStats					= nil;
-	ECFarTurnStatistics *fartStats				= nil;
-	int counterValue							= 0;
+	int raceCounterAtDx							= 0;
 	double statValue							= 0.0;
 	double breakAverageFromPost					= 0.0;
 	double firstTurnAverageFromPost				= 0.0;
@@ -1049,17 +1002,7 @@ withStatisticsArray:(double*)statsAccumulatorArray
 	double finishTimeAverageFromPost			= 0.0;
 	double secondTurnAverageFromFirstTurn		= 0.0;
 	double finishPositionAverageFromSecondTurn	= 0.0;
-	NSOrderedSet *allDistances					= nil;
-	
-	ECRaceDistanceStats *_548	= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
-														   inManagedObjectContext:MOC];
-	
-	ECRaceDistanceStats *_678	= [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
-														   inManagedObjectContext:MOC];
 				
-	// initialize bestTime fields with very very bad time
-	// FIX:
-
 	ECPostStats *post548_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
 	ECPostStats *post548_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
 	ECPostStats *post548_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
@@ -1096,90 +1039,108 @@ withStatisticsArray:(double*)statsAccumulatorArray
 	ECFirstTurnStats *ft678_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
 	ECFirstTurnStats *ft678_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
 	
-	ECFarTurnStatistics *st548_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st548_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st548_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st548_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st548_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st548_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st548_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st548_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st548_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st548_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st548_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st548_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st548_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st548_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st548_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st548_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
 	
-	ECFarTurnStatistics *st678_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st678_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st678_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st678_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st678_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st678_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st678_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
-	ECFarTurnStatistics *st678_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st678_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st678_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st678_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st678_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st678_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st678_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st678_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
+	ECTopOFStretchStats *st678_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
 	
 	NSArray *postStats548	= [[NSArray alloc] initWithObjects:post548_1, post548_2, post548_3, post548_4, post548_5, post548_6, post548_7, post548_8, nil];
-	NSArray *postStats678	= [[NSArray alloc] initWithObjects:post678_1, post678_2, post678_3, post678_4, post678_5, post678_6, post678_7, post678_8, nil];
 	NSArray *ftStats548		= [[NSArray alloc] initWithObjects:ft548_1, ft548_2, ft548_3, ft548_4, ft548_5, ft548_6, ft548_7, ft548_8, nil];
-	NSArray *ftStats678		= [[NSArray alloc] initWithObjects:ft678_1, ft678_2, ft678_3, ft678_4, ft678_5, ft678_6, ft678_7, ft678_8, nil];
-	NSArray *stStats548		= [[NSArray alloc] initWithObjects:st548_1, st548_2, st548_3, st548_4, st548_5, st548_6, st548_7, st548_8, nil];
-	NSArray *stStats678		= [[NSArray alloc] initWithObjects:st678_1, st678_2, st678_3, st678_4, st678_5, st678_6, st678_7, st678_8, nil];
-
-		
-	_548.postStats		= [[NSOrderedSet alloc] initWithArray:postStats548 copyItems:NO];
-	_548.firstTurnStats	= [[NSOrderedSet alloc] initWithArray:ftStats548 copyItems:NO];
-	_548.farTurnStats	= [[NSOrderedSet alloc] initWithArray:stStats548 copyItems:NO];
+	NSArray *tosStats548	= [[NSArray alloc] initWithObjects:st548_1, st548_2, st548_3, st548_4, st548_5, st548_6, st548_7, st548_8, nil];
 	
-	_678.postStats		= [[NSOrderedSet alloc] initWithArray:postStats678 copyItems:NO];
-	_678.firstTurnStats	= [[NSOrderedSet alloc] initWithArray:ftStats678 copyItems:NO];
-	_678.farTurnStats	= [[NSOrderedSet alloc] initWithArray:stStats678 copyItems:NO];
+	NSArray *postStats678	= [[NSArray alloc] initWithObjects:post678_1, post678_2, post678_3, post678_4, post678_5, post678_6, post678_7, post678_8, nil];
+	NSArray *ftStats678		= [[NSArray alloc] initWithObjects:ft678_1, ft678_2, ft678_3, ft678_4, ft678_5, ft678_6, ft678_7, ft678_8, nil];
+	NSArray *tosStats678	= [[NSArray alloc] initWithObjects:st678_1, st678_2, st678_3, st678_4, st678_5, st678_6, st678_7, st678_8, nil];
 
-	allDistances = [NSOrderedSet orderedSetWithObjects:_548, _678, nil];
+	ECRaceDistanceStats *twoTurnRaceStats	= [NSEntityDescription insertNewObjectForEntityForName:@"ECRaceDistanceStats"
+																			inManagedObjectContext:MOC];
+	ECRaceDistanceStats *threeTurnRaceStats = [NSEntityDescription insertNewObjectForEntityForName:@"ECRaceDistanceStats"
+																			inManagedObjectContext:MOC];
 
+	twoTurnRaceStats.postStats			= [[NSOrderedSet alloc] initWithArray:postStats548];
+	twoTurnRaceStats.firstTurnStats		= [[NSOrderedSet alloc] initWithArray:ftStats548];
+	twoTurnRaceStats.farTurnStats		= [[NSOrderedSet alloc] initWithArray:tosStats548];
+	
+	threeTurnRaceStats.postStats		= [[NSOrderedSet alloc] initWithArray:postStats678];
+	threeTurnRaceStats.firstTurnStats	= [[NSOrderedSet alloc] initWithArray:ftStats678];
+	threeTurnRaceStats.farTurnStats		= [[NSOrderedSet alloc] initWithArray:tosStats678];
+	
+	NSOrderedSet *raceDxStatsSet		= [[NSOrderedSet alloc] initWithObjects:twoTurnRaceStats, threeTurnRaceStats, nil];
+	
 	// iterate through arrays
 	for(int raceDxIndex = 0; raceDxIndex < 2; raceDxIndex++)
 	{
-		dxStats = [allDistances objectAtIndex:raceDxIndex];
+		ECRaceDistanceStats *dxStats = [raceDxStatsSet objectAtIndex:raceDxIndex];
 		
-		for(int position = 0; position < kMaximumNumberEntries; position++)
+		for(int postPositionIndex = 0; postPositionIndex < kMaximumNumberEntries; postPositionIndex++)
 		{
-			postStats	= [dxStats.postStats objectAtIndex:position];
-			ftStats		= [dxStats.firstTurnStats objectAtIndex:position];
-			fartStats	= [dxStats.farTurnStats objectAtIndex:position];
+			ECPostStats *postStats			= [dxStats.postStats objectAtIndex:postPositionIndex];
+			ECFirstTurnStats *ftStats		= [dxStats.firstTurnStats objectAtIndex:postPositionIndex];
+			ECTopOFStretchStats *tosStats	= [dxStats.farTurnStats objectAtIndex:postPositionIndex];
 			
-			for(int fieldNumber = kBreakPositionFromPostStatField; fieldNumber < kFinishPositionFromSecondTurnStatField; fieldNumber++)
+			// calculate and assign average values for each post
+			for(int fieldNumber = 0; fieldNumber < kNumberStatFields; fieldNumber++)
 			{
-				int offset				= (raceDxIndex * kMaximumNumberEntries * kNumberStatFields) + (position * kNumberStatFields) + fieldNumber;
-				counterValue			= *(accumulatedCounterArray + offset);
-				statValue				= *(acccumulatedStatsArray + offset);
-				breakAverageFromPost	= statValue / (double)counterValue;
+				// get the counter for this fieldNumber at this postIndex for this raceDxIndex
+				int index		= (raceDxIndex * (kMaximumNumberEntries * kNumberStatFields)) + (postPositionIndex * kNumberStatFields) + fieldNumber;
+				raceCounterAtDx	= accumulatedCounterArray[index];
+				statValue		= accumulatedStatsArray[index];
 				
-				counterValue				= *(accumulatedCounterArray + ++offset);
-				statValue					= *(acccumulatedStatsArray + offset);
-				firstTurnAverageFromPost	= statValue / (double)counterValue;
-			
-				counterValue					= *(accumulatedCounterArray + ++offset);
-				statValue						= *(acccumulatedStatsArray + offset);
-				finishPositionAverageFromPost	= statValue / (double)counterValue;
-				
-				counterValue				= *(accumulatedCounterArray + ++offset);
-				statValue					= *(acccumulatedStatsArray + offset);
-				finishTimeAverageFromPost	= statValue / (double)counterValue;
-				
-				counterValue					= *(accumulatedCounterArray + ++offset);
-				statValue						= *(acccumulatedStatsArray + offset);
-				secondTurnAverageFromFirstTurn	= statValue / (double)counterValue;
-				
-				counterValue						= *(accumulatedCounterArray + ++offset);
-				statValue							= *(acccumulatedStatsArray + offset);
-				finishPositionAverageFromSecondTurn	= statValue / (double)counterValue;
-				
-				postStats.breakPositionAverage		= [NSNumber numberWithDouble:breakAverageFromPost];
-				postStats.firstTurnPositionAverage	= [NSNumber numberWithDouble:firstTurnAverageFromPost];
-				postStats.finishPositionAverage		= [NSNumber numberWithDouble:finishPositionAverageFromPost];
-				ftStats.averagePositionFarTurn		= [NSNumber numberWithDouble:secondTurnAverageFromFirstTurn];
-				fartStats.averageFinishPosition		= [NSNumber numberWithDouble:finishPositionAverageFromSecondTurn];
+				// get the statAccumulator this fieldNumber at this postIndex for this raceDxIndex
+				switch (fieldNumber)
+				{
+					case 0:
+						breakAverageFromPost = statValue / raceCounterAtDx;
+						break;
+					
+					case 1:
+						firstTurnAverageFromPost = statValue / raceCounterAtDx;
+						break;
+					
+					case 2:
+						finishPositionAverageFromPost = statValue / raceCounterAtDx;
+						break;
+						
+					case 3:
+						finishTimeAverageFromPost = statValue / raceCounterAtDx;
+						break;
+					
+					case 4:
+						secondTurnAverageFromFirstTurn = statValue / raceCounterAtDx;
+						break;
+					
+					case 5:
+						finishPositionAverageFromSecondTurn = statValue / raceCounterAtDx;
+						break;
+					
+					default:
+						NSLog(@"bad field number");
+						break;
+				}
 			}
+			
+			postStats.breakPositionAverage		= [NSNumber numberWithDouble:breakAverageFromPost];
+			postStats.firstTurnPositionAverage	= [NSNumber numberWithDouble:firstTurnAverageFromPost];
+			postStats.finishPositionAverage		= [NSNumber numberWithDouble:finishPositionAverageFromPost];
+			ftStats.averagePositionFarTurn		= [NSNumber numberWithDouble:secondTurnAverageFromFirstTurn];
+			tosStats.averageFinishPosition		= [NSNumber numberWithDouble:finishPositionAverageFromSecondTurn];
 		}
 	}
 
-	return allDistances;
+	return raceDxStatsSet;
 }
 
 - (BOOL)isThisCharADigit:(char)c

@@ -2,14 +2,14 @@
 //  ECRaceDistanceStats.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 1/30/14.
+//  Created by Ron Jurincie on 2/7/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class ECFarTurnStatistics, ECFirstTurnStats, ECPostStats, ECTrackStats;
+@class ECFirstTurnStats, ECPostStats, ECTopOFStretchStats, ECTrackStats;
 
 @interface ECRaceDistanceStats : NSManagedObject
 
@@ -22,14 +22,14 @@
 
 @interface ECRaceDistanceStats (CoreDataGeneratedAccessors)
 
-- (void)insertObject:(ECFarTurnStatistics *)value inFarTurnStatsAtIndex:(NSUInteger)idx;
+- (void)insertObject:(ECTopOFStretchStats *)value inFarTurnStatsAtIndex:(NSUInteger)idx;
 - (void)removeObjectFromFarTurnStatsAtIndex:(NSUInteger)idx;
 - (void)insertFarTurnStats:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
 - (void)removeFarTurnStatsAtIndexes:(NSIndexSet *)indexes;
-- (void)replaceObjectInFarTurnStatsAtIndex:(NSUInteger)idx withObject:(ECFarTurnStatistics *)value;
+- (void)replaceObjectInFarTurnStatsAtIndex:(NSUInteger)idx withObject:(ECTopOFStretchStats *)value;
 - (void)replaceFarTurnStatsAtIndexes:(NSIndexSet *)indexes withFarTurnStats:(NSArray *)values;
-- (void)addFarTurnStatsObject:(ECFarTurnStatistics *)value;
-- (void)removeFarTurnStatsObject:(ECFarTurnStatistics *)value;
+- (void)addFarTurnStatsObject:(ECTopOFStretchStats *)value;
+- (void)removeFarTurnStatsObject:(ECTopOFStretchStats *)value;
 - (void)addFarTurnStats:(NSOrderedSet *)values;
 - (void)removeFarTurnStats:(NSOrderedSet *)values;
 - (void)insertObject:(ECFirstTurnStats *)value inFirstTurnStatsAtIndex:(NSUInteger)idx;

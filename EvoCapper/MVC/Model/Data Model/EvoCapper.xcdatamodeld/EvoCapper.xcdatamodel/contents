@@ -9,11 +9,6 @@
         <attribute name="raceClassIndex" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="trackStats" maxCount="1" deletionRule="Nullify" destinationEntity="ECTrackStats" inverseName="classStats" inverseEntity="ECTrackStats" syncable="YES"/>
     </entity>
-    <entity name="ECFarTurnStats" representedClassName="ECFarTurnStatistics" syncable="YES">
-        <attribute name="averageFinishPosition" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="farTurnPosition" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="raceDistanceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECRaceDistanceStats" inverseName="farTurnStats" inverseEntity="ECRaceDistanceStats" syncable="YES"/>
-    </entity>
     <entity name="ECFirstTurnStats" representedClassName="ECFirstTurnStats" syncable="YES">
         <attribute name="averagePositionFarTurn" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="firstTurnPosition" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -32,10 +27,15 @@
     </entity>
     <entity name="ECRaceDistanceStats" representedClassName="ECRaceDistanceStats" syncable="YES">
         <attribute name="raceDistance" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="farTurnStats" optional="YES" toMany="YES" minCount="8" maxCount="8" deletionRule="Nullify" ordered="YES" destinationEntity="ECFarTurnStats" inverseName="raceDistanceStats" inverseEntity="ECFarTurnStats" syncable="YES"/>
-        <relationship name="firstTurnStats" toMany="YES" minCount="8" maxCount="8" deletionRule="Nullify" ordered="YES" destinationEntity="ECFirstTurnStats" inverseName="raceDistanceStats" inverseEntity="ECFirstTurnStats" syncable="YES"/>
+        <relationship name="farTurnStats" optional="YES" toMany="YES" minCount="6" maxCount="8" deletionRule="Nullify" ordered="YES" destinationEntity="ECTopOfStretchStats" inverseName="raceDistanceStats" inverseEntity="ECTopOfStretchStats" syncable="YES"/>
+        <relationship name="firstTurnStats" toMany="YES" minCount="7" maxCount="13" deletionRule="Nullify" ordered="YES" destinationEntity="ECFirstTurnStats" inverseName="raceDistanceStats" inverseEntity="ECFirstTurnStats" syncable="YES"/>
         <relationship name="postStats" toMany="YES" minCount="8" maxCount="8" deletionRule="Nullify" ordered="YES" destinationEntity="ECPostStats" inverseName="raceDistanceStats" inverseEntity="ECPostStats" syncable="YES"/>
         <relationship name="trackStats" maxCount="1" deletionRule="Nullify" destinationEntity="ECTrackStats" inverseName="raceDistanceStats" inverseEntity="ECTrackStats" syncable="YES"/>
+    </entity>
+    <entity name="ECTopOfStretchStats" representedClassName="ECTopOFStretchStats" syncable="YES">
+        <attribute name="averageFinishPosition" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="farTurnPosition" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="raceDistanceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECRaceDistanceStats" inverseName="farTurnStats" inverseEntity="ECRaceDistanceStats" syncable="YES"/>
     </entity>
     <entity name="ECTrackStats" representedClassName="ECTrackStats" syncable="YES">
         <attribute name="trackName" optional="YES" attributeType="String" syncable="YES"/>
@@ -75,14 +75,14 @@
         <relationship name="handicapperPopulation" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="HandicapperPopulation" inverseName="individualHandicappers" inverseEntity="HandicapperPopulation" syncable="YES"/>
     </entity>
     <elements>
-        <element name="ECClassStats" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="ECFarTurnStats" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="ECFirstTurnStats" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="ECPostStats" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="ECRaceClass" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="ECRaceDistanceStats" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="ECTrackStats" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="HandicapperPopulation" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="IndividualHandicapper" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="ECClassStats" positionX="-45" positionY="-18" width="128" height="150"/>
+        <element name="ECTopOfStretchStats" positionX="403" positionY="216" width="128" height="88"/>
+        <element name="ECFirstTurnStats" positionX="97" positionY="-72" width="128" height="90"/>
+        <element name="ECPostStats" positionX="250" positionY="6" width="128" height="120"/>
+        <element name="ECRaceClass" positionX="-29" positionY="630" width="128" height="75"/>
+        <element name="ECRaceDistanceStats" positionX="115" positionY="204" width="128" height="120"/>
+        <element name="ECTrackStats" positionX="-180" positionY="294" width="128" height="120"/>
+        <element name="HandicapperPopulation" positionX="-270" positionY="-90" width="128" height="210"/>
+        <element name="IndividualHandicapper" positionX="-378" positionY="225" width="128" height="270"/>
     </elements>
 </model>

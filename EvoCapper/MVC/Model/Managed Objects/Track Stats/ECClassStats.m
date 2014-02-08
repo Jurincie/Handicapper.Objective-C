@@ -2,7 +2,7 @@
 //  ECClassStats.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 2/3/14.
+//  Created by Ron Jurincie on 2/7/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 

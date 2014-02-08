@@ -14,8 +14,8 @@
 #define kFirstTurnPositionFromPostStatField 1
 #define kFinishPositionFromPostStatField 2
 #define kFinishTimeFromPostStatField 3
-#define kSecondTurnPositionFromFirstTurnStatField 4
-#define kFinishPositionFromSecondTurnStatField 5
+#define kTopOFStretchPositionFromFirstTurnStatField 4
+#define kFinishPositionFromTopOfStretchStatField 5
 
 #define kNumberHtmlMetaLinesToSkip 8
 

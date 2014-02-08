@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 
 @class ECPastLineRecord, ECPopulation, ECHandicapper, ECTrainigRaceRecord, ECTree, ECRacePayouts;
-@class ECTrackStats, ECRaceDistanceStats, ECPostStats, ECFirstTurnStats, ECFarTurnStatistics;
+@class ECTrackStats, ECRaceDistanceStats, ECPostStats, ECFirstTurnStats, ECTopOFStretchStats;
 
 @interface ECMainController : NSObject
 
@@ -63,14 +63,25 @@ withStatisticsArray:(double*)statsAccumulatorArray
 	 forRaceDxIndex:(NSUInteger)raceDxIndex
 	usingClassArray:(NSArray*)classArray;
 
+- (void)addStatsForEntryAtPost:(NSUInteger)postPosition
+		   withbreakAtPosition:(NSUInteger)breakPosition
+			 firstTurnPosition:(NSUInteger)firstTurnPosition
+		  topOfStretchPosition:(NSUInteger)topOfStretchPosition
+				 finalPosition:(NSUInteger)finalPosition
+				  withRaceTime:(double)raceTimeForEntry
+				 atRaceDxIndex:(NSUInteger)raceDxIndex
+	  withStatAccumulatorArray:(double*)statAccumulatorArray
+		   andRaceCounterArray:(int*)raceCounterArray;
+
+
 - (NSOrderedSet*)getDistanceStatsFromArray:(double*)statsAccumulatorArray
 						   andCounterArray:(int*)statsCountrerArray;
 
-- (NSOrderedSet*)getClassStatsFromWinTimesArray:(double*)accumulatedShowTimesArray
-								 showTimesArray:(double*)accumulatedWinTimesArray
-							   raceCounterArray:(int*)raceCounterArray
-								   forTrackName:(NSString*)trackName
-								  andTrackStats:(ECTrackStats*)trackStats;
+- (NSMutableOrderedSet*)getClassStatsFromWinTimesArray:(double*)accumulatedShowTimesArray
+										showTimesArray:(double*)accumulatedWinTimesArray
+									  raceCounterArray:(int*)raceCounterArray
+										  forTrackName:(NSString*)trackName
+										 andTrackStats:(ECTrackStats*)trackStats;
 
 - (NSUInteger)getIndexOfPostPosition:(NSArray*)tokens;
 - (BOOL)isThisCharADigit:(char)c;
