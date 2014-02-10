@@ -49,8 +49,8 @@
 
 #pragma track statistics methods
 
-- (void)setStatsForTrack:(ECTrackStats*)track;
-- (NSArray*)getClassesForTrack:(NSString*)trackName;
+- (ECTrackStats*)getStatsForTrackNamed:(NSString*)trackName;
+- (NSArray*)getClassesForTrackNamed:(NSString*)trackName;
 
 - (void)processRace:(NSString*)singleRaceString
 			 ofType:(NSUInteger)resultFileType
@@ -75,7 +75,7 @@ withStatisticsArray:(double*)statsAccumulatorArray
 
 
 - (NSOrderedSet*)getDistanceStatsFromArray:(double*)statsAccumulatorArray
-						   andCounterArray:(int*)statsCountrerArray;
+						   andCounterArray:(int*)raceCountrerArray;
 
 - (NSMutableOrderedSet*)getClassStatsFromWinTimesArray:(double*)accumulatedShowTimesArray
 										showTimesArray:(double*)accumulatedWinTimesArray
@@ -86,7 +86,8 @@ withStatisticsArray:(double*)statsAccumulatorArray
 - (NSUInteger)getIndexOfPostPosition:(NSArray*)tokens;
 - (BOOL)isThisCharADigit:(char)c;
 - (BOOL)isThisADecimalWord:(NSString*)word;
-- (void)printArrayWith:(double*)statsAccumulatorArray;
+- (void)printStatArrays:(double*)statsAccumulatorArray
+		andCounterArray:(int*)raceCounterArray;
 
 #pragma darwinian methods
 - (void)createNewPopoulationWithName:(NSString*)name

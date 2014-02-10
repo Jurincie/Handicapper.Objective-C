@@ -92,7 +92,8 @@
         if (![properties[NSURLIsDirectoryKey] boolValue])
         {
             // Customize and localize this error.
-            NSString *failureDescription = [NSString stringWithFormat:@"Expected a folder to store application data, found a file (%@).", [applicationFilesDirectory path]];
+            NSString *failureDescription = [NSString stringWithFormat:@"Expected a folder to store application data, found a file (%@).",
+																		[applicationFilesDirectory path]];
             
             NSMutableDictionary *dict = [NSMutableDictionary dictionary];
             
@@ -260,7 +261,7 @@
 
 	self.evolutionManager.populationSize = 16;
 	
-	NSString *trackName = @"Wheeling";
+	NSString *trackName = @"Daytona Beach";
 
     [self.evolutionManager createNewPopoulationWithName:@"Test Name"
                                             initialSize:self.evolutionManager.populationSize

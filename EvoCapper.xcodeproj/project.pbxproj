@@ -10,14 +10,14 @@
 		7A00C43618A545640049C89B /* ECFirstTurnStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C43518A545640049C89B /* ECFirstTurnStats.m */; };
 		7A00C43918A545650049C89B /* ECClassStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C43818A545650049C89B /* ECClassStats.m */; };
 		7A00C43C18A545650049C89B /* ECRaceClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C43B18A545650049C89B /* ECRaceClass.m */; };
-		7A00C43F18A545650049C89B /* ECTrackStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C43E18A545650049C89B /* ECTrackStats.m */; };
-		7A00C44218A545650049C89B /* ECRaceDistanceStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C44118A545650049C89B /* ECRaceDistanceStats.m */; };
 		7A00C44518A545650049C89B /* ECPostStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C44418A545650049C89B /* ECPostStats.m */; };
 		7A00C44818A545650049C89B /* ECTopOFStretchStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C44718A545650049C89B /* ECTopOFStretchStats.m */; };
+		7A00C44B18A7EEF30049C89B /* ECPopulation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C44A18A7EEF30049C89B /* ECPopulation.m */; };
+		7A00C44E18A7EF160049C89B /* ECTrackStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C44D18A7EF160049C89B /* ECTrackStats.m */; };
+		7A00C45118A7FBEE0049C89B /* ECRaceDistanceStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C45018A7FBEE0049C89B /* ECRaceDistanceStats.m */; };
 		7A27ED391818221400AA91AE /* evocappLogo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7A27ED381818221400AA91AE /* evocappLogo.jpg */; };
 		7A27ED4118184CEE00AA91AE /* ECMainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A27ED4018184CEE00AA91AE /* ECMainController.m */; };
 		7A3481BB189B330A008D164A /* ECHandicapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A3481BA189B330A008D164A /* ECHandicapper.m */; };
-		7A3481BE189B330A008D164A /* ECPopulation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A3481BD189B330A008D164A /* ECPopulation.m */; };
 		7A699BAA184050370000E6B8 /* NSString+ECStringValidizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A699BA9184050370000E6B8 /* NSString+ECStringValidizer.m */; };
 		7A98B3BA18170ECD0013F43D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A98B3B918170ECD0013F43D /* Cocoa.framework */; };
 		7A98B3C418170ECD0013F43D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A98B3C218170ECD0013F43D /* InfoPlist.strings */; };
@@ -58,21 +58,21 @@
 		7A00C43818A545650049C89B /* ECClassStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECClassStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECClassStats.m"; sourceTree = "<group>"; };
 		7A00C43A18A545650049C89B /* ECRaceClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRaceClass.h; path = "MVC/Model/Managed Objects/Track Stats/ECRaceClass.h"; sourceTree = "<group>"; };
 		7A00C43B18A545650049C89B /* ECRaceClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRaceClass.m; path = "MVC/Model/Managed Objects/Track Stats/ECRaceClass.m"; sourceTree = "<group>"; };
-		7A00C43D18A545650049C89B /* ECTrackStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECTrackStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECTrackStats.h"; sourceTree = "<group>"; };
-		7A00C43E18A545650049C89B /* ECTrackStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECTrackStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECTrackStats.m"; sourceTree = "<group>"; };
-		7A00C44018A545650049C89B /* ECRaceDistanceStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRaceDistanceStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECRaceDistanceStats.h"; sourceTree = "<group>"; };
-		7A00C44118A545650049C89B /* ECRaceDistanceStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRaceDistanceStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECRaceDistanceStats.m"; sourceTree = "<group>"; };
 		7A00C44318A545650049C89B /* ECPostStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECPostStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECPostStats.h"; sourceTree = "<group>"; };
 		7A00C44418A545650049C89B /* ECPostStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECPostStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECPostStats.m"; sourceTree = "<group>"; };
 		7A00C44618A545650049C89B /* ECTopOFStretchStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECTopOFStretchStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECTopOFStretchStats.h"; sourceTree = "<group>"; };
 		7A00C44718A545650049C89B /* ECTopOFStretchStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECTopOFStretchStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECTopOFStretchStats.m"; sourceTree = "<group>"; };
+		7A00C44918A7EEF30049C89B /* ECPopulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECPopulation.h; path = "MVC/Model/Managed Objects/Handicappers/ECPopulation.h"; sourceTree = "<group>"; };
+		7A00C44A18A7EEF30049C89B /* ECPopulation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECPopulation.m; path = "MVC/Model/Managed Objects/Handicappers/ECPopulation.m"; sourceTree = "<group>"; };
+		7A00C44C18A7EF160049C89B /* ECTrackStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECTrackStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECTrackStats.h"; sourceTree = "<group>"; };
+		7A00C44D18A7EF160049C89B /* ECTrackStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECTrackStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECTrackStats.m"; sourceTree = "<group>"; };
+		7A00C44F18A7FBEE0049C89B /* ECRaceDistanceStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRaceDistanceStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECRaceDistanceStats.h"; sourceTree = "<group>"; };
+		7A00C45018A7FBEE0049C89B /* ECRaceDistanceStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRaceDistanceStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECRaceDistanceStats.m"; sourceTree = "<group>"; };
 		7A27ED381818221400AA91AE /* evocappLogo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = evocappLogo.jpg; path = MVC/Views/Images/evocappLogo.jpg; sourceTree = "<group>"; };
 		7A27ED3F18184CEE00AA91AE /* ECMainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = ECMainController.h; path = MVC/Controllers/ECMainController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		7A27ED4018184CEE00AA91AE /* ECMainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = ECMainController.m; path = MVC/Controllers/ECMainController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		7A3481B9189B330A008D164A /* ECHandicapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECHandicapper.h; path = "MVC/Model/Managed Objects/Handicappers/ECHandicapper.h"; sourceTree = "<group>"; };
 		7A3481BA189B330A008D164A /* ECHandicapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECHandicapper.m; path = "MVC/Model/Managed Objects/Handicappers/ECHandicapper.m"; sourceTree = "<group>"; };
-		7A3481BC189B330A008D164A /* ECPopulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECPopulation.h; path = "MVC/Model/Managed Objects/Handicappers/ECPopulation.h"; sourceTree = "<group>"; };
-		7A3481BD189B330A008D164A /* ECPopulation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECPopulation.m; path = "MVC/Model/Managed Objects/Handicappers/ECPopulation.m"; sourceTree = "<group>"; };
 		7A699BA8184050370000E6B8 /* NSString+ECStringValidizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+ECStringValidizer.h"; path = "NSString Catagory/NSString+ECStringValidizer.h"; sourceTree = "<group>"; };
 		7A699BA9184050370000E6B8 /* NSString+ECStringValidizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+ECStringValidizer.m"; path = "NSString Catagory/NSString+ECStringValidizer.m"; sourceTree = "<group>"; };
 		7A98B3B618170ECD0013F43D /* EvoCapper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EvoCapper.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -285,10 +285,6 @@
 		7AAB7F5E1843020400658D6A /* Track Stats */ = {
 			isa = PBXGroup;
 			children = (
-				7A00C43D18A545650049C89B /* ECTrackStats.h */,
-				7A00C43E18A545650049C89B /* ECTrackStats.m */,
-				7A00C44018A545650049C89B /* ECRaceDistanceStats.h */,
-				7A00C44118A545650049C89B /* ECRaceDistanceStats.m */,
 				7A00C44318A545650049C89B /* ECPostStats.h */,
 				7A00C44418A545650049C89B /* ECPostStats.m */,
 				7A00C43418A545640049C89B /* ECFirstTurnStats.h */,
@@ -299,6 +295,10 @@
 				7A00C43B18A545650049C89B /* ECRaceClass.m */,
 				7A00C43718A545650049C89B /* ECClassStats.h */,
 				7A00C43818A545650049C89B /* ECClassStats.m */,
+				7A00C44C18A7EF160049C89B /* ECTrackStats.h */,
+				7A00C44D18A7EF160049C89B /* ECTrackStats.m */,
+				7A00C44F18A7FBEE0049C89B /* ECRaceDistanceStats.h */,
+				7A00C45018A7FBEE0049C89B /* ECRaceDistanceStats.m */,
 			);
 			name = "Track Stats";
 			sourceTree = "<group>";
@@ -315,10 +315,10 @@
 		7AF939281891B44700E22398 /* Handicappers */ = {
 			isa = PBXGroup;
 			children = (
-				7A3481BC189B330A008D164A /* ECPopulation.h */,
-				7A3481BD189B330A008D164A /* ECPopulation.m */,
 				7A3481B9189B330A008D164A /* ECHandicapper.h */,
 				7A3481BA189B330A008D164A /* ECHandicapper.m */,
+				7A00C44918A7EEF30049C89B /* ECPopulation.h */,
+				7A00C44A18A7EEF30049C89B /* ECPopulation.m */,
 			);
 			name = Handicappers;
 			sourceTree = "<group>";
@@ -426,9 +426,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A00C44B18A7EEF30049C89B /* ECPopulation.m in Sources */,
 				7A00C44818A545650049C89B /* ECTopOFStretchStats.m in Sources */,
-				7A3481BE189B330A008D164A /* ECPopulation.m in Sources */,
 				7A00C44518A545650049C89B /* ECPostStats.m in Sources */,
+				7A00C44E18A7EF160049C89B /* ECTrackStats.m in Sources */,
 				7A00C43918A545650049C89B /* ECClassStats.m in Sources */,
 				7AB3B3C51836ACE40089C80C /* ECEntryStrengthFields.m in Sources */,
 				7A3481BB189B330A008D164A /* ECHandicapper.m in Sources */,
@@ -437,7 +438,6 @@
 				7A00C43618A545640049C89B /* ECFirstTurnStats.m in Sources */,
 				7AB3B3B9182F02B00089C80C /* ECRaceResults.m in Sources */,
 				7A98B3C618170ECD0013F43D /* main.m in Sources */,
-				7A00C44218A545650049C89B /* ECRaceDistanceStats.m in Sources */,
 				7AB3B3B3182EFE740089C80C /* ECRaceRecord.m in Sources */,
 				7A27ED4118184CEE00AA91AE /* ECMainController.m in Sources */,
 				7A00C43C18A545650049C89B /* ECRaceClass.m in Sources */,
@@ -445,7 +445,7 @@
 				7AB3B3BF18340BBC0089C80C /* ECTrainigRaceRecord.m in Sources */,
 				7A699BAA184050370000E6B8 /* NSString+ECStringValidizer.m in Sources */,
 				7AB3B3BC182F03200089C80C /* ECRacePayouts.m in Sources */,
-				7A00C43F18A545650049C89B /* ECTrackStats.m in Sources */,
+				7A00C45118A7FBEE0049C89B /* ECRaceDistanceStats.m in Sources */,
 				7AF3591C183D213500BFFD26 /* EvoCapper.xcdatamodeld in Sources */,
 				7AB3B3C21835507E0089C80C /* ECPastLineRecord.m in Sources */,
 			);

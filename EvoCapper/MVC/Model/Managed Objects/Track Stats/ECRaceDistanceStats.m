@@ -2,7 +2,7 @@
 //  ECRaceDistanceStats.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 2/7/14.
+//  Created by Ron Jurincie on 2/9/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
@@ -16,7 +16,7 @@
 @implementation ECRaceDistanceStats
 
 @dynamic raceDistance;
-@dynamic farTurnStats;
+@dynamic topOfStretchStats;
 @dynamic firstTurnStats;
 @dynamic postStats;
 @dynamic trackStats;

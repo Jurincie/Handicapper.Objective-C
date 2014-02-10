@@ -2,7 +2,7 @@
 //  ECRaceDistanceStats.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 2/7/14.
+//  Created by Ron Jurincie on 2/9/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
@@ -14,7 +14,7 @@
 @interface ECRaceDistanceStats : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * raceDistance;
-@property (nonatomic, retain) NSOrderedSet *farTurnStats;
+@property (nonatomic, retain) NSOrderedSet *topOfStretchStats;
 @property (nonatomic, retain) NSOrderedSet *firstTurnStats;
 @property (nonatomic, retain) NSOrderedSet *postStats;
 @property (nonatomic, retain) ECTrackStats *trackStats;
@@ -22,16 +22,16 @@
 
 @interface ECRaceDistanceStats (CoreDataGeneratedAccessors)
 
-- (void)insertObject:(ECTopOFStretchStats *)value inFarTurnStatsAtIndex:(NSUInteger)idx;
-- (void)removeObjectFromFarTurnStatsAtIndex:(NSUInteger)idx;
-- (void)insertFarTurnStats:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
-- (void)removeFarTurnStatsAtIndexes:(NSIndexSet *)indexes;
-- (void)replaceObjectInFarTurnStatsAtIndex:(NSUInteger)idx withObject:(ECTopOFStretchStats *)value;
-- (void)replaceFarTurnStatsAtIndexes:(NSIndexSet *)indexes withFarTurnStats:(NSArray *)values;
-- (void)addFarTurnStatsObject:(ECTopOFStretchStats *)value;
-- (void)removeFarTurnStatsObject:(ECTopOFStretchStats *)value;
-- (void)addFarTurnStats:(NSOrderedSet *)values;
-- (void)removeFarTurnStats:(NSOrderedSet *)values;
+- (void)insertObject:(ECTopOFStretchStats *)value inTopOfStretchStatsAtIndex:(NSUInteger)idx;
+- (void)removeObjectFromTopOfStretchStatsAtIndex:(NSUInteger)idx;
+- (void)insertTopOfStretchStats:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
+- (void)removeTopOfStretchStatsAtIndexes:(NSIndexSet *)indexes;
+- (void)replaceObjectInTopOfStretchStatsAtIndex:(NSUInteger)idx withObject:(ECTopOFStretchStats *)value;
+- (void)replaceTopOfStretchStatsAtIndexes:(NSIndexSet *)indexes withTopOfStretchStats:(NSArray *)values;
+- (void)addTopOfStretchStatsObject:(ECTopOFStretchStats *)value;
+- (void)removeTopOfStretchStatsObject:(ECTopOFStretchStats *)value;
+- (void)addTopOfStretchStats:(NSOrderedSet *)values;
+- (void)removeTopOfStretchStats:(NSOrderedSet *)values;
 - (void)insertObject:(ECFirstTurnStats *)value inFirstTurnStatsAtIndex:(NSUInteger)idx;
 - (void)removeObjectFromFirstTurnStatsAtIndex:(NSUInteger)idx;
 - (void)insertFirstTurnStats:(NSArray *)value atIndexes:(NSIndexSet *)indexes;

@@ -45,12 +45,11 @@
 #define kSelectionMethod kSuaredFitnessSelection
 #define kReproductionType kMonogomousPairsMethod
 
-#define kMaximumNumberEntries 8
+#define kMaximumNumberEntries 9
 #define kRandomRange 2.0
 #define kRandomGranularity 8
 #define kLowestTolerableValue 1.0 / pow(10,kRandomGranularity)
 
-#define kMaximumNumberEntries 8
 #define kNumberDnaStrands 8
 #define kNumberFunctions 8
 #define kNumberTwoArgFuncs 4
