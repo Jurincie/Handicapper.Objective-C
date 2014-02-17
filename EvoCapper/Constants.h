@@ -9,6 +9,10 @@
 #ifndef EvoCapper_Constants_h
 #define EvoCapper_Constants_h
 
+#define kMaximumPopulationSize 1024
+#define kMaximumTreeDepth 16
+#define kTopMinimumTreeDepth 10
+#define kMaximumMutationRate .0099
 
 #define kBreakPositionFromPostStatField 0
 #define kFirstTurnPositionFromPostStatField 1
@@ -28,7 +32,12 @@
 #define kMaxTimeFor2TurnRace 35.00
 #define kMaxTimeFor3TurnRace 45.00
 
-// post->break, post->1stTurn, post->finish, post->time, 1stTurn->2ndTurn, 2ndTurn->finsh
+// post->break
+// post->1stTurn
+// post->finish
+// post->time
+// 1stTurn->2ndTurn
+// 2ndTurn->finsh
 #define kNumberStatFields 6
 
 // 550, 678 ignoring all others (for now) FIX: later
@@ -50,18 +59,20 @@
 #define kRandomGranularity 8
 #define kLowestTolerableValue 1.0 / pow(10,kRandomGranularity)
 
-#define kNumberDnaStrands 8
+#define kNumberDnaStrands 10
 #define kNumberFunctions 8
 #define kNumberTwoArgFuncs 4
 
-#define kBreakPositionStrand 0
-#define kBreakSpeedStrand 1
-#define kEarlySpeedStrand 2
-#define kTopSpeedStrand 3
-#define kLateSpeedStrand 4
-#define kRecentClassStrand 5
-#define kEarlySpeedRelevanceStrand 6
-#define kOtherRelevanceStrand 7
+#define kClassDnaStrand 0
+#define kBreakPositionDnaStrand 1
+#define kBreakSpeedDnaStrand 2
+#define kFirstTurnPositionDnaStrand 3
+#define kFirstTurnSpeedDnaStrand 4
+#define kTopOfStretchPositionDnaStrand 5
+#define kTopOfStretchSpeedDnaStrand 6
+#define kFinalStrengthDnaStrand 7
+#define kEarlySpeedRelevanceDnaStrand 8
+#define kOtherRelevanceDnaStrand 9
 
 #define kTreeRoot 0
 

@@ -2,14 +2,14 @@
 //  ECPopulation.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 2/9/14.
+//  Created by Ron Jurincie on 2/15/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class ECHandicapper, ECTrackStats;
+@class ECHandicapper;
 
 @interface ECPopulation : NSManagedObject
 
@@ -23,7 +23,6 @@
 @property (nonatomic, retain) NSString * populationName;
 @property (nonatomic, retain) NSNumber * populationSize;
 @property (nonatomic, retain) NSSet *individualHandicappers;
-@property (nonatomic, retain) NSSet *trackStats;
 @end
 
 @interface ECPopulation (CoreDataGeneratedAccessors)
@@ -32,10 +31,5 @@
 - (void)removeIndividualHandicappersObject:(ECHandicapper *)value;
 - (void)addIndividualHandicappers:(NSSet *)values;
 - (void)removeIndividualHandicappers:(NSSet *)values;
-
-- (void)addTrackStatsObject:(ECTrackStats *)value;
-- (void)removeTrackStatsObject:(ECTrackStats *)value;
-- (void)addTrackStats:(NSSet *)values;
-- (void)removeTrackStats:(NSSet *)values;
 
 @end

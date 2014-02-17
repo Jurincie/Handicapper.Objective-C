@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "ECMainController.h"
 #import "ECPopulation.h"
+#import "Constants.h"
 
 @interface ECAppDelegate : NSObject <NSApplicationDelegate>
 
@@ -21,9 +22,12 @@
 @property (strong, nonatomic) ECMainController	*evolutionManager;
 @property (strong, nonatomic) ECPopulation			*currentPopulation;
 
-- (IBAction)createNewPopulationButtonTapped:(id)sender;
 - (IBAction)trainPopulationButtonTapped:(id)sender;
-
+- (IBAction)startButtonTapped:(id)sender;
 - (IBAction)saveAction:(id)sender;
+- (IBAction)buildTrackStatisticsButtonTapped:(id)sender;
+
+- (NSArray*)getNewPopulationInformation;
+- (void)saveManagedObjectState;
 
 @end

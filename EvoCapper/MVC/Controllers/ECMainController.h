@@ -30,13 +30,13 @@
 + (void)updateAndSaveData;
 
 #pragma traverse
-- (void)processDirectoryAtPath:(NSString*)directoryPath
-			  withDxStatsArray:(double*)statsArray
-		andDxStatsCounterArray:(int*)counterArray
-	   winTimeAccumulatorArray:(double*)averageWinTimeAccumulatorArray
-	  showTimeAccumulatorArray:(double*)averageShowTimeAccumulatorArray
-	  numRacesAccumulatorArray:(int*)numRacesAccumulatorArray
-				 andClassArray:(NSArray*)classArray;
+- (void)processTrackAtPath:(NSString*)directoryPath
+		  withDxStatsArray:(double*)statsArray
+	andDxStatsCounterArray:(int*)counterArray
+   winTimeAccumulatorArray:(double*)averageWinTimeAccumulatorArray
+  showTimeAccumulatorArray:(double*)averageShowTimeAccumulatorArray
+  numRacesAccumulatorArray:(int*)numRacesAccumulatorArray
+			 andClassArray:(NSArray*)classArray;
 
 - (void)processStatsFromResultFile:(NSString*)resultFilePath
 			   withStatisticsArray:(double*)statsArray
@@ -48,8 +48,8 @@
 
 
 #pragma track statistics methods
-
-- (ECTrackStats*)getStatsForTrackNamed:(NSString*)trackName;
+- (void)modelTracks;
+- (ECTrackStats*)getStatsForTrackAtPath:(NSString*)trackName;
 - (NSArray*)getClassesForTrackNamed:(NSString*)trackName;
 
 - (void)processRace:(NSString*)singleRaceString
@@ -95,8 +95,7 @@ withStatisticsArray:(double*)statsAccumulatorArray
 						maxTreeDepth:(NSUInteger)maxTreeDepth
 						minTreeDepth:(NSUInteger)mintreeDepth
 						mutationRate:(float)mutationRate
-							comments:(NSString*)comments
-							andTrackName:(NSString*)trackName;
+							comments:(NSString*)comments;
 
 
 - (NSMutableArray*)createNewHandicappers;
@@ -158,7 +157,7 @@ withStatisticsArray:(double*)statsAccumulatorArray
 
 - (NSString*)removeExtraSpacesFromString:(NSString*)originalString;
 - (NSUInteger)getIndexOfFirstDateToken:(NSArray*)lineZeroTokens;
-- (NSUInteger)getRaceDistanceFromString:(NSString*)raceNumberString;
+- (NSUInteger)getRaceDxFromString:(NSString*)raceNumberString;
 - (NSString*)getMmSubstringFromSpelledMonth:(NSString*)spelledMonthString;
 - (NSString*)getRaceDistanceStringFromString:(NSString*)fileNameString;
 

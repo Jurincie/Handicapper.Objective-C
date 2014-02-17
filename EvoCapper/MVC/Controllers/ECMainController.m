@@ -55,7 +55,17 @@
 
 + (void)updateAndSaveData
 {
-    
+	NSError *error = nil;
+	
+    if (![MOC commitEditing])
+	{
+        NSLog(@"%@:%@ unable to commit editing before saving", [self class], NSStringFromSelector(_cmd));
+	}
+	
+    if (![MOC save:&error])
+	{
+        [[NSApplication sharedApplication] presentError:error];
+	}
 }
 
 #pragma track statistics methods
@@ -163,149 +173,124 @@
 	return classNames;
 }
 
-- (void)processDirectoryAtPath:(NSString*)directoryPath
-			  withDxStatsArray:(double*)statsArray
-		andDxStatsCounterArray:(int*)counterArray
-	   winTimeAccumulatorArray:(double*)winTimeAccumulatorArray
-	  showTimeAccumulatorArray:(double*)showTimeAccumulatorArray
-	  numRacesAccumulatorArray:(int*)numRacesAccumulatorArray
-				 andClassArray:(NSArray*)classArray
+- (void)processTrackAtPath:(NSString*)modifiedResultsFolderPath
+		  withDxStatsArray:(double*)statsArray
+	andDxStatsCounterArray:(int*)counterArray
+   winTimeAccumulatorArray:(double*)winTimeAccumulatorArray
+  showTimeAccumulatorArray:(double*)showTimeAccumulatorArray
+  numRacesAccumulatorArray:(int*)numRacesAccumulatorArray
+			 andClassArray:(NSArray*)classArray
 {
-	NSString *fileName			= nil;
-	NSString *fullPath			= nil;
-	NSDirectoryEnumerator *enu	= [[NSFileManager defaultManager] enumeratorAtPath:directoryPath];
+	NSString *fileName				= nil;
+	NSError *error					= nil;
+	NSFileManager *localFileManager	= [NSFileManager defaultManager];
+	NSArray *folderContents			= [localFileManager contentsOfDirectoryAtPath:modifiedResultsFolderPath
+																			error:&error];
 	
-	while (fileName = [enu nextObject])
+	for(NSString *yearFolderName in folderContents)
 	{
-		if([fileName hasSuffix:@".DS_Store"])
+		if([yearFolderName hasSuffix:@".DS_Store"])
 		{
 			continue;
 		}
 		
-		// check if it's a directory
-		BOOL isDirectory	= NO;
+		NSString *folderPath					= [NSString stringWithFormat:@"%@%@/",modifiedResultsFolderPath, yearFolderName];
+		NSDirectoryEnumerator *yearEnumerator	= [localFileManager enumeratorAtPath:folderPath];
 		
-		if([directoryPath characterAtIndex:directoryPath.length - 1] != '/')
+		while(fileName = [yearEnumerator nextObject])
 		{
-			fullPath = [NSString stringWithFormat:@"%@/%@",directoryPath, fileName];
-		}
-		else
-		{
-			fullPath = [NSString stringWithFormat:@"%@%@",directoryPath, fileName];
-		}
-		
-		
-		[[NSFileManager defaultManager] fileExistsAtPath:fullPath
-											 isDirectory: &isDirectory];
-		if (isDirectory)
-		{
-			// this calls each of the year folders "2008/" , "2013/" etc.
-			[self processDirectoryAtPath:fullPath
-						withDxStatsArray:statsArray
-				  andDxStatsCounterArray:counterArray
-				 winTimeAccumulatorArray:winTimeAccumulatorArray
-				showTimeAccumulatorArray:showTimeAccumulatorArray
-				numRacesAccumulatorArray:numRacesAccumulatorArray
-						   andClassArray:(NSArray*)classArray];
-		}
-		else
-		{
-			if([fileName hasSuffix:@"RES.HTM"]) // used only in result files from Derby Lane
+			if([fileName hasSuffix:@".DS_Store"])
 			{
-				[self processStatsFromResultFile:fullPath
-							 withStatisticsArray:statsArray
-								 andCounterArray:counterArray
-								 andClassArray:classArray];
+				continue;
+			}
+			
+			NSString *filePath = [NSString stringWithFormat:@"%@%@", folderPath, fileName];
+		
+			NSString *singleRaceString = [NSString stringWithContentsOfFile:filePath
+																   encoding:NSStringEncodingConversionAllowLossy
+																	  error:&error];
+
+			if(fileName.length < 8)
+			{
+				continue;
+			}
+			
+			NSString *raceDxString	= [self getRaceDistanceStringFromString:fileName];
+			
+			if([raceDxString isEqualToString:@"Bad File"])
+			{
+				// FIX: delete file??
+				continue;
+			}
+			
+			NSUInteger raceDx		= 0;
+			NSUInteger raceDxIndex	= kNoIndex;
+			
+			if([raceDxString isEqualToString:@"5.16"] || [raceDxString isEqualToString:@"5-16"])
+			{
+				raceDx = 550;
+			}
+			else if([raceDxString isEqualToString:@"3.8"] || [raceDxString isEqualToString:@"3-8"])
+			{
+				raceDx = 660;
+			}
+			else if([raceDxString characterAtIndex:1] == '.' || [raceDxString characterAtIndex:1] == '-')
+			{
+				raceDx = 0;
 			}
 			else
 			{
-				NSError *error;
-				NSString *singleRaceString = [NSString stringWithContentsOfFile:fullPath
-																	   encoding:NSStringEncodingConversionAllowLossy
-																		  error:&error];
-
-				if(fileName.length < 8)
-				{
-					continue;
-				}
+				raceDx = [raceDxString integerValue];
+			}
+			
+			switch (raceDx)
+			{
+				case 545:
+				case 548:
+				case 550:
+				case 583:
+					raceDxIndex = 0;
+					break;
 				
-				NSString *raceDxString	= [self getRaceDistanceStringFromString:fileName];
+				case 660:
+				case 677:
+				case 678:
+					raceDxIndex = 1;
+					break;
 				
-				if([raceDxString isEqualToString:@"Bad File"])
-				{
-					// FIX: delete file??
-					continue;
-				}
-				
-				NSUInteger raceDx		= 0;
-				NSUInteger raceDxIndex	= kNoIndex;
-				
-				if([raceDxString isEqualToString:@"5.16"] || [raceDxString isEqualToString:@"5-16"])
-				{
-					raceDx = 550;
-				}
-				else if([raceDxString isEqualToString:@"3.8"] || [raceDxString isEqualToString:@"3-8"])
-				{
-					raceDx = 660;
-				}
-				else if([raceDxString characterAtIndex:1] == '.' || [raceDxString characterAtIndex:1] == '-')
-				{
-					raceDx = 0;
-				}
-				else
-				{
-					raceDx = [raceDxString integerValue];
-				}
-				
-				switch (raceDx)
-				{
-					case 545:
-					case 548:
-					case 550:
-					case 583:
-						raceDxIndex = 0;
-						break;
-					
-					case 660:
-					case 677:
-					case 678:
-						raceDxIndex = 1;
-						break;
-					
 //					case 761:
 //						raceDxIndex = 2;
 //						break;
 //					
-					default:
-						break;
-				}
-				
-				if(raceDxIndex > kNumberRaceDistances)  // skip any races other than 548 and 678
-				{
-					continue;
-				}
-				else if(raceDxIndex >= kNumberRaceDistances || raceDxIndex == kNoIndex)
-				{
-					NSLog(@"skipping: %lu distance race", (unsigned long)raceDx);
-				
-					continue;
-				}
-				
-				NSLog(@"%@", fileName);
-
-				double maxRaceTimeForDx	= raceDxIndex == 0 ? kMaxTimeFor2TurnRace : kMaxTimeFor3TurnRace;
-				
-				[self processRace:singleRaceString
-						   ofType:1
-			  withStatisticsArray:statsArray
-				  andCounterArray:counterArray
-					 winTimeArray:winTimeAccumulatorArray
-					showTimeArray:showTimeAccumulatorArray
-					numRacesArray:numRacesAccumulatorArray
-				 withMaxTimeForDx:maxRaceTimeForDx
-				   forRaceDxIndex:raceDxIndex
-				  usingClassArray:classArray];
+				default:
+					break;
 			}
+			
+			if(raceDxIndex > kNumberRaceDistances)  // skip any races other than 548 and 678
+			{
+				continue;
+			}
+			else if(raceDxIndex >= kNumberRaceDistances || raceDxIndex == kNoIndex)
+			{
+				NSLog(@"skipping: %lu distance race", (unsigned long)raceDx);
+			
+				continue;
+			}
+				
+			NSLog(@"%@", fileName);
+
+			double maxRaceTimeForDx	= raceDxIndex == 0 ? kMaxTimeFor2TurnRace : kMaxTimeFor3TurnRace;
+			
+			[self processRace:singleRaceString
+					   ofType:1
+		  withStatisticsArray:statsArray
+			  andCounterArray:counterArray
+				 winTimeArray:winTimeAccumulatorArray
+				showTimeArray:showTimeAccumulatorArray
+				numRacesArray:numRacesAccumulatorArray
+			 withMaxTimeForDx:maxRaceTimeForDx
+			   forRaceDxIndex:raceDxIndex
+			  usingClassArray:classArray];
 		}
 	}
 }
@@ -349,8 +334,8 @@
 	BOOL isNewRaceRecord	= NO;
 	NSError *error			= nil;
 	NSString *fileContents	= [NSString stringWithContentsOfFile:resultFilePath
-													   encoding:NSStringEncodingConversionAllowLossy
-														  error:&error];
+														encoding:NSStringEncodingConversionAllowLossy
+														   error:&error];
 	
 	NSArray *fileContentsLineByLine = [fileContents componentsSeparatedByString:@"\n"];
 		
@@ -386,8 +371,8 @@
 				index++;
 			}
 		
-			NSString *suffix = [[tokens objectAtIndex:index+2] substringFromIndex:1];
-			NSString *raceDxString = [suffix substringToIndex:suffix.length-1];
+			NSString *suffix		= [[tokens objectAtIndex:index+2] substringFromIndex:1];
+			NSString *raceDxString	= [suffix substringToIndex:suffix.length-1];
 			
 			// identify race distance to trim arrays passed
 			int raceDxIndex = 0;
@@ -862,7 +847,31 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	raceCounterArray[index] = (int)numberRaces;
 }
 
-- (ECTrackStats*)getStatsForTrackNamed:(NSString*)trackName
+- (void)modelTracks
+{
+	NSFileManager *localFileManager	= [NSFileManager defaultManager];
+	NSString *modeledTracksFolder	= @"/Users/ronjurincie/Desktop/Project Ixtlan/Tracks/Modeled Tracks/";
+	NSError *error					= nil;
+	
+	NSArray *trackFoldersToProcess = [localFileManager contentsOfDirectoryAtPath:modeledTracksFolder
+																		   error:&error];
+	
+	for(NSString *modeledTrackFolder in trackFoldersToProcess)
+	{
+		if([modeledTrackFolder hasSuffix:@".DS_Store"])
+		{
+			continue;
+		}
+	
+		NSString *pathToModeledTrackFolder = [NSString stringWithFormat:@"%@%@", modeledTracksFolder, modeledTrackFolder];
+	
+		[self getStatsForTrackAtPath:pathToModeledTrackFolder];
+	}
+	
+	[ECMainController updateAndSaveData];
+}
+
+- (ECTrackStats*)getStatsForTrackAtPath:(NSString*)modeledTrackFolderPath
 {
 	// Each raceClass 2-Turn and 3-Turn stats are kept for:
 	//	averageWinTime and averageShowTime
@@ -883,6 +892,7 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	
 	// Class Stats
 	// post by post average times and average win times
+	NSString *trackName			= [modeledTrackFolderPath lastPathComponent];
 	NSArray *raceClassArray		= [self getClassesForTrackNamed:trackName];
 	NSUInteger classArraySize	= kNumberRaceDistances * raceClassArray.count;
 	
@@ -898,26 +908,15 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 		winTimeAccumulatorArray[index]	= 0.0;
 	}
 	
-	// build results folder path
-	NSString *prefix	= @"/Users/ronjurincie/Desktop/Project Ixtlan/Tracks/Modeled Tracks/";
-	NSString *suffix	= @"/Modified Results/";
+	NSString *modeledTracksModifiedResultsFolderPath = [NSString stringWithFormat:@"%@/Modified Results/", modeledTrackFolderPath];
 	
-	if([trackName isEqualToString:@"Derby Lane"])
-	{
-		suffix	= @"/Results/";
-		NSLog(@"ILLEGAL TRACK");
-		exit(0);
-	}
-	
-	NSString *resultsFolderPath = [NSString stringWithFormat:@"%@%@%@", prefix, trackName, suffix];
-	
-	[self processDirectoryAtPath:resultsFolderPath
-				withDxStatsArray:dxStatsAccumulatorArray
-		  andDxStatsCounterArray:dxRaceCounterArray
-		 winTimeAccumulatorArray:winTimeAccumulatorArray
-		showTimeAccumulatorArray:showTimeAccumulatorArray
-		numRacesAccumulatorArray:raceCounterArray
-				   andClassArray:raceClassArray];
+	[self processTrackAtPath:modeledTracksModifiedResultsFolderPath
+			withDxStatsArray:dxStatsAccumulatorArray
+	  andDxStatsCounterArray:dxRaceCounterArray
+	 winTimeAccumulatorArray:winTimeAccumulatorArray
+	showTimeAccumulatorArray:showTimeAccumulatorArray
+	numRacesAccumulatorArray:raceCounterArray
+			   andClassArray:raceClassArray];
 	
 	[self printStatArrays:dxStatsAccumulatorArray
 		  andCounterArray:dxRaceCounterArray];
@@ -1261,13 +1260,12 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 }
 
 
-- (void)createNewPopoulationWithName:(NSString*)name
+- (void)createNewPopoulationWithName:(NSString*)populationName
 						 initialSize:(NSUInteger)initialSize
 						maxTreeDepth:(NSUInteger)maxTreeDepth
 						minTreeDepth:(NSUInteger)mintreeDepth
 						mutationRate:(float)mutationRate
 							comments:(NSString*)comments
-						andTrackName:(NSString*)trackName;
 {
     NSLog(@"createNewPopulation called in ECEvolutionManager");
 	
@@ -1278,68 +1276,17 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	if(self.population)
 	{
 		self.populationSize				= initialSize;
-		self.population.populationName	= @"NewPopulationTest 1.0.0.0";
+		self.population.populationName	= populationName;
         self.population.initialSize		= [NSNumber numberWithInteger:initialSize];
         self.population.minTreeDepth	= [NSNumber numberWithInteger:mintreeDepth];
         self.population.maxTreeDepth	= [NSNumber numberWithInteger:maxTreeDepth];
         self.population.genesisDate		= [NSDate date];
         self.population.mutationRate	= [NSNumber numberWithFloat:mutationRate];
-		
-		// implement find or create scenerio for trackName
-		
-		// create entity description and fetch request
-		NSFetchRequest *tracksStatsRequest = [[NSFetchRequest alloc] init];
-	
-		[tracksStatsRequest setEntity:[NSEntityDescription entityForName:@"ECTrackStats"
-											  inManagedObjectContext:MOC]];
-
-		// set predicate
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(trackName LIKE[c] %@)", trackName];
-	
-		[tracksStatsRequest setPredicate:predicate];
-	
-		NSError *error;
-		NSArray *array = [MOC executeFetchRequest:tracksStatsRequest
-											error:&error];
-	
-		if(array.count == 0)
-		{
-			// calculate and get stats for this track
-			ECTrackStats *newTrackStatsObject	= [self getStatsForTrackNamed:trackName];
-			newTrackStatsObject.population		= self.population;
-			
-			[self.population addTrackStatsObject:newTrackStatsObject];
-		
-			// save the tracks stats to coreData db
-			NSError *error = nil;
-		
-			if (![MOC commitEditing])
-			{
-				NSLog(@"%@:%@ unable to commit editing before saving", [self class], NSStringFromSelector(_cmd));
-			}
-		
-			if (![MOC save:&error])
-			{
-				[[NSApplication sharedApplication] presentError:error];
-			}
-		}
-//		else
-//		{
-//			ECTrackStats *trackStats = [array objectAtIndex:0];
-//			
-//			[MOC deleteObject:trackStats];
-//			
-//			NSLog(@"delete successful");
-//
-//			exit(0);
-//		}
 	}
+
+	self.rankedPopulation = [self createNewHandicappers];
 	
-	// FIX: uncomment out lines below
-	
-//	self.rankedPopulation = [self createNewHandicappers];
-//	
-//	[self fillWorkingPopulationArrayWithOriginalMembers];
+	[self fillWorkingPopulationArrayWithOriginalMembers];
 }
 
 
@@ -1349,18 +1296,22 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	// arrays of each members trees created from their string form
 	self.workingPopulationDna	= [NSMutableArray new];
 	NSMutableArray *dnaTrees	= [NSMutableArray new];
+	NSUInteger populationSize	= [self.population.initialSize unsignedIntegerValue];
 
-	for(int popIndex = 0; popIndex < [self.population.initialSize unsignedIntegerValue]; popIndex++)
+	for(int popIndex = 0; popIndex < populationSize; popIndex++)
 	{
 		ECHandicapper *tempHandicapper	= self.rankedPopulation[popIndex];
-		NSArray *thisMembersDnaTrees	= [NSArray arrayWithObjects:[self recoverTreeFromString:tempHandicapper.breakPositionTree],
-																	[self recoverTreeFromString:tempHandicapper.breakSpeedTree],
-																	[self recoverTreeFromString:tempHandicapper.earlySpeedTree],
-																	[self recoverTreeFromString:tempHandicapper.topSpeedTree],
-																	[self recoverTreeFromString:tempHandicapper.lateSpeedTree],
-																	[self recoverTreeFromString:tempHandicapper.recentClassTree],
+		NSArray *thisMembersDnaTrees	= [NSArray arrayWithObjects:[self recoverTreeFromString:tempHandicapper.classStrengthTree],
+																	[self recoverTreeFromString:tempHandicapper.breakPositionStrengthTree],
+																	[self recoverTreeFromString:tempHandicapper.breakSpeedStrengthTree],
+																	[self recoverTreeFromString:tempHandicapper.firstTurnPositionStrengthTree],
+																	[self recoverTreeFromString:tempHandicapper.firstTurnSpeedStrengthTree],
+																	[self recoverTreeFromString:tempHandicapper.topOfStretchPositionStrengthTree],
+																	[self recoverTreeFromString:tempHandicapper.topOfStretchSpeedStrengthTree],
+																	[self recoverTreeFromString:tempHandicapper.finalRaceStrengthTree],
 																	[self recoverTreeFromString:tempHandicapper.earlySpeedRelevanceTree],
-																	[self recoverTreeFromString:tempHandicapper.otherRelevanceTree], nil];
+																	[self recoverTreeFromString:tempHandicapper.otherRelevanceTree],
+																	nil];
 				
 		[dnaTrees addObject:thisMembersDnaTrees];
    }
@@ -1376,12 +1327,11 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	{
 		// use NSAlert to deal with this
 		NSAlert *alert          = [[NSAlert alloc] init];
-		NSString *question      = NSLocalizedString(@"Create New Population",
-													@"Cancel");
-		NSString *info			= NSLocalizedString(@"No population has been selected.",
-												@"Tap the Create New Population button or Select Population button?");
+		NSString *question      = NSLocalizedString(@"Create New Population", @"Cancel");
 		NSString *quitButton    = NSLocalizedString(@"OK", @"");
-		
+		NSString *info			= NSLocalizedString(@"No population has been selected.",
+													@"Tap the Create New Population button or Select Population button?");
+				
 		[alert setMessageText:question];
 		[alert setInformativeText:info];
 		[alert addButtonWithTitle:quitButton];
@@ -1392,9 +1342,9 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	}
 		
 	self.generationsThisCycle	= numberGenerations;
-	NSString *resultFolderPath	= @"/Users/ronjurincie/Desktop/Greyhound Central/Results/DerbyLane";
+	NSString *resultFolderPath	= @"FIX: ME";
 	
-	for(NSUInteger localGenNumber = 0; localGenNumber < self.generationsThisCycle; localGenNumber++)
+	for(NSUInteger localGenNumber = 0; localGenNumber < numberGenerations; localGenNumber++)
     {
 		self.trainingPopSize	= self.populationSize / 2;
 		BOOL testAllMembers		= NO;
@@ -1428,12 +1378,12 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	//	chldren occupying BOTTOM HALF of array with their indices
 	
 	NSUInteger startIndex					= self.populationSize - self.trainingPopSize;
-	NSFileManager *localFileManager			= [[NSFileManager alloc] init];
+	NSFileManager *localFileManager			= [NSFileManager defaultManager];
 	NSDirectoryEnumerator *dirEnumerator	= [localFileManager enumeratorAtPath:resultFolderPath];
 	NSString *fileName						= nil;
 	BOOL isDirectory						= NO;
 	
-    while((fileName = [dirEnumerator nextObject]))
+    while(fileName = [dirEnumerator nextObject])
     {
 		NSString *fullFilePath = [NSString stringWithFormat:@"%@/%@", resultFolderPath, fileName];
 		
@@ -1607,6 +1557,10 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 
 - (ECTrainigRaceRecord*)getTrainingRaceRecordFromLines:(NSArray*)resultFileLineByLine
 {
+
+
+	// Derby Lane ONLY
+	
 	//Line #	^
 	//	0:		DERBY LANE                   Wednesday Nov 05 2008 Afternoon   Race 2    Grade  D   (548)  Time: 30.97
 	//	1:		Curler Ron G     70½ 7 2 1 3  1 4  1 3½    30.97 3.50  Won With Ease-inside
@@ -1670,7 +1624,7 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	NSDate *raceDate		= [NSDate dateWithString:dateString];
 	NSString *raceClass		= [lineZeroTokens objectAtIndex:firstDateToken + 8];
 	NSUInteger raceNumber	= [[lineZeroTokens objectAtIndex:firstDateToken + 6] integerValue];
-	NSUInteger raceDx		= [self getRaceDistanceFromString:[lineZeroTokens objectAtIndex:firstDateToken + 9]];
+	NSUInteger raceDx		= [self getRaceDxFromString:[lineZeroTokens objectAtIndex:firstDateToken + 9]];
 	double winningTime		= [[lineZeroTokens objectAtIndex:firstDateToken + 11] doubleValue];
 
 // iterate through resultFileLineByLine filling in entryNamesArray and postOddsArray
@@ -1910,7 +1864,7 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	return raceDxString;
 }
 
-- (NSUInteger)getRaceDistanceFromString:(NSString*)raceNumberString
+- (NSUInteger)getRaceDxFromString:(NSString*)raceNumberString
 {
 	NSString *prefix				= [raceNumberString substringToIndex:4];
 	NSString *stringWithoutParens	= [prefix substringFromIndex:1];
@@ -2382,15 +2336,17 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	NSArray *newChildsDnaTreesArray = [self createNewDnaByCrossingOverDnaFrom:parent1
 																  withDnaFrom:parent2];
 	
-	newHandicapper.breakPositionTree		= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kBreakPositionStrand]];
-	newHandicapper.breakSpeedTree			= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kBreakSpeedStrand]];
-	newHandicapper.earlySpeedTree			= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kEarlySpeedStrand]];
-	newHandicapper.topSpeedTree				= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kTopSpeedStrand]];
-	newHandicapper.lateSpeedTree			= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kLateSpeedStrand]];
-	newHandicapper.recentClassTree			= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kRecentClassStrand]];
-	newHandicapper.earlySpeedRelevanceTree	= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kEarlySpeedRelevanceStrand]];
-	newHandicapper.otherRelevanceTree		= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kOtherRelevanceStrand]];
-	
+	newHandicapper.classStrengthTree				= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kClassDnaStrand]];
+	newHandicapper.breakPositionStrengthTree		= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kBreakPositionDnaStrand]];
+	newHandicapper.breakSpeedStrengthTree			= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kBreakSpeedDnaStrand]];
+	newHandicapper.firstTurnPositionStrengthTree	= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kFirstTurnPositionDnaStrand]];
+	newHandicapper.firstTurnSpeedStrengthTree		= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kFirstTurnSpeedDnaStrand]];
+	newHandicapper.topOfStretchPositionStrengthTree	= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kTopOfStretchPositionDnaStrand]];
+	newHandicapper.topOfStretchSpeedStrengthTree	= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kTopOfStretchSpeedDnaStrand]];
+	newHandicapper.finalRaceStrengthTree			= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kFinalStrengthDnaStrand]];
+	newHandicapper.earlySpeedRelevanceTree			= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kEarlySpeedRelevanceDnaStrand]];
+	newHandicapper.otherRelevanceTree				= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kOtherRelevanceDnaStrand]];
+		
 	return newHandicapper;
 }
 
@@ -2720,14 +2676,16 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
     // need to copy just edited trees to appropriate strings
     ECHandicapper *changedHandicapper = nil;
     
-    changedHandicapper.breakPositionTree        = self.workingPopulationDna[popIndex][0];
-    changedHandicapper.breakSpeedTree           = self.workingPopulationDna[popIndex][1];
-    changedHandicapper.earlySpeedTree           = self.workingPopulationDna[popIndex][2];
-    changedHandicapper.topSpeedTree             = self.workingPopulationDna[popIndex][3];
-    changedHandicapper.lateSpeedTree            = self.workingPopulationDna[popIndex][4];
-    changedHandicapper.recentClassTree          = self.workingPopulationDna[popIndex][5];
-    changedHandicapper.earlySpeedRelevanceTree  = self.workingPopulationDna[popIndex][6];
-    changedHandicapper.otherRelevanceTree       = self.workingPopulationDna[popIndex][7];
+	changedHandicapper.classStrengthTree				= self.workingPopulationDna[popIndex][0];
+    changedHandicapper.breakPositionStrengthTree		= self.workingPopulationDna[popIndex][1];
+    changedHandicapper.breakSpeedStrengthTree           = self.workingPopulationDna[popIndex][2];
+    changedHandicapper.firstTurnPositionStrengthTree	= self.workingPopulationDna[popIndex][3];
+    changedHandicapper.firstTurnSpeedStrengthTree		= self.workingPopulationDna[popIndex][4];
+    changedHandicapper.topOfStretchPositionStrengthTree	= self.workingPopulationDna[popIndex][5];
+    changedHandicapper.topOfStretchSpeedStrengthTree	= self.workingPopulationDna[popIndex][6];
+	changedHandicapper.finalRaceStrengthTree			= self.workingPopulationDna[popIndex][7];
+    changedHandicapper.earlySpeedRelevanceTree			= self.workingPopulationDna[popIndex][8];
+    changedHandicapper.otherRelevanceTree				= self.workingPopulationDna[popIndex][9];
 }
 
 
@@ -2838,38 +2796,46 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
                                                                            atLevel:rootLevel]];
             switch (strandNumber)
             {
-                case kBreakPositionStrand:
-                    newbie.breakPositionTree = dnaString;
+                case kClassDnaStrand:
+                    newbie.classStrengthTree = dnaString;
                     break;
                     
-                case kBreakSpeedStrand:
-                    newbie.breakSpeedTree = dnaString;
+                case kBreakPositionDnaStrand:
+                    newbie.breakPositionStrengthTree = dnaString;
                     break;
                     
-                case kEarlySpeedStrand:
-                    newbie.earlySpeedTree = dnaString;
+                case kBreakSpeedDnaStrand:
+                    newbie.breakSpeedStrengthTree = dnaString;
                     break;
                     
-                case kTopSpeedStrand:
-                    newbie.topSpeedTree = dnaString;
+                case kFirstTurnPositionDnaStrand:
+                    newbie.firstTurnPositionStrengthTree = dnaString;
                     break;
                     
-                case kLateSpeedStrand:
-                    newbie.lateSpeedTree = dnaString;
+                case kFirstTurnSpeedDnaStrand:
+                    newbie.firstTurnSpeedStrengthTree = dnaString;
                     break;
                     
-                case kRecentClassStrand:
-                    newbie.recentClassTree = dnaString;
+                case kTopOfStretchPositionDnaStrand:
+                    newbie.topOfStretchPositionStrengthTree = dnaString;
                     break;
                     
-                case kEarlySpeedRelevanceStrand:
+                case kTopOfStretchSpeedDnaStrand:
+                    newbie.topOfStretchSpeedStrengthTree = dnaString;
+                    break;
+				
+                case kFinalStrengthDnaStrand:
+					newbie.finalRaceStrengthTree = dnaString;
+					break;
+				
+                case kEarlySpeedRelevanceDnaStrand:
                     newbie.earlySpeedRelevanceTree = dnaString;
                     break;
-                    
-                case kOtherRelevanceStrand:
-                    newbie.otherRelevanceTree = dnaString;
-                    break;
-                    
+				
+                case kOtherRelevanceDnaStrand:
+					newbie.otherRelevanceTree = dnaString;
+					break;
+				
                 default:
                     break;
             }

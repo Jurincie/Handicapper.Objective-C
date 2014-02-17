@@ -248,33 +248,144 @@
 
 // Custon code
 
-- (IBAction)createNewPopulationButtonTapped:(id)sender
+- (IBAction)buildTrackStatisticsButtonTapped:(id)sender
 {
-	if(self.currentPopulation)
+	// check to see if ECTracks object exists in CoreData
+	NSError *error					= nil;
+	NSFetchRequest *fetchRequest	= [[NSFetchRequest alloc] init];
+	NSEntityDescription *entity		= [NSEntityDescription entityForName:@"ECTracks"
+												  inManagedObjectContext:self.managedObjectContext];
+	[fetchRequest setEntity:entity];
+	
+	NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest
+																	   error:&error];
+	
+	if(fetchedObjects.count > 0)
 	{
+		// tracks object already exists
+	
+	}
+	else
+	{
+		[self.evolutionManager modelTracks];
+	}
+}
+
+- (IBAction)startButtonTapped:(id)sender
+{
+	// check to see if coreData has any populations
+	NSError *error					= nil;
+	BOOL oneOrMorePopulationsExist	= YES;
+	BOOL selectOldPopulation		= NO;
+	NSArray *newPopulationStrings	= nil;
+
+	NSFetchRequest *fetchRequest	= [[NSFetchRequest alloc] init];
+	NSEntityDescription *entity		= [NSEntityDescription entityForName:@"ECHandicapperPopulation"
+												  inManagedObjectContext:self.managedObjectContext];
+	[fetchRequest setEntity:entity];
+
+	NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest
+																	   error:&error];
+				
+	if(fetchedObjects.count > 0)
+	{
+		oneOrMorePopulationsExist = YES;
+	}
+	
+	if(oneOrMorePopulationsExist)
+	{
+		// present NSAlert with options:
+		//	createNewPopulation
+		//	openExistingPopulation
+		NSAlert *alert = [NSAlert alertWithMessageText:@"EvoCapper"
+										 defaultButton:@"Create New Population"
+									   alternateButton:@"Open Existing Population"
+										   otherButton:nil
+							 informativeTextWithFormat:@"Select or create a new population:"];
+	
+		if([alert runModal] == NSAlertFirstButtonReturn)
+		{
+			selectOldPopulation = YES;
+		}
+	}
+	
+	if(selectOldPopulation)
+	{
+	
+	}
+	else
+	{
+		// prompt user for new population fields
+		newPopulationStrings		= [self getNewPopulationInformation];
+		NSString *populationName	= [newPopulationStrings objectAtIndex:0];
+		NSUInteger initialSize		= [[newPopulationStrings objectAtIndex:1] unsignedIntegerValue];
+		NSUInteger maxTreeDepth		= [[newPopulationStrings objectAtIndex:2] unsignedIntegerValue];
+		NSUInteger minTreeDepth		= [[newPopulationStrings objectAtIndex:3] unsignedIntegerValue];
+		double mutationRate			= [[newPopulationStrings objectAtIndex:4] doubleValue];
+		NSString *comments			= [newPopulationStrings objectAtIndex:5];
 		
+		
+		[self.evolutionManager createNewPopoulationWithName:populationName
+												initialSize:initialSize
+											   maxTreeDepth:maxTreeDepth
+											   minTreeDepth:minTreeDepth
+											   mutationRate:mutationRate
+												   comments:comments];
+		
+		self.currentPopulation = self.evolutionManager.population;
 	}
 
-    NSLog(@"Create New Population Button Tapped");
-
-    // resent a modal window to get user input for new population values
-
-	self.evolutionManager.populationSize = 16;
-	
-	NSString *trackName = @"Daytona Beach";
-
-    [self.evolutionManager createNewPopoulationWithName:@"Test Name"
-                                            initialSize:self.evolutionManager.populationSize
-                                           maxTreeDepth:8
-                                           minTreeDepth:5
-                                           mutationRate:.02
-                                               comments:@"Initial Population TEST 1.0.0"
-										   andTrackName:trackName];
-
-    self.currentPopulation = self.evolutionManager.population;
-	
-    // FIX: now add this new population to the coreData database
+	[self saveManagedObjectState];
 }
+
+- (void)saveManagedObjectState
+{
+	NSError *error = nil;
+	
+    if (![[self managedObjectContext] commitEditing])
+	{
+        NSLog(@"%@:%@ unable to commit editing before saving", [self class], NSStringFromSelector(_cmd));
+	}
+	
+    if (![[self managedObjectContext] save:&error])
+	{
+        [[NSApplication sharedApplication] presentError:error];
+	}
+}
+
+- (NSArray*)getNewPopulationInformation
+{
+	NSMutableArray *newPopulationStrings = [NSMutableArray new];
+	
+	
+	NSString *populationName	= nil;
+	NSUInteger initialSize		= 0;
+	NSUInteger maxTreeDepth		= 0;
+	NSUInteger minTreeDepth		= 0;
+	double mutationRate			= 0.0;
+	NSString *commentString		= nil;
+	
+	[newPopulationStrings addObject:populationName];
+	[newPopulationStrings addObject:[NSString stringWithFormat:@"%lu", initialSize]];
+	[newPopulationStrings addObject:[NSString stringWithFormat:@"%lu", maxTreeDepth]];
+	[newPopulationStrings addObject:[NSString stringWithFormat:@"%lu", minTreeDepth]];
+	[newPopulationStrings addObject:[NSString stringWithFormat:@"%lf", mutationRate]];
+	[newPopulationStrings addObject:commentString];
+		
+	if(initialSize == 0 || initialSize > kMaximumPopulationSize ||
+	   maxTreeDepth == 0  || maxTreeDepth > kMaximumTreeDepth ||
+	   minTreeDepth == 0  || minTreeDepth > kTopMinimumTreeDepth || minTreeDepth >= maxTreeDepth ||
+	   mutationRate == 0  || mutationRate > kMaximumMutationRate)
+	{
+		// bad data sends nil string on return
+		[newPopulationStrings removeAllObjects];
+		newPopulationStrings = nil;
+	}
+	
+	return newPopulationStrings;
+}
+
+
 
 - (IBAction)trainPopulationButtonTapped:(id)sender
 {
