@@ -2,7 +2,7 @@
 //  ECRaceDistanceStats.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 2/22/14.
+//  Created by Ron Jurincie on 2/18/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
@@ -14,10 +14,8 @@
 @interface ECRaceDistanceStats : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * raceDistance;
-@property (nonatomic, retain) NSNumber * bestTime2Turns;
 @property (nonatomic, retain) NSNumber * bestTime3Turns;
 @property (nonatomic, retain) NSNumber * dnfTime2Turns;
-@property (nonatomic, retain) NSNumber * dnfTime3Turns;
 @property (nonatomic, retain) NSOrderedSet *firstTurnStats;
 @property (nonatomic, retain) NSOrderedSet *postStats;
 @property (nonatomic, retain) NSOrderedSet *topOfStretchStats;

@@ -2,7 +2,7 @@
 //  ECRaceDistanceStats.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 2/22/14.
+//  Created by Ron Jurincie on 2/18/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
@@ -12,13 +12,10 @@
 #import "ECTopOFStretchStats.h"
 #import "ECTrackStats.h"
 
-
 @implementation ECRaceDistanceStats
 
 @dynamic raceDistance;
 @dynamic bestTime3Turns;
-@dynamic dnfTime3Turns;
-@dynamic bestTime2Turns;
 @dynamic dnfTime2Turns;
 @dynamic firstTurnStats;
 @dynamic postStats;

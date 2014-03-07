@@ -29,39 +29,53 @@
 
 + (void)updateAndSaveData;
 
-#pragma traverse
-- (void)processTrackAtPath:(NSString*)directoryPath
-		  withDxStatsArray:(double*)statsArray
-	andDxStatsCounterArray:(int*)counterArray
-   winTimeAccumulatorArray:(double*)averageWinTimeAccumulatorArray
-  showTimeAccumulatorArray:(double*)averageShowTimeAccumulatorArray
-  numRacesAccumulatorArray:(int*)numRacesAccumulatorArray
-			 andClassArray:(NSArray*)classArray;
+- (NSArray*)getUnmodeledTracksStatsFromPopulationsPastLines:(NSString*)modifiedPastLinesPath;
 
-- (void)processStatsFromResultFile:(NSString*)resultFilePath
-			   withStatisticsArray:(double*)statsArray
-				   andCounterArray:(int*)counterArray
-					 andClassArray:(NSArray*)classArray;
+- (NSArray*)processTrackAtPath:(NSString*)modifiedResultsFolderPath
+			  withDxStatsArray:(double*)statsArray
+		andDxStatsCounterArray:(int*)counterArray
+	   winTimeAccumulatorArray:(double*)winTimeAccumulatorArray
+	 placeTimeAccumulatorArray:(double*)placeTimeAccumulatorArray
+	  showTimeAccumulatorArray:(double*)showTimeAccumulatorArray
+	  numRacesAccumulatorArray:(int*)numRacesAccumulatorArray
+				 andClassArray:(NSArray*)classArray;
+
+- (void)processRace:(NSString*)singleRaceString
+			 ofType:(NSUInteger)resultFileType
+withStatisticsArray:(double*)dxStatsAccumulatorArray
+	andCounterArray:(int*)dxStatsRaceCounterArray
+	   winTimeArray:(double*)winTimeAccumulatorArray
+	  showTimeArray:(double*)showTimeAccumulatorArray
+	  numRacesArray:(int*)raceCounterArray
+	 forRaceDxIndex:(NSUInteger)raceDxIndex
+	usingClassArray:(NSArray*)classArray
+	   atTrackNamed:(NSString*)trackName;
+
+- (void)loadWosrtAndBestTimesFromArray:(NSArray*)worstAndBestTimesArray
+					 intoDistanceStats:(NSOrderedSet*)distanceStats;
 
 - (BOOL)isThisLineDeclaredNoRace:(NSString*)firstLine;
+- (double)getBestRaceTimeAtTrackNamed:(NSString*)trackName
+				  atRaceDistanceIndex:(NSUInteger)raceDxIndex;
 
+- (double)getBestTimeThisRaceFromString:(NSString*)singleRaceString;
 
+- (double)getWorstRaceTimeAtTrackNamed:(NSString*)trackName
+				   atRaceDistanceIndex:(NSUInteger)raceDxIndex;
+
+- (NSUInteger)getNumberLinesToAddForResultScenerioFrom:(NSArray*)lines
+											   atIndex:(NSUInteger)index;
+
+- (void)editPastLinesAtPath:(NSString*)uneditedPastLinesPath;
+- (NSString*)stripHtmlAndWhitespaceFromFileAtPath:(NSString*)originalFileContents;
+- (NSString*)modifyPastLineString:(NSString*)originalLine;
+- (NSString*)getStringFromArray:(NSArray*)textLinesArray;
 
 #pragma track statistics methods
 - (void)modelTracks;
 - (ECTrackStats*)getStatsForTrackAtPath:(NSString*)trackName;
 - (NSArray*)getClassesForTrackNamed:(NSString*)trackName;
 
-- (void)processRace:(NSString*)singleRaceString
-			 ofType:(NSUInteger)resultFileType
-withStatisticsArray:(double*)statsAccumulatorArray
-	andCounterArray:(int*)statsCounterArray
-	   winTimeArray:(double*)averageRaceTimeAccumulatorArray
-	  showTimeArray:(double*)averageWinningRaceTimeAccumulatorArray
-	  numRacesArray:(int*)raceCounterArray
-   withMaxTimeForDx:(double)maxTimeForDistance
-	 forRaceDxIndex:(NSUInteger)raceDxIndex
-	usingClassArray:(NSArray*)classArray;
 
 - (void)addStatsForEntryAtPost:(NSUInteger)postPosition
 		   withbreakAtPosition:(NSUInteger)breakPosition
@@ -77,8 +91,9 @@ withStatisticsArray:(double*)statsAccumulatorArray
 - (NSOrderedSet*)getDistanceStatsFromArray:(double*)statsAccumulatorArray
 						   andCounterArray:(int*)raceCountrerArray;
 
-- (NSMutableOrderedSet*)getClassStatsFromWinTimesArray:(double*)accumulatedShowTimesArray
-										showTimesArray:(double*)accumulatedWinTimesArray
+- (NSMutableOrderedSet*)getClassStatsFromWinTimesArray:(double*)accumulatedWinTimesArray
+									   placeTimesArray:(double*)accumulatedPlaceTimesArray
+										showTimesArray:(double*)accumulatedShowTimesArray
 									  raceCounterArray:(int*)raceCounterArray
 										  forTrackName:(NSString*)trackName
 										 andTrackStats:(ECTrackStats*)trackStats;

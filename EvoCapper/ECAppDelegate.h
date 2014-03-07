@@ -26,6 +26,7 @@
 - (IBAction)startButtonTapped:(id)sender;
 - (IBAction)saveAction:(id)sender;
 - (IBAction)buildTrackStatisticsButtonTapped:(id)sender;
+- (IBAction)editPastLinesButtonTapped:(id)sender;
 
 - (NSArray*)getNewPopulationInformation;
 - (void)saveManagedObjectState;

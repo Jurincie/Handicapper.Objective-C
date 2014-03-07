@@ -2,7 +2,7 @@
 //  ECClassStats.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 2/7/14.
+//  Created by Ron Jurincie on 2/24/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
@@ -19,6 +19,8 @@
 @property (nonatomic, retain) NSNumber * averageWinTime3Turns;
 @property (nonatomic, retain) NSString * raceClass;
 @property (nonatomic, retain) NSNumber * raceClassIndex;
+@property (nonatomic, retain) NSNumber * averagePlaceTime2Turns;
+@property (nonatomic, retain) NSNumber * averagePlaceTime3Turns;
 @property (nonatomic, retain) ECTrackStats *trackStats;
 
 @end

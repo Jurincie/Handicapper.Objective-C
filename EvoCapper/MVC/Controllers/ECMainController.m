@@ -20,7 +20,6 @@
 #import "ECRaceRecord.h"
 #import "ECTrainigRaceRecord.h"
 #import "ECPastLineRecord.h"
-#import "ECEntryStrengthFields.h"
 #import "ECPostStats.h"
 #import "ECTrackStats.h"
 #import "ECFirstTurnStats.h"
@@ -29,6 +28,9 @@
 #import "NSString+ECStringValidizer.h"
 #import "ECTrackStats.h"
 #import "ECRaceDistanceStats.h"
+
+#define kLineBuffer 20
+#define kWorstRealisticTime 43.00
 
 @implementation ECMainController
 
@@ -173,20 +175,145 @@
 	return classNames;
 }
 
-- (void)processTrackAtPath:(NSString*)modifiedResultsFolderPath
-		  withDxStatsArray:(double*)statsArray
-	andDxStatsCounterArray:(int*)counterArray
-   winTimeAccumulatorArray:(double*)winTimeAccumulatorArray
-  showTimeAccumulatorArray:(double*)showTimeAccumulatorArray
-  numRacesAccumulatorArray:(int*)numRacesAccumulatorArray
-			 andClassArray:(NSArray*)classArray
+- (double)getBestTimeThisRaceFromString:(NSString*)singleRaceString
+{
+	double bestTime		= 100.00;
+	NSArray *lines		= [singleRaceString componentsSeparatedByString:@"\n"];
+	NSString *thisLine	= nil;
+	NSUInteger index	= 0;
+	double entriesRaceTime;
+	
+	for(thisLine in lines)
+	{
+		if([thisLine hasSuffix:@"CHART:"])
+		{
+			break;
+		}
+		
+		index++;
+	}
+	
+	// loop here
+	while(index < lines.count - kLineBuffer)
+	{
+		// ignore empty lines
+		thisLine = lines[++index];
+		
+		while (thisLine.length == 0 || [thisLine isEqualToString:@" "])
+		{
+			thisLine = lines[++index];
+		}
+		
+		index += 6;
+		
+		thisLine		= lines[index];
+		entriesRaceTime	= [thisLine doubleValue];
+		
+		if(entriesRaceTime != 0.0 && entriesRaceTime < 25.00)
+		{
+			NSLog(@"Bad best time: %lf", entriesRaceTime);
+			entriesRaceTime = entriesRaceTime;
+		}
+		else if(entriesRaceTime > 0.00 && entriesRaceTime < bestTime)
+		{
+			bestTime = entriesRaceTime;
+		}
+		
+		
+		index += 3;
+	}
+	
+	return bestTime;
+}
+
+- (double)getBestRaceTimeAtTrackNamed:(NSString*)trackName
+				  atRaceDistanceIndex:(NSUInteger)raceDxIndex
+{
+	double best = 0.00;
+	
+	return best;
+}
+
+- (double)getWorstRaceTimeAtTrackNamed:(NSString*)trackName
+				   atRaceDistanceIndex:(NSUInteger)raceDxIndex
+{
+	double best = 0.00;
+	
+	return best;
+}
+
+- (double)getWorstTimeThisRaceFromString:(NSString*)singleRaceString
+{
+	double worstTime		= 0.00;
+	NSArray *lines			= [singleRaceString componentsSeparatedByString:@"\n"];
+	NSString *thisLine		= nil;
+	NSUInteger index		= 0;
+	double entriesRaceTime	= 0.00;
+	
+	for(thisLine in lines)
+	{
+		if([thisLine hasSuffix:@"CHART:"])
+		{
+			break;
+		}
+		
+		index++;
+	}
+	
+	// loop here
+	while(index < lines.count - kLineBuffer)
+	{
+		// ignore empty lines
+		thisLine = lines[++index];
+		
+		while (thisLine.length == 0 || [thisLine isEqualToString:@" "])
+		{
+			thisLine = lines[++index];
+		}
+		
+		index += 6;
+		
+		thisLine		= lines[index];
+		entriesRaceTime	= [thisLine doubleValue];
+		
+		
+		if(entriesRaceTime > kWorstRealisticTime)
+		{
+			NSLog(@"Big Bad Time: %lf", entriesRaceTime);
+			entriesRaceTime = entriesRaceTime;
+		}
+		
+		if(entriesRaceTime > worstTime  && entriesRaceTime < kWorstRealisticTime)
+		{
+			worstTime = entriesRaceTime;
+		}
+		
+		index += 3;
+	}
+	
+	return worstTime;
+}
+
+- (NSArray*)processTrackAtPath:(NSString*)modifiedResultsFolderPath
+			  withDxStatsArray:(double*)statsArray
+		andDxStatsCounterArray:(int*)counterArray
+	   winTimeAccumulatorArray:(double*)winTimeAccumulatorArray
+	 placeTimeAccumulatorArray:(double*)placeTimeAccumulatorArray
+	  showTimeAccumulatorArray:(double*)showTimeAccumulatorArray
+	  numRacesAccumulatorArray:(int*)numRacesAccumulatorArray
+				 andClassArray:(NSArray*)classArray
 {
 	NSString *fileName				= nil;
 	NSError *error					= nil;
 	NSFileManager *localFileManager	= [NSFileManager defaultManager];
 	NSArray *folderContents			= [localFileManager contentsOfDirectoryAtPath:modifiedResultsFolderPath
 																			error:&error];
-	
+	NSString *trackName		= nil;
+	double bestTime2Turns	= 100.00;
+	double worstTime2Turns	= 0.00;
+	double bestTime3Turns	= 100.00;
+	double worstTime3Turns	= 0.00;
+
 	for(NSString *yearFolderName in folderContents)
 	{
 		if([yearFolderName hasSuffix:@".DS_Store"])
@@ -204,11 +331,10 @@
 				continue;
 			}
 			
-			NSString *filePath = [NSString stringWithFormat:@"%@%@", folderPath, fileName];
-		
-			NSString *singleRaceString = [NSString stringWithContentsOfFile:filePath
-																   encoding:NSStringEncodingConversionAllowLossy
-																	  error:&error];
+			NSString *filePath			= [NSString stringWithFormat:@"%@%@", folderPath, fileName];
+			NSString *singleRaceString	= [NSString stringWithContentsOfFile:filePath
+																	encoding:NSStringEncodingConversionAllowLossy
+																		error:&error];
 
 			if(fileName.length < 8)
 			{
@@ -219,7 +345,10 @@
 			
 			if([raceDxString isEqualToString:@"Bad File"])
 			{
-				// FIX: delete file??
+				// delete this file
+				[localFileManager removeItemAtPath:filePath
+											 error:&error];
+											 
 				continue;
 			}
 			
@@ -249,28 +378,23 @@
 				case 548:
 				case 550:
 				case 583:
+					
 					raceDxIndex = 0;
 					break;
 				
 				case 660:
 				case 677:
 				case 678:
+					
 					raceDxIndex = 1;
 					break;
-				
-//					case 761:
-//						raceDxIndex = 2;
-//						break;
-//					
+									
 				default:
 					break;
 			}
-			
-			if(raceDxIndex > kNumberRaceDistances)  // skip any races other than 548 and 678
-			{
-				continue;
-			}
-			else if(raceDxIndex >= kNumberRaceDistances || raceDxIndex == kNoIndex)
+		
+				// skip any races other than 548 and 678
+			if(raceDxIndex >= kNumberRaceDistances || raceDxIndex == kNoIndex)
 			{
 				NSLog(@"skipping: %lu distance race", (unsigned long)raceDx);
 			
@@ -278,179 +402,85 @@
 			}
 				
 			NSLog(@"%@", fileName);
-
-			double maxRaceTimeForDx	= raceDxIndex == 0 ? kMaxTimeFor2TurnRace : kMaxTimeFor3TurnRace;
+			NSString *prefix	= [modifiedResultsFolderPath substringToIndex:modifiedResultsFolderPath.length - 17];
+			trackName = [prefix lastPathComponent];
 			
-			[self processRace:singleRaceString
-					   ofType:1
-		  withStatisticsArray:statsArray
-			  andCounterArray:counterArray
-				 winTimeArray:winTimeAccumulatorArray
-				showTimeArray:showTimeAccumulatorArray
-				numRacesArray:numRacesAccumulatorArray
-			 withMaxTimeForDx:maxRaceTimeForDx
-			   forRaceDxIndex:raceDxIndex
-			  usingClassArray:classArray];
-		}
-	}
-}
+//			[self processRace:singleRaceString
+//					   ofType:1
+//		  withStatisticsArray:statsArray
+//			  andCounterArray:counterArray
+//				 winTimeArray:winTimeAccumulatorArray
+//				showTimeArray:showTimeAccumulatorArray
+//				numRacesArray:numRacesAccumulatorArray
+//			   forRaceDxIndex:raceDxIndex
+//			  usingClassArray:classArray
+//			  atTrackNamed:trackName];
 
-- (void)processStatsFromResultFile:(NSString*)resultFilePath
-			   withStatisticsArray:(double*)statsAccumulatorArray
-				   andCounterArray:(int*)statsCounterArray
-					 andClassArray:(NSArray*)classArray;
-{
-	// FIX:  fix it all to match normal file type
-
-	NSLog(@"%@", resultFilePath);
-
-	// Derby Lane result files only (1/16/2014)
-
-	//		1  <html>
-	//		2  <head>
-	//		3  <title> Rosnet,Inc - Greyhound Racing</title>
-	//		4  </head>
-	//		5  </head>
-	//		6  <body bgcolor="#FFFFFF" text="#000000" vlink="#00FF00" link="#FFFF00">
-	//		7  <font face=Arial Narrow size=3>
-	//		8  <pre>
-	//		9  ____________________________________________________________________________________________________________________________________
-	//		10  DERBY LANE                   Wednesday Nov 05 2008 Afternoon   Race 1    Grade  C   (550)  Time: 31.19
-	//		11  ____________________________________________________________________________________________________________________________________
-	//		12  Don't Sell Short 64  1 5 1 2  1 2  1 1½    31.19 *2.30 Grabbed Lead 1st Turn	//		13  Dancin Maddox    68½ 2 8 3    3    2 1½    31.30 12.90 Just Up For Place-midt
-	//		14  Jt Gold N Silver 75½ 8 3 7    5    3 2     31.31 13.70 Trying Hard-showed Rl
-	//		15  Kiowa Manley     71  5 1 2    2    4 2½    31.37 2.50  Factor To Stretch-ins
-	//		16  King Tarik       74½ 3 6 8    7    5 3½    31.44 8.00  Blocked 1st-went Wide
-	//		17  Good Luck Charm  61  4 7 4    4    6 4     31.49 9.50  Some Erly Gain-crwdd
-	//		18  Cold B Be Happy  72  7 2 6    6    7 4½    31.50 3.50  Cls Qtrs Both Turns-rl
-	//		19  Forego Cide      78  6 4 5    8    8 10    31.91 9.90  Went Wide 1st Tn-faded
-	//		20  Alderson Kennel's BD. F 2/17/2006 Dodgem By Design x Sunberry
-	//		21  1 Don't Sell Short  6.60    4.20    2.60     Quin        (1-2)        $45.60
-	//		22  2 Dancin Maddox             10.80   8.00     Perf        (1-2)        $85.80
-	//		23  8 Jt Gold N Silver                  4.80     Tri          (1-2-8)     $417.80
-	//		24  5 Kiowa Manley                               Super       (1-2-8-5)   $4,246.40
-	//		25
-
-	BOOL isNewRaceRecord	= NO;
-	NSError *error			= nil;
-	NSString *fileContents	= [NSString stringWithContentsOfFile:resultFilePath
-														encoding:NSStringEncodingConversionAllowLossy
-														   error:&error];
-	
-	NSArray *fileContentsLineByLine = [fileContents componentsSeparatedByString:@"\n"];
-		
-	// skip html meta lines
-	NSUInteger startIndex = kNumberHtmlMetaLinesToSkip;
-	
-	// takes us to the attendance line
-	NSUInteger endIndex	= fileContentsLineByLine.count - 4;
-	
-	// iterate through file line by line
-	// looking for start of each new race
-	for(NSUInteger i = startIndex; i < endIndex; i++)
-	{
-		NSString *thisLine		= [fileContentsLineByLine objectAtIndex:i];
-		NSString *twoLinesAhead	= [fileContentsLineByLine objectAtIndex:i+2];
-		
-		if([NSString isThisALongLineOfUnderscores:thisLine] && [NSString isThisALongLineOfUnderscores:twoLinesAhead])
-		{
-			// reset
-			isNewRaceRecord			= NO;
-			NSString *raceInfoLine	= [fileContentsLineByLine objectAtIndex:i+1];
-			NSString *modifiedLine	= [self removeExtraSpacesFromString:raceInfoLine];
-			NSArray *tokens			= [modifiedLine componentsSeparatedByString:@" "];
-			NSUInteger index		= 0;
-		
-			for(NSString *word in tokens)
+			double thisRaceBest		= [self getBestTimeThisRaceFromString:singleRaceString];
+			double thisRaceWorst	= [self getWorstTimeThisRaceFromString:singleRaceString];
+			
+			switch(raceDxIndex)
 			{
-				if([word isEqualToString:@"Grade"])
+				case 0:
 				{
+					if(thisRaceBest < bestTime2Turns)
+					{
+						bestTime2Turns = thisRaceBest;
+					}
+					if(thisRaceWorst > worstTime2Turns)
+					{
+						worstTime2Turns = thisRaceWorst;
+					}
+					
 					break;
 				}
-			
-				index++;
-			}
-		
-			NSString *suffix		= [[tokens objectAtIndex:index+2] substringFromIndex:1];
-			NSString *raceDxString	= [suffix substringToIndex:suffix.length-1];
-			
-			// identify race distance to trim arrays passed
-			int raceDxIndex = 0;
-			double maxTimeForDistance;
-			
-			if([raceDxString isEqualToString:@"548"])
-			{
-				maxTimeForDistance = kMaxTimeFor2TurnRace;
-			}
-			else if([raceDxString isEqualToString:@"678"])
-			{
-				raceDxIndex			= 1;
-				maxTimeForDistance	= kMaxTimeFor3TurnRace;
-			}
-			else
-			{
-				NSLog(@"%@: unused distance", raceDxString);
-				exit(0);  // FIX: can we recover here?
-			}
 				
-			// create thisRaceLineByLine and add the line starting with trackName (lines 10)
-			NSMutableArray *thisRaceLineByLine = [NSMutableArray new];
-			
-			// skips 2nd longLine...
-			NSUInteger thisRaceLineNumber = 3;
-			
-			// loop until next race start found
-			while(i + thisRaceLineNumber < endIndex)
-			{
-				thisLine		= [fileContentsLineByLine objectAtIndex:i + thisRaceLineNumber++];
-				isNewRaceRecord	= [NSString isThisALongLineOfUnderscores:thisLine];
-				
-				if(isNewRaceRecord)
+				case 1:
 				{
-					break;  // new record found
-				}
-				
-				else
-				{
-					[thisRaceLineByLine addObject:thisLine];
-				}
-			}
-			
-			if([self isThisLineDeclaredNoRace:[thisRaceLineByLine objectAtIndex:0]] == NO)
-			{
-				//	iterate through all entries via thisRaceLineByLine
-				for(NSString *line in thisRaceLineByLine)
-				{
-					// modify line by removing extra white space
-					NSString *modifiedLine = [self removeExtraSpacesFromString:line];
-				
-					// date string in line indicates 1st line past entries
-					if([NSString doesThisLineContainDateString:modifiedLine])
+					if(thisRaceBest < bestTime3Turns)
 					{
-						break;
+						bestTime3Turns = thisRaceBest;
 					}
-				
-					NSLog(@"            %@", modifiedLine);
+					if(thisRaceWorst > worstTime3Turns)
+					{
+						worstTime3Turns = thisRaceWorst;
+					}
 					
-					[self processRace:modifiedLine
-							   ofType:2
-				  withStatisticsArray:statsAccumulatorArray
-					  andCounterArray:statsCounterArray
-						 winTimeArray:nil
-						showTimeArray:nil
-						numRacesArray:nil
-					withMaxTimeForDx:maxTimeForDistance
-						forRaceDxIndex:raceDxIndex
-						usingClassArray:classArray];
+					break;
 				}
+				
+				default:
+				
+					break;
 			}
 			
-			// increment i so we don't reread this race
-			i += thisRaceLineNumber - 2;
+			NSLog(@"thisRaceBest: %lf    worst: %lf", thisRaceBest, thisRaceWorst);
 		}
 	}
 	
+	NSLog(@"TRACK: %@", trackName);
+	
+	NSLog(@"best time 2 turns: %lf", bestTime2Turns);
+	NSLog(@"worst time 2 turns: %lf", worstTime2Turns);
+	
+	NSLog(@"best time 3 turns: %lf", bestTime3Turns);
+	NSLog(@"worst time 3 turns: %lf", worstTime3Turns);
+	
+	NSMutableArray *worstAndBestTimesArray = [NSMutableArray new];
+	
+	NSNumber *twoTurnBestTime	= [NSNumber numberWithDouble:bestTime2Turns];
+	NSNumber *twoTurnDnfTime	= [NSNumber numberWithDouble:worstTime2Turns];
+	NSNumber *threeTurnBestTime	= [NSNumber numberWithDouble:bestTime3Turns];
+	NSNumber *threeTurnDnfTime	= [NSNumber numberWithDouble:worstTime3Turns];
+	
+	[worstAndBestTimesArray addObject:twoTurnBestTime];
+	[worstAndBestTimesArray addObject:twoTurnDnfTime];
+	[worstAndBestTimesArray addObject:threeTurnBestTime];
+	[worstAndBestTimesArray addObject:threeTurnDnfTime];
+	
+	return worstAndBestTimesArray;
 }
+
 
 - (BOOL)isThisLineDeclaredNoRace:(NSString*)firstLine
 {
@@ -478,10 +508,22 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	   winTimeArray:(double*)winTimeAccumulatorArray
 	  showTimeArray:(double*)showTimeAccumulatorArray
 	  numRacesArray:(int*)raceCounterArray
-   withMaxTimeForDx:(double)maxTimeForDistance
 	 forRaceDxIndex:(NSUInteger)raceDxIndex
 	usingClassArray:(NSArray*)classArray
+	   atTrackNamed:(NSString*)trackName
 {
+	// assign zero to all fields, so that falling at any point is covered
+	NSUInteger postPosition			= 0;
+	NSUInteger breakPosition		= 0;
+	NSUInteger firstTurnPosition	= 0;
+	NSUInteger topOfStretchPosition	= 0;
+	NSUInteger finishPosition		= 0;
+	double finishRaceTime			= 0.0;
+	double timeForWinner			= 0.0;
+	double timeForShowFinisher		= 0.0;
+	NSUInteger classIndex			= 0;
+	NSUInteger arrayIndex			= 0;
+	
 	if(resultFileType < 1 || resultFileType > 2)
 	{
 		NSLog(@"bad file type");
@@ -495,26 +537,8 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 		return;
 	}
 	
-	/*
-		Type 1: "...CHART:..."
-	
-		Type 2: "Some Dog 74½ 3 6 8 7 5 3½ 31.44 8.00 Blocked 1st-went Wide..." (Derby Lane ONLY)
-	*/
-	
-	#define kLineBuffer 20
-	
-	// assign zero to all fields, so that falling at any point is covered
-	NSUInteger postPosition			= 0;
-	NSUInteger breakPosition		= 0;
-	NSUInteger firstTurnPosition	= 0;
-	NSUInteger topOfStretchPosition	= 0;
-	NSUInteger finishPosition		= 0;
-	double actualFinishTime			= 0.0;
-	double adjustedFinishTime		= 0.0;
-	double timeForWinner			= 0.0;
-	double timeForShowFinisher		= 0.0;
-	NSUInteger classIndex			= 0;
-	NSUInteger arrayIndex			= 0;
+	double dnfTime = [self getWorstRaceTimeAtTrackNamed:trackName
+									atRaceDistanceIndex:raceDxIndex];
 	
 	if(resultFileType == kNormalResultFileType)
 	{
@@ -600,22 +624,18 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 				finishPosition = [thisLine integerValue];
 			}
 		
-			thisLine			= lines[++index];
-			actualFinishTime	= [thisLine doubleValue];
+			thisLine		= lines[++index];
+			finishRaceTime	= [thisLine doubleValue];
 			
-			if(actualFinishTime > maxTimeForDistance)
+			if(finishRaceTime < 25.00 || finishRaceTime > 40.00)
 			{
-				adjustedFinishTime = maxTimeForDistance;
+				finishRaceTime = dnfTime;
 			}
-			else
-			{
-				adjustedFinishTime = actualFinishTime;
-			}
-			
+	
 			if(finishPosition == 1)
 			{
 				// get class stats here from first entries entrysRaceLineResultsString
-				timeForWinner		= actualFinishTime;
+				timeForWinner		= finishRaceTime;
 				index				+= 2;
 				NSString *raceClass	= lines[index];
 				classIndex			= [classArray indexOfObject:raceClass];
@@ -623,22 +643,26 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 			}
 			else if(finishPosition == 3)
 			{
-				timeForShowFinisher	= adjustedFinishTime;
+				timeForShowFinisher	= finishRaceTime;
 			}
-			
-			NSLog(@"%@: %lu %lu %lu %lu %lu %lf", dogName, (unsigned long)postPosition,
-			(unsigned long)breakPosition, (unsigned long)firstTurnPosition, (unsigned long)topOfStretchPosition,
-			(unsigned long)finishPosition, adjustedFinishTime);
-			
+				
+			NSLog(@"%@: %lu %lu %lu %lu %lu %lf", dogName,
+					(unsigned long)postPosition,
+					(unsigned long)breakPosition,
+					(unsigned long)firstTurnPosition,
+					(unsigned long)topOfStretchPosition,
+					(unsigned long)finishPosition, finishRaceTime);
+		
 			[self addStatsForEntryAtPost:postPosition
 					 withbreakAtPosition:breakPosition
 					   firstTurnPosition:firstTurnPosition
 					topOfStretchPosition:topOfStretchPosition
 						   finalPosition:finishPosition
-							withRaceTime:adjustedFinishTime
+							withRaceTime:finishRaceTime
 						   atRaceDxIndex:raceDxIndex
 				withStatAccumulatorArray:dxStatsAccumulatorArray
 					 andRaceCounterArray:dxStatsRaceCounterArray];
+			
 			
 			index += 3;
 		}
@@ -651,68 +675,6 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 		double accumulatedShowTimesThisClassAndDx	= showTimeAccumulatorArray[arrayIndex];
 		accumulatedShowTimesThisClassAndDx			+= timeForShowFinisher;
 		showTimeAccumulatorArray[arrayIndex]		= accumulatedShowTimesThisClassAndDx;
-
-	}
-	else if(resultFileType == kDerbyLaneResultFileType) // FIX:
-	{
-		// get the post and break positions
-		NSArray *tokens		= [singleRaceString componentsSeparatedByString:@" "];
-		NSUInteger index	= [self getIndexOfPostPosition:tokens];
-		
-		if(index != 0)
-		{
-			NSString *postWord = [tokens objectAtIndex:index];
-			
-			if([postWord isEqualToString:@"0"])
-			{
-				// look for valid post in previous field
-				postWord		= [tokens objectAtIndex:index - 1];
-				postPosition	= [postWord integerValue];
-			}
-			else
-			{
-				NSString *breakWord	= [tokens objectAtIndex:++index];
-				NSString *firstTurnWord	= [tokens objectAtIndex:++index];
-				
-				if([firstTurnWord isEqualToString:@"1"])
-				{
-					index++;
-				}
-					
-				NSString *secondTurnWord = [tokens objectAtIndex:++index];
-					
-				if([secondTurnWord isEqualToString:@"1"])
-				{
-					index++;
-				}
-						
-				NSString *finishWord = [tokens objectAtIndex:++index];
-						
-				index++;  // for lengthsBehindAtFinish field
-						
-				NSString *finishTimeWord = [tokens objectAtIndex:++index];
-			
-				if([finishTimeWord isEqualToString:@"dh"])
-				{
-					finishTimeWord = [tokens objectAtIndex:++index];
-				}
-			
-				actualFinishTime = [finishTimeWord doubleValue];
-			
-				// some times arbitrary very long times are assigned
-				// lower this to our own maxTime
-				if(actualFinishTime < maxTimeForDistance)
-				{
-					postPosition			= (NSUInteger)[postWord integerValue];
-					breakPosition			= (NSUInteger)[breakWord integerValue];
-					firstTurnPosition		= (NSUInteger)[firstTurnWord integerValue];
-					topOfStretchPosition	= (NSUInteger)[secondTurnWord integerValue];
-					finishPosition			= (NSUInteger)[finishWord integerValue];
-					actualFinishTime		= (double)[finishTimeWord doubleValue];
-					adjustedFinishTime		= actualFinishTime;
-				}
-			}
-		}
 	}
 }
 
@@ -849,12 +811,11 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 
 - (void)modelTracks
 {
+	NSError *error					= nil;
 	NSFileManager *localFileManager	= [NSFileManager defaultManager];
 	NSString *modeledTracksFolder	= @"/Users/ronjurincie/Desktop/Project Ixtlan/Tracks/Modeled Tracks/";
-	NSError *error					= nil;
-	
-	NSArray *trackFoldersToProcess = [localFileManager contentsOfDirectoryAtPath:modeledTracksFolder
-																		   error:&error];
+	NSArray *trackFoldersToProcess	= [localFileManager contentsOfDirectoryAtPath:modeledTracksFolder
+																		    error:&error];
 	
 	for(NSString *modeledTrackFolder in trackFoldersToProcess)
 	{
@@ -897,43 +858,229 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	NSUInteger classArraySize	= kNumberRaceDistances * raceClassArray.count;
 	
 	double	winTimeAccumulatorArray[classArraySize];
+	double	placeTimeAccumulatorArray[classArraySize];
 	double	showTimeAccumulatorArray[classArraySize];
 	int		raceCounterArray[classArraySize];
 	
 	// initialize accumulators to zero
 	for(int index = 0; index < classArraySize; index++)
 	{
-		raceCounterArray[index]			= 0;
-		showTimeAccumulatorArray[index]	= 0.0;
-		winTimeAccumulatorArray[index]	= 0.0;
+		raceCounterArray[index]				= 0;
+		winTimeAccumulatorArray[index]		= 0.0;
+		placeTimeAccumulatorArray[index]	= 0.0;
+		showTimeAccumulatorArray[index]		= 0.0;
+		
 	}
 	
-	NSString *modeledTracksModifiedResultsFolderPath = [NSString stringWithFormat:@"%@/Modified Results/", modeledTrackFolderPath];
+	NSString *modeledTracksModifiedResultsFolderPath	= [NSString stringWithFormat:@"%@/Modified Results/", modeledTrackFolderPath];
+	NSArray *tracksWorstAndBestTimesArray				= nil;
 	
-	[self processTrackAtPath:modeledTracksModifiedResultsFolderPath
-			withDxStatsArray:dxStatsAccumulatorArray
-	  andDxStatsCounterArray:dxRaceCounterArray
-	 winTimeAccumulatorArray:winTimeAccumulatorArray
-	showTimeAccumulatorArray:showTimeAccumulatorArray
-	numRacesAccumulatorArray:raceCounterArray
-			   andClassArray:raceClassArray];
+	if(0)
+	{
+	tracksWorstAndBestTimesArray = [self processTrackAtPath:modeledTracksModifiedResultsFolderPath
+										   withDxStatsArray:dxStatsAccumulatorArray
+									 andDxStatsCounterArray:dxRaceCounterArray
+									winTimeAccumulatorArray:winTimeAccumulatorArray
+								  placeTimeAccumulatorArray:placeTimeAccumulatorArray
+								   showTimeAccumulatorArray:showTimeAccumulatorArray
+								   numRacesAccumulatorArray:raceCounterArray
+											andClassArray:raceClassArray];
+	}
+
+	NSString *modifiedPastLinesPath			= @"/Users/ronjurincie/Desktop/Project Ixtlan/Dogs/Modified Past Lines/";
+	NSArray *worstAndBestFromPastLinesArray = [self getUnmodeledTracksStatsFromPopulationsPastLines:modifiedPastLinesPath];
 	
-	[self printStatArrays:dxStatsAccumulatorArray
-		  andCounterArray:dxRaceCounterArray];
+	
+//	[self printStatArrays:dxStatsAccumulatorArray
+//		  andCounterArray:dxRaceCounterArray];
 	
 	NSOrderedSet *classStats = [self getClassStatsFromWinTimesArray:winTimeAccumulatorArray
+													placeTimesArray:placeTimeAccumulatorArray
 													 showTimesArray:showTimeAccumulatorArray
 												   raceCounterArray:raceCounterArray
 													   forTrackName:trackName
 													  andTrackStats:trackStats];
-	
+				
 	NSOrderedSet *distanceStats	= [self getDistanceStatsFromArray:dxStatsAccumulatorArray
 												  andCounterArray:dxRaceCounterArray];
+				
+	[self loadWosrtAndBestTimesFromArray:tracksWorstAndBestTimesArray
+					   intoDistanceStats:distanceStats];
+				
+	
+	[self loadWosrtAndBestTimesFromArray:worstAndBestFromPastLinesArray
+					   intoDistanceStats:distanceStats];
 	
 	trackStats.raceDistanceStats	= distanceStats;
 	trackStats.classStats			= classStats;
 	
 	return trackStats;
+}
+
+- (NSArray*)getUnmodeledTracksStatsFromPopulationsPastLines:(NSString*)modifiedPastLinesPath
+{
+	// for starters just return array of ALL track unique track abbreviations with their number of past lines
+	// i.e. DB 33232
+
+	NSMutableArray *unmodeledTrackAbbreviations	= [NSMutableArray new];
+	NSMutableArray *modeledTrackAbbreviations	= [NSMutableArray new];
+	NSError *error								= nil;
+	NSString *trackAbbreviation					= nil;
+	NSUInteger raceCounterArray[100];
+	NSUInteger newTrackNumber					= 0;
+	
+	for(int index = 0; index < 100; index++)
+	{
+		raceCounterArray[index] = 0;
+	}
+	
+	// FIX: the abbreviations above are a guess at at actual abbreviations
+	[modeledTrackAbbreviations addObject:@"DB"];
+	[modeledTrackAbbreviations addObject:@"EB"];
+	[modeledTrackAbbreviations addObject:@"FL"];
+	[modeledTrackAbbreviations addObject:@"MG"];
+	[modeledTrackAbbreviations addObject:@"NP"];
+	[modeledTrackAbbreviations addObject:@"PB"];
+	[modeledTrackAbbreviations addObject:@"OR"];
+	[modeledTrackAbbreviations addObject:@"SA"];
+	[modeledTrackAbbreviations addObject:@"DB"];
+	[modeledTrackAbbreviations addObject:@"SO"];
+	[modeledTrackAbbreviations addObject:@"TS"];
+	[modeledTrackAbbreviations addObject:@"WH"];
+	
+	NSFileManager *fileManager		= [NSFileManager defaultManager];
+	NSArray *subDirectories			= [fileManager contentsOfDirectoryAtPath:modifiedPastLinesPath
+																	   error:&error];
+				
+	for(NSString *subDirectoryName in subDirectories)
+	{
+		if([subDirectoryName hasSuffix:@".DS_Store"])
+		{
+			continue;
+		}
+		
+		NSUInteger pageBufferLines				= 59;
+		NSUInteger linesBetweenAbbreviations	= 38;
+		NSString *folderPath					= [NSString stringWithFormat:@"%@%@", modifiedPastLinesPath, subDirectoryName];
+		NSString *fileName						= nil;
+		NSDirectoryEnumerator *dogEnumerator	= [fileManager enumeratorAtPath:folderPath];
+		
+		while(fileName = [dogEnumerator nextObject])
+		{
+			if([fileName hasSuffix:@".DS_Store"])
+			{
+				continue;
+			}
+		
+			NSString *fullFilePath	= [NSString stringWithFormat:@"%@/%@", folderPath, fileName];
+			NSString *fileContents	= [NSString stringWithContentsOfFile:fullFilePath
+															    encoding:NSStringEncodingConversionAllowLossy
+																   error:&error];
+			
+			NSLog(@"%@", fileName);
+			
+			// iterate fileContents
+			NSArray *lines		= [fileContents componentsSeparatedByString:@"\n"];
+			NSUInteger index	= 2;
+			
+			while(index < lines.count)
+			{
+				NSString *trackIdentifier = [lines objectAtIndex:index];
+				
+				// Fix break breaks
+				if([trackIdentifier isEqualToString:@"\r"])
+				{
+					index += pageBufferLines;
+					trackIdentifier = [lines objectAtIndex:index];
+				}
+				
+				if([unmodeledTrackAbbreviations containsObject:trackIdentifier])
+				{
+					NSUInteger thisTrackNumber = [unmodeledTrackAbbreviations indexOfObject:trackIdentifier];
+					raceCounterArray[thisTrackNumber]++;
+				}
+				else
+				{
+					[unmodeledTrackAbbreviations addObject:trackIdentifier];
+					newTrackNumber++;
+					
+					// HACK: since unsigned ints can't start at -1, fix initial occurance after incrementing
+					if(index == 2)
+					{
+						newTrackNumber = 0;
+					}
+				}
+				
+				NSUInteger numberReplayBufferLines = [self getNumberLinesToAddForResultScenerioFrom:lines
+																							atIndex:index];
+												
+				index += numberReplayBufferLines;
+				index += linesBetweenAbbreviations;
+			}
+		}
+	}
+	
+	NSMutableArray *unmodeledTrackAbbreviationsWithCount;
+	
+	// HACK: rather than create a structure or class
+	//			for each trackAbb:
+	//				simply crate a strings with "trackAbb:raceCount"
+	//				and add to unmodeledTrackAbbreviationsWithCount array
+	for(NSUInteger index = 0; index < unmodeledTrackAbbreviations.count; index++)
+	{
+		NSString *trackAbbreviation = [unmodeledTrackAbbreviations objectAtIndex:index];
+		NSUInteger numRaces			= raceCounterArray[index];
+		NSString *numRacesString	= [NSString stringWithFormat:@"%lu", numRaces];
+		NSString *combinedString	= [NSString stringWithFormat:@"%@:%@", trackAbbreviation, numRacesString];
+		
+		[unmodeledTrackAbbreviationsWithCount addObject:combinedString];
+	}
+	
+	return unmodeledTrackAbbreviationsWithCount;
+}
+
+- (NSUInteger)getNumberLinesToAddForResultScenerioFrom:(NSArray*)lines
+											   atIndex:(NSUInteger)index
+{
+	NSUInteger numLinesToAdd	= 0;
+	NSUInteger scenerioA_Count	= 47;
+	NSUInteger scenerioA_Buffer	= 7;
+	NSUInteger scenerioB_Count	= 45;
+	NSUInteger scenerioB_Buffer	= 7;
+	
+	// check each possible scenerio
+	NSUInteger testLineNumber = index + scenerioA_Count;
+	
+	if(testLineNumber < lines.count)
+	{
+		NSString *testWord = [lines objectAtIndex:testLineNumber];
+		
+		if([testWord hasSuffix:@"Result"])
+		{
+			numLinesToAdd = scenerioA_Buffer;
+		}
+		else
+		{
+			testLineNumber = index + scenerioB_Count;
+			
+			if(testLineNumber < lines.count)
+			{
+				NSString *testWord = [lines objectAtIndex:testLineNumber];
+				
+				if([testWord hasSuffix:@"Result"])
+				{
+					numLinesToAdd = scenerioB_Buffer;
+				}
+			}
+		}
+	}
+	
+	if(numLinesToAdd > 0)
+	{
+		NSLog(@"ccc");
+	}
+	
+	return numLinesToAdd;
 }
 
 
@@ -949,6 +1096,228 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	}
 		
 	NSLog(@"\n");
+}
+
+- (void)editPastLinesAtPath:(NSString*)uneditedPastLinesPath
+{
+	NSString *strippedFolderPath	= @"/Users/ronjurincie/Desktop/Project Ixtlan/Dogs/Stripped Past Lines";
+	NSFileManager *fileManager		= [NSFileManager defaultManager];
+	NSError *error					= nil;
+	NSArray *folderContents			= [fileManager contentsOfDirectoryAtPath:uneditedPastLinesPath
+																		error:&error];
+
+	for(NSString *fileName in folderContents)
+	{
+		if([fileName hasSuffix:@".DS_Store"])
+		{
+			continue;
+		}
+		
+		NSString *fullFilePath	= [NSString stringWithFormat:@"%@/%@", uneditedPastLinesPath, fileName];
+		NSString *fileContents	= [NSString stringWithContentsOfFile:fullFilePath
+															encoding:NSStringEncodingConversionAllowLossy
+															  error:&error];
+				
+		if(fileContents.length == 0)
+		{
+			NSLog(@"EMPTY FILE: %@", fullFilePath);
+			continue;
+		}
+
+		// standardize all to smallCase
+		NSString *lowerCaseName			= [fileName lowercaseString];
+		NSString *newFilePath			= [NSString stringWithFormat:@"%@/%@.txt", strippedFolderPath, lowerCaseName];
+		NSString *strippedFileContents	= [self stripHtmlAndWhitespaceFromFileAtPath:fileContents];
+		
+		if(strippedFileContents.length == 0)
+		{
+			NSLog(@"EMPTY Stripped FILE: %@", newFilePath);
+			exit(1);
+		}
+		
+		error = nil;
+		
+		[strippedFileContents writeToFile:newFilePath
+							   atomically:YES
+								 encoding:NSUTF8StringEncoding
+									error:&error];
+				
+		if(error)
+		{
+			NSLog(@"error writing stripped file to new location");
+			exit(1);
+		}
+		
+		NSLog(@"%@", fileName);
+	}
+}
+
+- (NSString*)stripHtmlAndWhitespaceFromFileAtPath:(NSString*)originalFileContentsString
+{
+	NSError *error							= nil;
+	NSMutableString *mutableFileContents	= [originalFileContentsString mutableCopy];
+	NSMutableArray *modifiedFileLines		= [NSMutableArray new];
+	NSString *startingTargetString			= @"    <td nowrap class= ";
+	
+	// prior to splitting original string use NSRegularExpression class to:
+	//	strip unwanted /r's and /n's at beginning of string
+	
+	NSRegularExpression *regex1 = [NSRegularExpression regularExpressionWithPattern:@"^(\n, ,\t,\r)+"
+																			options:NSRegularExpressionCaseInsensitive
+																			  error:&error];
+
+	[regex1 replaceMatchesInString:mutableFileContents
+						   options:NSMatchingAnchored
+							 range:NSMakeRange(0, mutableFileContents.length)
+					  withTemplate:@""];
+				
+	NSArray *fileLines			= [mutableFileContents componentsSeparatedByString:@"\n"];
+	BOOL foundStartingLine		= NO;
+	BOOL foundEmptyLine			= NO;
+	NSUInteger index			= 0;
+	NSString *thisModifiedLine	= nil;
+
+	while(index < fileLines.count - 1)
+	{
+		foundStartingLine = NO;
+		
+		// start looking for startingLine
+		while(foundStartingLine == NO && index < fileLines.count - 1)
+		{
+			NSString *thisLine = [fileLines objectAtIndex:++index];
+
+			if([thisLine hasPrefix:startingTargetString])
+			{
+				foundStartingLine	= YES;
+				thisModifiedLine	= [self modifyPastLineString:thisLine];
+				
+				// add this track and date line
+				[modifiedFileLines addObject: thisModifiedLine];
+			
+				// skip line ahead
+				index++;
+			}
+		}
+	
+		// modify all lines and copy to srrippedFileContentsArray until whiteSpace encountered
+		foundEmptyLine = NO;
+
+		while(foundEmptyLine == NO && index < fileLines.count -1)
+		{
+			NSString *thisLine = [fileLines objectAtIndex:++index];
+	
+			if(thisLine.length < 3)
+			{
+				foundEmptyLine = YES;
+				
+				// go ahead and write 1 empey line to array
+				[modifiedFileLines addObject:@""];
+			}
+			else
+			{
+				thisModifiedLine = [self modifyPastLineString:thisLine];
+				
+				[modifiedFileLines addObject:thisModifiedLine];
+			}
+		}
+	}
+	
+	NSString *strippedFileContents = [self getStringFromArray:[modifiedFileLines copy]];
+		
+	return  strippedFileContents;
+}
+
+- (NSString*)modifyPastLineString:(NSString*)originalLine
+{
+	NSMutableString *modifiedLine	= [originalLine mutableCopy];
+	NSError *error					= nil;
+	
+	NSRegularExpression *regex1 = [NSRegularExpression regularExpressionWithPattern:@"^.*\">"
+																			options:NSRegularExpressionAnchorsMatchLines
+																			  error:&error];
+				
+	// line type 1
+	[regex1 replaceMatchesInString:modifiedLine
+						   options:NSMatchingAnchored
+							 range:NSMakeRange(0, modifiedLine.length)
+					  withTemplate:@""];
+			
+	// line type 2
+	if([originalLine isEqualToString:modifiedLine])
+	{
+		NSRegularExpression *regex4 = [NSRegularExpression regularExpressionWithPattern:@"^.*<.+nowrap>"
+																				options:NSRegularExpressionAnchorsMatchLines
+																				  error:&error];
+		[regex4 replaceMatchesInString:modifiedLine
+							   options:NSMatchingAnchored
+								 range:NSMakeRange(0, modifiedLine.length)
+						  withTemplate:@""];
+	}
+	
+	// line thpe 3
+	if([originalLine isEqualToString:modifiedLine])
+	{
+		NSRegularExpression *regex5 = [NSRegularExpression regularExpressionWithPattern:@"^.*<.+nowrap align = right>"
+																				options:NSRegularExpressionAnchorsMatchLines
+																				  error:&error];
+		[regex5 replaceMatchesInString:modifiedLine
+							   options:NSMatchingAnchored
+								 range:NSMakeRange(0, modifiedLine.length)
+						  withTemplate:@""];
+	}
+	
+	NSRegularExpression *regex2 = [NSRegularExpression regularExpressionWithPattern:@"<.+>"
+																			options:NSRegularExpressionAnchorsMatchLines
+																			  error:&error];
+	
+	NSRegularExpression *regex3 = [NSRegularExpression regularExpressionWithPattern:@".nbsp."
+																			options:NSRegularExpressionAnchorsMatchLines
+																			  error:&error];
+
+	[regex2 replaceMatchesInString:modifiedLine
+						   options:NSMatchingWithoutAnchoringBounds
+							 range:NSMakeRange(0, modifiedLine.length)
+					  withTemplate:@""];
+
+	[regex3 replaceMatchesInString:modifiedLine
+						   options:NSMatchingWithoutAnchoringBounds
+							 range:NSMakeRange(0, modifiedLine.length)
+					  withTemplate:@""];
+
+			
+	return modifiedLine;
+}
+
+- (NSString*)getStringFromArray:(NSArray*)textLinesArray
+{
+	NSMutableString *fileContents = [NSMutableString new];
+	
+	for(NSUInteger index = 0; index < textLinesArray.count; index++)
+	{
+		NSString *stringToAdd = [textLinesArray objectAtIndex:index];
+		
+		[fileContents appendString:stringToAdd];
+		[fileContents appendString:@"\n"];
+	}
+	
+	return fileContents;
+}
+
+- (void)loadWosrtAndBestTimesFromArray:(NSArray*)worstAndBestTimesArray
+					 intoDistanceStats:(NSOrderedSet*)distanceStats
+{
+	NSNumber *dnfTime3Turns		= [worstAndBestTimesArray objectAtIndex:0];
+	NSNumber *dnfTime2Turns		= [worstAndBestTimesArray objectAtIndex:1];
+	NSNumber *bestTime3Turns	= [worstAndBestTimesArray objectAtIndex:2];
+	NSNumber *bestTime2Turns	= [worstAndBestTimesArray objectAtIndex:3];
+
+	ECRaceDistanceStats *twoTurnRaceDxStats		= [distanceStats objectAtIndex:0];
+	ECRaceDistanceStats *threeTurnRaceDxStats	= [distanceStats objectAtIndex:1];
+	
+	twoTurnRaceDxStats.bestTime2Turns	= bestTime2Turns;
+	twoTurnRaceDxStats.dnfTime2Turns	= dnfTime2Turns;
+	threeTurnRaceDxStats.bestTime2Turns	= bestTime3Turns;
+	threeTurnRaceDxStats.dnfTime2Turns	= dnfTime3Turns;
 }
 
 - (NSUInteger)getIndexOfPostPosition:(NSArray*)tokens
@@ -997,6 +1366,7 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 }
 
 - (NSMutableOrderedSet*)getClassStatsFromWinTimesArray:(double*)accumulatedWinTimesArray
+									   placeTimesArray:(double*)accumulatedPlaceTimesArray
 										showTimesArray:(double*)accumulatedShowTimesArray
 									  raceCounterArray:(int*)raceCounterArray
 										  forTrackName:(NSString*)trackName
@@ -1005,10 +1375,12 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	NSMutableOrderedSet *classStats = [NSMutableOrderedSet new];
 	NSArray *raceClassArray			= [self getClassesForTrackNamed:trackName];
 	NSUInteger arraySize			= raceClassArray.count * kNumberRaceDistances;
-	double averageShowTime2Turns	= 0.0;
 	double averageWinTime2Turns		= 0.0;
-	double averageShowTime3Turns	= 0.0;
+	double averagePlaceTime2Turns	= 0.0;
+	double averageShowTime2Turns	= 0.0;
 	double averageWinTime3Turns		= 0.0;
+	double averagePlaceTime3Turns	= 0.0;
+	double averageShowTime3Turns	= 0.0;
 	NSUInteger raceClassIndex		= 0;
 	NSString *className				= nil;
 	
@@ -1025,10 +1397,12 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 			
 			if(num2TurnRacesThisClass > 0)
 			{
-				double accumulatedShowTimes2Turns	= accumulatedShowTimesArray[index];
 				double accumulatedWinTimes2Turns	= accumulatedWinTimesArray[index];
-				averageShowTime2Turns				= accumulatedShowTimes2Turns / num2TurnRacesThisClass;
+				double accumulatedPlaceTimes2Turns	= accumulatedPlaceTimesArray[index];
+				double accumulatedShowTimes2Turns	= accumulatedShowTimesArray[index];
 				averageWinTime2Turns				= accumulatedWinTimes2Turns / num2TurnRacesThisClass;
+				averagePlaceTime2Turns				= accumulatedPlaceTimes2Turns / num2TurnRacesThisClass;
+				averageShowTime2Turns				= accumulatedShowTimes2Turns / num2TurnRacesThisClass;
 			}
 			
 			raceClassIndex = 0;
@@ -1039,22 +1413,26 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 
 			if(num3TurnRacesThisClass > 0)
 			{
-				double accumulatedShowTimes3Turns	= accumulatedShowTimesArray[index];
 				double accumulatedWinTimes3Turns	= accumulatedWinTimesArray[index];
-				averageShowTime3Turns				= accumulatedShowTimes3Turns / num3TurnRacesThisClass;
+				double accumulatedPlaceTimes3Turns	= accumulatedPlaceTimesArray[index];
+				double accumulatedShowTimes3Turns	= accumulatedShowTimesArray[index];
 				averageWinTime3Turns				= accumulatedWinTimes3Turns / num3TurnRacesThisClass;
+				averagePlaceTime3Turns				= accumulatedPlaceTimes3Turns / num3TurnRacesThisClass;
+				averageShowTime3Turns				= accumulatedShowTimes3Turns / num3TurnRacesThisClass;
 			}
 			
 			raceClassIndex = 1;
 		}
 				
-		newClassStats.raceClass				= trackName;
-		newClassStats.trackStats			= trackStats;
-		newClassStats.averageShowTime2Turns	= [NSNumber numberWithDouble:averageShowTime2Turns];
-		newClassStats.averageShowTime3Turns	= [NSNumber numberWithDouble:averageShowTime3Turns];
-		newClassStats.averageWinTime2Turns	= [NSNumber numberWithDouble:averageWinTime2Turns];
-		newClassStats.averageWinTime2Turns	= [NSNumber numberWithDouble:averageWinTime3Turns];
-		newClassStats.raceClassIndex		= [NSNumber numberWithInt:raceClassIndex];
+		newClassStats.raceClass					= trackName;
+		newClassStats.trackStats				= trackStats;
+		newClassStats.averageWinTime2Turns		= [NSNumber numberWithDouble:averageWinTime2Turns];
+		newClassStats.averageWinTime3Turns		= [NSNumber numberWithDouble:averageWinTime3Turns];
+		newClassStats.averagePlaceTime2Turns	= [NSNumber numberWithDouble:averageShowTime2Turns];
+		newClassStats.averagePlaceTime3Turns	= [NSNumber numberWithDouble:averageShowTime3Turns];
+		newClassStats.averageShowTime2Turns		= [NSNumber numberWithDouble:averageShowTime2Turns];
+		newClassStats.averageShowTime3Turns		= [NSNumber numberWithDouble:averageShowTime3Turns];
+		newClassStats.raceClassIndex			= [NSNumber numberWithInt:raceClassIndex];
 		
 		[classStats addObject:newClassStats];
 	}
@@ -1281,7 +1659,7 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
         self.population.minTreeDepth	= [NSNumber numberWithInteger:mintreeDepth];
         self.population.maxTreeDepth	= [NSNumber numberWithInteger:maxTreeDepth];
         self.population.genesisDate		= [NSDate date];
-        self.population.mutationRate	= [NSNumber numberWithFloat:mutationRate];
+        self.population.mutationRate	= [NSNumber numberWithDouble:mutationRate];
 	}
 
 	self.rankedPopulation = [self createNewHandicappers];
@@ -1934,9 +2312,9 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	// iterate through each entry accumulating values for population
 	for(NSString *entryName in trainingRaceRecord.postEntries)
 	{
-		ECEntry *entry	= [NSEntityDescription insertNewObjectForEntityForName:@"ECEntry"
-														inManagedObjectContext:MOC];
-		entry.name		= entryName;
+		ECEntry *entry = [NSEntityDescription insertNewObjectForEntityForName:@"ECEntry"
+													   inManagedObjectContext:MOC];
+		entry.name = entryName;
 		
 		// get past Lines from subdirectory of :/Users/ronjurincie/Desktop/Greyhound Central/Modified Dog Histories/
 		
@@ -2889,12 +3267,12 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
             if(functionNumber < kNumberTwoArgFuncs)
             {
                 newNode.rightBranch = [self createTreeForStrand:dnaStrand
-                                                       atLevel:level];
+														atLevel:level];
             }
             
             // Always make left child
             newNode.leftBranch = [self createTreeForStrand:dnaStrand
-                                                  atLevel:level];
+												   atLevel:level];
             
             break;
         }
@@ -2930,19 +3308,31 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 {
     NSUInteger nodeType = kUndefinedNode;
     
-    if(level < [self.population.minTreeDepth intValue])
+    if(level < [self.population.minTreeDepth integerValue])
 	{
 		nodeType = kFunctionNode;
 	}
+	else if(level == [self.population.maxTreeDepth integerValue])
+	{
+		// MUST be a leaf node
+		if(rand() % 2)
+		{
+			nodeType = kConstantNode;
+		}
+		else
+		{
+			nodeType = kVariableNode;
+		}
+	}
 	else
     {
-        if(rand() % 3 == 0)  // 1/3 of remaining nodes are functions
+        if(rand() % 3 < 2)  // 2/3 are functions
         {
             nodeType = kFunctionNode;
         }
         else
         {
-            // other 2/3 split evenly between constants and variables
+            // other 1/3 split evenly between constants and variables
             if(rand() % 2)
             {
                 nodeType = kConstantNode;
@@ -3001,7 +3391,7 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 
 - (ECTree*)recoverTreeFromString:(NSString*)inString
 {
-    ECTree *newTree       = nil;
+    ECTree *newTree			= nil;
     NSString *newString     = nil;
     NSString *newString2    = nil;
     NSString *token         = nil;
@@ -3010,12 +3400,10 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
     NSUInteger commaIndex   = 0;
     NSUInteger parenIndex   = 0;
     NSUInteger numArgs      = 0;
-    NSUInteger i            = 0;
     char letter             = '$';
     BOOL gotFunction        = FALSE;
-	
-	i = 0;
-    
+    NSUInteger i            = 0;
+	   
 	while(i < [inString length])
 	{
 		letter = [inString characterAtIndex:i++];
@@ -3130,7 +3518,7 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 	
 	if(newTree.functionIndex >= 0 && newTree.functionIndex < 4)
 	{
-		if(newTree.leftBranch == nil || newTree.rightBranch == nil)
+		if(nil == newTree.leftBranch || nil == newTree.rightBranch)
 		{
 			NSLog(@"recover error 1");
 			exit(1);
@@ -3257,51 +3645,65 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
     // dna variables by strand
     //
     
-    // 0: break position
+	// 0: class strength
+	//      2:  race class
+    //      9:  winning time
+    //      11: position at finish
+    //      12: entry time
+	
+    // 1: break position strength
     //      2:  race class
     //      6:  number of entrys
     //      8:  position at break
     //      9:  winning time
     
-    // 1: break speed
+    // 2: break speed strength
     //      2:  race class
     //      6:  number of entrys
     //      8:  position at break
     //      9:  winning time
     
-    // 2: early speed
+    // 3: first turn position strength
     //      2:  race class
     //      8:  position at break
     //      9:  winning time
     //      13: lead by lengths 1
     //      16: delta 1
     
-    // 3: top speed
+    // 4: first turn speed strength
+    //      9:  winning time
+    //      12: entry time
+    //      16: delta 1
+    //      17: delta 2
+    //      18: delta 3
+	
+	// 5: top of stretch position strength
+    //      2:  race class
+    //      8:  position at break
+    //      9:  winning time
+    //      13: lead by lengths 1
+    //      16: delta 1
+    
+    // 6: top of stretch speed strength
+    //      9:  winning time
+    //      12: entry time
+    //      16: delta 1
+    //      17: delta 2
+    //      18: delta 3
+ 
+	// 7: final Race strength
     //      9:  winning time
     //      12: entry time
     //      16: delta 1
     //      17: delta 2
     //      18: delta 3
     
-    // 4: late speed
-    //      2:  race class
-    //      8:  position at break
-    //      9:  winning time
-    //      13: lead by lengths 1
-    //      16: delta 3
-
-    // 5: recent class
-    //      2:  race class
-    //      9:  winning time
-    //      11: position at finish
-    //      12: entry time
-    
-    // 6: early speed relevance
+    // 8: early speed relevance
     //      2:  race class
     //      5:  raceDate (used to calculate "days ago")
     //      7:  post number (used to calculate delta post)
 
-    // 7: other relevance
+    // 9: other relevance
     //      2:  race class
     //      5:  raceDate (used to calculate "days ago")
     

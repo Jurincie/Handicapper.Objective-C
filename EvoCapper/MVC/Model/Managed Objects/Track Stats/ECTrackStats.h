@@ -13,11 +13,12 @@
 
 @interface ECTrackStats : NSManagedObject
 
-@property (nonatomic, retain) NSString * trackName;
-@property (nonatomic, retain) NSOrderedSet *classStats;
-@property (nonatomic, retain) NSOrderedSet *raceClasses;
-@property (nonatomic, retain) NSOrderedSet *raceDistanceStats;
-@property (nonatomic, retain) NSManagedObject *tracks;
+@property (nonatomic, retain) NSString			*trackName;
+@property (nonatomic, retain) NSOrderedSet		*classStats;
+@property (nonatomic, retain) NSOrderedSet		*raceClasses;
+@property (nonatomic, retain) NSOrderedSet		*raceDistanceStats;
+@property (nonatomic, retain) NSManagedObject	*tracks;
+
 @end
 
 @interface ECTrackStats (CoreDataGeneratedAccessors)

@@ -28,10 +28,6 @@
 #define kNormalResultFileType 1
 #define kDerbyLaneResultFileType 2
 
-#define kMinimumTime 27.00
-#define kMaxTimeFor2TurnRace 35.00
-#define kMaxTimeFor3TurnRace 45.00
-
 // post->break
 // post->1stTurn
 // post->finish
