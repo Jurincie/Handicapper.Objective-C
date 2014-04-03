@@ -13,38 +13,65 @@
 // Race Tracks //
 /////////////////
 
-*  Downloaded Results
-^  Downloaded Partial Results (top 3 or 4 finishers)
-+  Built dog past performances database
-~  Built Track Stats
+/* IGNORE tracks below:
 
-1.  Birmingham            Alabama			^
-2.  Bluffs Run            Iowa				^
-3.  Caliente              Mexico
-4.  Daytona Beach         Florida			* + ~
-5.  Derby Lane            Florida			*
-6.  Dubuque               Iowa				*
-7.  Ebro                  Florida			* + ~
-8.  Flagler               FLorida			* + ~
-9.  Gulf                  Texas				* + ~
-10. Jefferson County      Florida
-11. Mardi Gras            Florida			* + ~
-12. Melbourne             Florida
-13. Mobile                Alabama
-14. Naples-Fort Myers	  Florida			* + ~
-15. Orange Park           Florida			* + ~
-16. Palm Beach            Florida			* + ~
-17. Pensacola             Florida
-18. Sanford-Orlando       Florida			* + ~
-19. Sarasota              Florida			* + ~
-20. Southland             Arkansas			* + ~
-21. Tri-State             West Virginia		* + ~
-22. Victroryland          Alabama
-23. Wheeling              West Virginia		* + ~
+**
+AD
+CC	Corpus Christi		Corpus Christi, Texas
+DP	Dairyland			Kenosha, Wisconsin
+EG
+HO	Hollywood?
+IS
+JC	Jefferson County	Monticello, Florida
+MH	Mile High			Commerce City, Colorado		CLOSED
+PE	Pensecola			Psnsecola, Florida
+PH	Phoenix				Phoenix, Arizona			CLOSED
+PU	Pueblo				Pueblo, Colorado
+PN
+SE
+TP
+VL
+WO	Wonderland			Revevre, Massachusetts
+WS	Woodlands			Kansas City, Kansas
+WT
+
+*/
+
+/* Tracks modeled via pastLines
+
+BR		Bluff's Run		Council Bluffs, Iowa
+BM		Birmingham		Birmingham, Alabama
+CA		Caliente		Mexico
+DU		Dubuque			Dubuque, Iowa
+LI		Lincoln			Lincoln, Rhode Island
+MO		Mobile			Alabama
+RT		Raynham-Taunton	Raynham, Massachusetts
+SN
+SP		St. Petersberg	Florida
+TU		Tucson			Arizona
+VG		Victory-Land	Alabama						CLOSED
  
-===> Tracks below cannot be bet at ??.com <===
-24. Tucson					Arizona			*
+*/
 
+/* Tracks modeled via resultsFiles
+
+DB		Daytona Beach		Daytona Beach, Florida
+EB		Ebro				Ebro, Florida
+FL		Flagler				Miami, Florida
+GG		Gulf				Lamarque, Texas
+MG		Mardi-Gras			Hallandale, Florida
+NF		Naples-Fort Meyers	Bonita Springs, Florida
+OP		Orange Park			Orange Park, Florida
+PB		Palm Beach			West Palm Beach, Florica
+SO		Sanford-Orlando		Longwood, Florida
+SA		Sarasota			Sarasota, Florida
+SL		Southland			West Memphis, Arkansas
+TS		Tri-State			Cross Lanes, West-Virginia
+WD		Wheeling			Wheeling, West Virginia
+
+*/
+
+/* SP	Derby Lane			St. Petersburg, Florida
 
 
 /////////////////////////

@@ -391,7 +391,13 @@
 	return newPopulationStrings;
 }
 
+- (IBAction)buildTrackStatsFromPastLinesButtonTapped:(id)sender
+{
+	NSLog(@"buildTrackStatsFromPastLines Button Tapped");
+	
+	[self.evolutionManager getUnmodeledTracksStatsFromPopulationsPastLines:@"/Users/ronjurincie/Desktop/Project Ixtlan/Dogs/Past Lines Library"];
 
+}
 
 - (IBAction)trainPopulationButtonTapped:(id)sender
 {

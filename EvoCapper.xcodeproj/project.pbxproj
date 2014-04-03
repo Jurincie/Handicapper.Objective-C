@@ -139,6 +139,7 @@
 		7A27ED36181821F700AA91AE /* MVC */ = {
 			isa = PBXGroup;
 			children = (
+				7A98B3F018181EA40013F43D /* Data Model */,
 				7A27ED3B1818222600AA91AE /* C-Controllers */,
 				7A27ED3A1818221C00AA91AE /* M-Model */,
 				7A27ED371818220200AA91AE /* V-VIews */,
@@ -172,7 +173,6 @@
 				7AB3B3BB182F03200089C80C /* ECRacePayouts.m */,
 				7AB3B3BD18340BBC0089C80C /* ECTrainigRaceRecord.h */,
 				7AB3B3BE18340BBC0089C80C /* ECTrainigRaceRecord.m */,
-				7A98B3F018181EA40013F43D /* Data Model */,
 				7AF35910183D200A00BFFD26 /* Managed Objects */,
 			);
 			name = "M-Model";

@@ -29,7 +29,8 @@
 
 + (void)updateAndSaveData;
 
-- (NSArray*)getUnmodeledTracksStatsFromPopulationsPastLines:(NSString*)modifiedPastLinesPath;
+- (void)getUnmodeledTracksStatsFromPopulationsPastLines:(NSString*)modifiedPastLinesPath;
+- (NSUInteger)getRaceDxIndexFromString:(NSString*)raceDistanceString;
 
 - (NSArray*)processTrackAtPath:(NSString*)modifiedResultsFolderPath
 			  withDxStatsArray:(double*)statsArray
@@ -40,16 +41,12 @@
 	  numRacesAccumulatorArray:(int*)numRacesAccumulatorArray
 				 andClassArray:(NSArray*)classArray;
 
-- (void)processRace:(NSString*)singleRaceString
-			 ofType:(NSUInteger)resultFileType
-withStatisticsArray:(double*)dxStatsAccumulatorArray
-	andCounterArray:(int*)dxStatsRaceCounterArray
-	   winTimeArray:(double*)winTimeAccumulatorArray
-	  showTimeArray:(double*)showTimeAccumulatorArray
-	  numRacesArray:(int*)raceCounterArray
-	 forRaceDxIndex:(NSUInteger)raceDxIndex
-	usingClassArray:(NSArray*)classArray
-	   atTrackNamed:(NSString*)trackName;
+- (void)processRaceFromString:(NSString*)singleRaceString
+          withStatisticsArray:(double*)dxStatsAccumulatorArray
+              andCounterArray:(int*)dxStatsRaceCounterArray
+              usingClassArray:(NSArray*)classArray
+                 atTrackNamed:(NSString*)trackName
+     settingRaceDistanceIndex:(NSUInteger*)raceDistanceIndex;
 
 - (void)loadWosrtAndBestTimesFromArray:(NSArray*)worstAndBestTimesArray
 					 intoDistanceStats:(NSOrderedSet*)distanceStats;
@@ -58,13 +55,11 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 - (double)getBestRaceTimeAtTrackNamed:(NSString*)trackName
 				  atRaceDistanceIndex:(NSUInteger)raceDxIndex;
 
+- (NSString*)getRaceClassStringFromSingleRaceString:(NSString*)singleRaceString;
 - (double)getBestTimeThisRaceFromString:(NSString*)singleRaceString;
-
+- (double)getShowTimeThisRaceFromString:(NSString*)singleRaceString;
 - (double)getWorstRaceTimeAtTrackNamed:(NSString*)trackName
 				   atRaceDistanceIndex:(NSUInteger)raceDxIndex;
-
-- (NSUInteger)getNumberLinesToAddForResultScenerioFrom:(NSArray*)lines
-											   atIndex:(NSUInteger)index;
 
 - (void)editPastLinesAtPath:(NSString*)uneditedPastLinesPath;
 - (NSString*)stripHtmlAndWhitespaceFromFileAtPath:(NSString*)originalFileContents;
@@ -75,7 +70,7 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 - (void)modelTracks;
 - (ECTrackStats*)getStatsForTrackAtPath:(NSString*)trackName;
 - (NSArray*)getClassesForTrackNamed:(NSString*)trackName;
-
+- (void)printNewTrackCouters:(NSArray*)trackCounterArray;
 
 - (void)addStatsForEntryAtPost:(NSUInteger)postPosition
 		   withbreakAtPosition:(NSUInteger)breakPosition
@@ -92,7 +87,6 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 						   andCounterArray:(int*)raceCountrerArray;
 
 - (NSMutableOrderedSet*)getClassStatsFromWinTimesArray:(double*)accumulatedWinTimesArray
-									   placeTimesArray:(double*)accumulatedPlaceTimesArray
 										showTimesArray:(double*)accumulatedShowTimesArray
 									  raceCounterArray:(int*)raceCounterArray
 										  forTrackName:(NSString*)trackName
@@ -103,6 +97,9 @@ withStatisticsArray:(double*)dxStatsAccumulatorArray
 - (BOOL)isThisADecimalWord:(NSString*)word;
 - (void)printStatArrays:(double*)statsAccumulatorArray
 		andCounterArray:(int*)raceCounterArray;
+
+- (NSUInteger)processStatsFromPastLineFileAtPath:(NSString*)pastLineFilePath
+                      forTracksWithAbbreviations:(NSArray*)unmodeledTrackAbbreviationArray;
 
 #pragma darwinian methods
 - (void)createNewPopoulationWithName:(NSString*)name
