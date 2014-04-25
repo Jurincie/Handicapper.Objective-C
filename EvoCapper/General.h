@@ -119,13 +119,13 @@ classStrength
 
 Tree5: midtrackSpeedStrength
 With Variables:
-(topOfStretchPosition - firstTurnPosition - avgImprovementFromFirstTurnPositionToTopOfStretch,
+(farTurnPosition - firstTurnPosition - avgImprovementFromFirstTurnPositionToFarTurn,
  (winningTime - recordTimeForDx),
  classStrength
  
  Tree6: lateSpeedStrength
  With Variables:
- (finalPosition - topOfStretchPosition - avgImprovementFromTopOfStretchPositionToFinish),
+ (finalPosition - farTurnPosition - avgImprovementFromFarTurnPositionToFinal),
  (winningTime - recordTimeForDx),
  classStrength
  
@@ -149,16 +149,16 @@ With Variables:
  numberDogsAhead [post-1] + 1,
  collisionPropensity[post-1] + 1
  
- Tree9: raceToTopOfStretchStrength
+ Tree9: raceToFarTurnStrength
  With Variables:
  firstTurnDistance[post-1],
  midtrackSpeedStrength[post-1],
  numberDogsAhead [post-1] + 1,
  collisionPropensity[post-1] + 1
  
- Tree10: raceToFinishStrength
+ Tree10: raceToFinalStrength
  With Variables:
- topOfStretchDistance[post-1],
+ farTurnDistance[post-1],
  lateSpeedStrength[post-1],
  numberDogsAhead [post-1] + 1,
  collisionPropensity[post-1] + 1
@@ -174,5 +174,6 @@ With Variables:
  odds[post-1],
  daysSinceLastRace[post-1]
 
+*/
 
 #endif

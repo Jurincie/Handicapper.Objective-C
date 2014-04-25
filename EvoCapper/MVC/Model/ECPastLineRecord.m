@@ -22,20 +22,20 @@
 
 @synthesize foundTrouble	= _foundTrouble;
 @synthesize isMatinee		= _isMatinee;
-@synthesize didNotFinish	= _didNotFinish;
+@synthesize didNotFinal	= _didNotFinal;
 @synthesize wasScratched	= _wasScratched;
 @synthesize ranInside		= _ranInside;
 @synthesize ranMidtrack		= _ranMidtrack;
 @synthesize ranOutside		= _ranOutside;
 
-@synthesize postPosition			= _postPosition;
+@synthesize trapPosition			= _trapPosition;
 @synthesize breakPosition			= _breakPosition;
 @synthesize firstTurnPosition		= _firstTurnPosition;
-@synthesize topOfStretchPosition	= _topOfStretchPosition;
-@synthesize finishPosition			= _finishPosition;
+@synthesize farTurnPosition	= _farTurnPosition;
+@synthesize finalPosition			= _finalPosition;
 @synthesize lengthsLeadFirstTurn	= _lengthsLeadFirstTurn;
-@synthesize lengthsLeadTopOfStretch	= _lengthsLeadTopOfStretch;
-@synthesize lengthsLeadFinish		= _lengthsLeadFinish;
+@synthesize lengthsLeadFarTurn	= _lengthsLeadFarTurn;
+@synthesize lengthsLeadFinal		= _lengthsLeadFinal;
 
 @synthesize entryTime	= _entryTime;
 @synthesize winningTime	= _winningTime;
@@ -43,9 +43,9 @@
 
 @synthesize deltaPosition1	= _deltaPosition1;  // break position - 1st turn position
 @synthesize deltaPosition2	= _deltaPosition2;	// 1st turn position - top of stretch position
-@synthesize deltaPosition3	= _deltaPosition3;	// top of stretch position - finish position
-@synthesize deltaLengths1	= _deltaLengths1;	// lengthsInLeadFirstTurn - lengthsInLeadTopOfStretch
-@synthesize deltaLengths2	= _deltaLengths2;	// lengthsInLeadTopOfStretch - lengthsInLeadFinish
+@synthesize deltaPosition3	= _deltaPosition3;	// top of stretch position - final position
+@synthesize deltaLengths1	= _deltaLengths1;	// lengthsInLeadFirstTurn - lengthsInLeadFarTurn
+@synthesize deltaLengths2	= _deltaLengths2;	// lengthsInLeadFarTurn - lengthsInLeadFinal
 
 /* ECPastLineRecord line by line definition:
 
@@ -61,9 +61,9 @@
  9:	lead by lengths 1
 10:	position top of stretch
 11:	lead by lengths 2
-12:	position at finish
+12:	position at final
 13:	lead by lengths final
-14:	entry finish time
+14:	entry final time
 15:	win odds
 16:	comments
 17:	race class

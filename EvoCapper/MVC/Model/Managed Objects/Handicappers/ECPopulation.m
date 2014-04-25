@@ -2,7 +2,7 @@
 //  ECPopulation.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 2/15/14.
+//  Created by Ron Jurincie on 4/25/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
@@ -21,6 +21,6 @@
 @dynamic mutationRate;
 @dynamic populationName;
 @dynamic populationSize;
-@dynamic individualHandicappers;
+@dynamic handicappers;
 
 @end

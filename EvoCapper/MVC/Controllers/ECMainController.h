@@ -8,9 +8,31 @@
 
 #import "stdlib.h"
 #import <Foundation/Foundation.h>
+#import "Constants.h"
 
-@class ECPastLineRecord, ECPopulation, ECHandicapper, ECTrainigRaceRecord, ECTree, ECRacePayouts;
-@class ECTrackStats, ECRaceDistanceStats, ECPostStats, ECFirstTurnStats, ECTopOFStretchStats;
+@class ECPastLineRecord;
+@class ECTrainigRaceRecord;
+@class ECTree;
+
+@class ECtracks;
+@class ECTrackStats;
+
+@class ECPostStats;
+@class ECFirstTurnStats;
+@class ECFarTurnStats;
+@class ECSprintTurnStats;
+
+@class ECSprintRaceStats;
+@class ECTwoTurnRaceStats;
+@class ECThreeTurnRaceStats;
+@class ECMarathonRaceStats;
+
+@class ECPopulation;
+@class ECHandicapper;
+@class ECDna;
+@class ECRacePayouts;
+@class ECBettingResults;
+
 
 @interface ECMainController : NSObject
 
@@ -29,8 +51,20 @@
 
 + (void)updateAndSaveData;
 
-- (void)getUnmodeledTracksStatsFromPopulationsPastLines:(NSString*)modifiedPastLinesPath;
+- (void)getTracksStatsFromPopulationsPastLines:(NSString*)modifiedPastLinesPath;
 - (NSUInteger)getRaceDxIndexFromString:(NSString*)raceDistanceString;
+- (NSArray*)getModeledRaceDistancesForTrackWithID:(NSString*)trackID;
+- (NSUInteger)processEntriesPastLines:(NSString*)pastLines
+                       forValidTracks:(NSArray*)validTrackAbbreviationsArray
+                  withStatisticsArray:(double*)dxStatsAccumulatorArray
+                      andCounterArray:(int*)dxRaceCounterArray;
+
+- (NSString*)getStringWithAllClassesAtTrackWithID:(NSString*)trackID;
+
+- (double)getBestTimeForRaceDistanceIndex:(NSUInteger)raceDxIndex
+                               atTrackWithId:(NSString*)trackID;
+
+- (NSArray*)getValidRaceDistancesForTrack:(NSString*)trackID;
 
 - (NSArray*)processTrackAtPath:(NSString*)modifiedResultsFolderPath
 			  withDxStatsArray:(double*)statsArray
@@ -41,6 +75,8 @@
 	  numRacesAccumulatorArray:(int*)numRacesAccumulatorArray
 				 andClassArray:(NSArray*)classArray;
 
+- (NSArray*)getStatDistancesForTrackWithID:(NSString*)trackID;
+
 - (void)processRaceFromString:(NSString*)singleRaceString
           withStatisticsArray:(double*)dxStatsAccumulatorArray
               andCounterArray:(int*)dxStatsRaceCounterArray
@@ -48,9 +84,7 @@
                  atTrackNamed:(NSString*)trackName
      settingRaceDistanceIndex:(NSUInteger*)raceDistanceIndex;
 
-- (void)loadWosrtAndBestTimesFromArray:(NSArray*)worstAndBestTimesArray
-					 intoDistanceStats:(NSOrderedSet*)distanceStats;
-
+- (BOOL)isThisFallWord:(NSString*)testWord;
 - (BOOL)isThisLineDeclaredNoRace:(NSString*)firstLine;
 - (double)getBestRaceTimeAtTrackNamed:(NSString*)trackName
 				  atRaceDistanceIndex:(NSUInteger)raceDxIndex;
@@ -65,41 +99,56 @@
 - (NSString*)stripHtmlAndWhitespaceFromFileAtPath:(NSString*)originalFileContents;
 - (NSString*)modifyPastLineString:(NSString*)originalLine;
 - (NSString*)getStringFromArray:(NSArray*)textLinesArray;
+- (BOOL)isLineDateLine:(NSString*)testLine;
 
 #pragma track statistics methods
 - (void)modelTracks;
-- (ECTrackStats*)getStatsForTrackAtPath:(NSString*)trackName;
-- (NSArray*)getClassesForTrackNamed:(NSString*)trackName;
+- (NSArray*)getClassesForTrackWithId:(NSString*)trackName;
 - (void)printNewTrackCouters:(NSArray*)trackCounterArray;
 
-- (void)addStatsForEntryAtPost:(NSUInteger)postPosition
+- (void)addStatsForEntryAtPost:(NSUInteger)trapPosition
 		   withbreakAtPosition:(NSUInteger)breakPosition
 			 firstTurnPosition:(NSUInteger)firstTurnPosition
-		  topOfStretchPosition:(NSUInteger)topOfStretchPosition
+               farTurnPosition:(NSUInteger)farTurnPosition
 				 finalPosition:(NSUInteger)finalPosition
 				  withRaceTime:(double)raceTimeForEntry
 				 atRaceDxIndex:(NSUInteger)raceDxIndex
 	  withStatAccumulatorArray:(double*)statAccumulatorArray
-		   andRaceCounterArray:(int*)raceCounterArray;
+		   andRaceCounterArray:(int*)raceCounterArray
+               forTrackINumber:(NSUInteger)trackNumber;
 
+- (ECSprintRaceStats*)getSprintStatsForTrackWithIndex:(NSUInteger)trackIdIndex
+                                     withTrackIdArray:(NSArray*)trackIdArray
+                                            fromArray:(double*)accumulatedStatsArray
+                                      andCounterArray:(int*)accumulatedCounterArray;
 
-- (NSOrderedSet*)getDistanceStatsFromArray:(double*)statsAccumulatorArray
-						   andCounterArray:(int*)raceCountrerArray;
+- (ECTwoTurnRaceStats*)getTwoTurnStatsForTrackWithIndex:(NSUInteger)trackIdIndex
+                                       withTrackIdArray:(NSArray*)trackIdArray
+                                              fromArray:(double*)accumulatedStatsArray
+                                        andCounterArray:(int*)accumulatedCounterArray;
 
-- (NSMutableOrderedSet*)getClassStatsFromWinTimesArray:(double*)accumulatedWinTimesArray
-										showTimesArray:(double*)accumulatedShowTimesArray
-									  raceCounterArray:(int*)raceCounterArray
-										  forTrackName:(NSString*)trackName
-										 andTrackStats:(ECTrackStats*)trackStats;
+- (ECThreeTurnRaceStats*)getThreeTurnStatsForTrackWithIndex:(NSUInteger)trackIdIndex
+                                           withTrackIdArray:(NSArray*)trackIdArray
+                                                  fromArray:(double*)accumulatedStatsArray
+                                            andCounterArray:(int*)accumulatedCounterArray;
 
-- (NSUInteger)getIndexOfPostPosition:(NSArray*)tokens;
+- (ECMarathonRaceStats*)getMarathonStatsForTrackWithIndex:(NSUInteger)trackIdIndex
+                                         withTrackIdArray:(NSArray*)trackIdArray
+                                                fromArray:(double*)accumulatedStatsArray
+                                          andCounterArray:(int*)accumulatedCounterArray;
+
+- (NSUInteger)getIndexOfTrapPosition:(NSArray*)tokens;
 - (BOOL)isThisCharADigit:(char)c;
 - (BOOL)isThisADecimalWord:(NSString*)word;
 - (void)printStatArrays:(double*)statsAccumulatorArray
 		andCounterArray:(int*)raceCounterArray;
 
-- (NSUInteger)processStatsFromPastLineFileAtPath:(NSString*)pastLineFilePath
-                      forTracksWithAbbreviations:(NSArray*)unmodeledTrackAbbreviationArray;
+- (NSUInteger)processStatsFromPastLineString:(NSString*)originalFileContents
+                  forTracksWithAbbreviations:(NSArray*)unmodeledTrackAbbreviationArray
+                        andtrackClassesArray:(NSArray*)newTrackClassesArray
+                 withWinTimeAccumulatorArray:(NSMutableArray*)winTimeAccumulatorArray
+                    showTimeAccumulatorArray:(NSMutableArray*)showTimesAccumulatorArray
+                    numRacesAccumulatorArray:(NSMutableArray*)numRacesAccumulatorArray;
 
 #pragma darwinian methods
 - (void)createNewPopoulationWithName:(NSString*)name
@@ -175,8 +224,8 @@
 
 - (void)useResultLineArray:(NSArray*)tokens
 	toGetValueForEntryName:(NSString**)entryNameString
-			  postPosition:(NSUInteger*)entryPostPosition
-		 andFinishPosition:(NSUInteger*)entryFinishPosition;
+			  trapPosition:(NSUInteger*)entryTrapPosition
+		 andFinalPosition:(NSUInteger*)entryFinalPosition;
 
 - (ECRacePayouts*)getPayoutsUsingArray:(NSArray*)resultFileLineByLine
 							 atLineNumber:(NSUInteger)lineNumber;

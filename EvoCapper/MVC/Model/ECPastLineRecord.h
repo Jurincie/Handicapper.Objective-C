@@ -22,17 +22,17 @@
 
 @property (assign)				BOOL		foundTrouble;
 @property (assign)				BOOL		isMatinee;
-@property (assign)				BOOL		didNotFinish;
+@property (assign)				BOOL		didNotFinal;
 @property (assign)				BOOL		ranInside;
 @property (assign)				BOOL		ranMidtrack;
 @property (assign)				BOOL		ranOutside;
 @property (assign)				BOOL		wasScratched;
 
-@property (assign)				double		postPosition;
+@property (assign)				double		trapPosition;
 @property (assign)				double		breakPosition;
 @property (assign)				double		firstTurnPosition;
-@property (assign)				double		topOfStretchPosition;
-@property (assign)				double		finishPosition;
+@property (assign)				double		farTurnPosition;
+@property (assign)				double		finalPosition;
 
 @property (assign)				double		deltaPosition1;
 @property (assign)				double		deltaPosition2;
@@ -41,8 +41,8 @@
 @property (assign)				double		deltaLengths2;
 
 @property (assign)				double		lengthsLeadFirstTurn;
-@property (assign)				double		lengthsLeadTopOfStretch;
-@property (assign)				double		lengthsLeadFinish;
+@property (assign)				double		lengthsLeadFarTurn;
+@property (assign)				double		lengthsLeadFinal;
 
 @property (assign)				double		entryTime;
 @property (assign)				double		winningTime;

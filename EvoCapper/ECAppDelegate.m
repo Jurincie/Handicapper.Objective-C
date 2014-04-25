@@ -16,7 +16,7 @@
 @synthesize evolutionManager            = _evolutionManager;
 @synthesize currentPopulation           = _currentPopulation;
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+- (void)applicationDidFinalLaunching:(NSNotification *)aNotification
 {
     // Insert code here to initialize your application
     self.evolutionManager = [[ECMainController alloc] init];
@@ -256,6 +256,7 @@
 
 - (IBAction)buildTrackStatisticsButtonTapped:(id)sender
 {
+    
 	// check to see if ECTracks object exists in CoreData
 	NSError *error					= nil;
 	NSFetchRequest *fetchRequest	= [[NSFetchRequest alloc] init];
@@ -395,7 +396,7 @@
 {
 	NSLog(@"buildTrackStatsFromPastLines Button Tapped");
 	
-	[self.evolutionManager getUnmodeledTracksStatsFromPopulationsPastLines:@"/Users/ronjurincie/Desktop/Project Ixtlan/Dogs/Past Lines Library"];
+	[self.evolutionManager getTracksStatsFromPopulationsPastLines:@"/Users/ronjurincie/Desktop/Project Ixtlan/Dogs/Formulated Past Lines"];
 
 }
 

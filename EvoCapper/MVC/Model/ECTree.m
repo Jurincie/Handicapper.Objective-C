@@ -1,5 +1,5 @@
 //
-//  TreeNode.m
+//  ECTree.m
 //  GreVolution
 //
 //  Created by Ron Jurincie on 7/1/13.
@@ -28,8 +28,8 @@
         self.functionPtr        = nil;
         self.leftBranch			= nil;
         self.rightBranch		= nil;
-        self.leafVariableIndex  = NOT_AN_INDEX;
-        self.leafConstant       = NOT_A_CONSTANT;
+        self.leafVariableIndex  = kNoIndex;
+        self.leafConstant       = kNoConstant;
         
         switch (funcPtrIndex)
         {
@@ -86,12 +86,12 @@
     if(self = [super init])
     {
         self.leafConstant       = c;
-        self.leafVariableIndex  = NOT_AN_INDEX;
-        self.functionIndex      = NOT_AN_INDEX;
+        self.leafVariableIndex  = kNoIndex;
+        self.functionIndex      = kNoIndex;
         self.functionPtr        = nil;
         self.functionName       = nil;
-        self.leftBranch          = nil;
-        self.rightBranch         = nil;
+        self.leftBranch         = nil;
+        self.rightBranch        = nil;
     }
     
     return self;
@@ -102,12 +102,12 @@
     if(self = [super init])
     {
         self.leafVariableIndex  = raceVariableIndex;
-        self.leafConstant       = NOT_A_CONSTANT;
-        self.functionIndex      = NOT_AN_INDEX;
+        self.leafConstant       = kNoConstant;
+        self.functionIndex      = kNoIndex;
         self.functionPtr        = nil;
         self.functionName       = nil;
-        self.leftBranch          = nil;
-        self.rightBranch         = nil;
+        self.leftBranch         = nil;
+        self.rightBranch        = nil;
     }
     
     return self;
@@ -115,13 +115,6 @@
 
 /**********************************************************/
 
-
-/***************/
-/* c functions */
-/***************/
-//
-// overflow and underflow are ignored here
-// to be trapped in evalTree method
 
 long double add(double a, double b)
 {
@@ -194,7 +187,5 @@ long double reciprocal(double a)
     
     return answer;
 }
-
-
 
 @end

@@ -12,22 +12,26 @@
 #define MOC [[NSApp delegate]managedObjectContext]
 
 #import "ECMainController.h"
+#import "NSString+ECStringValidizer.h"
 #import "Constants.h"
 #import "ECPopulation.h"
 #import "ECEntry.h"
 #import "ECTree.h"
 #import "ECHandicapper.h"
+#import "ECDna.h"
 #import "ECRaceRecord.h"
 #import "ECTrainigRaceRecord.h"
 #import "ECPastLineRecord.h"
+#import "ECTracks.h"
+#import "ECTrackStats.h"
+#import "ECSprintRaceStats.h"
+#import "ECTwoTurnRaceStats.h"
+#import "ECThreeTurnRaceStats.h"
+#import "ECMarathonRaceStats.h"
 #import "ECPostStats.h"
-#import "ECTrackStats.h"
+#import "ECSprintTurnStats.h"
 #import "ECFirstTurnStats.h"
-#import "ECTopOFStretchStats.h"
-#import "ECClassStats.h"
-#import "NSString+ECStringValidizer.h"
-#import "ECTrackStats.h"
-#import "ECRaceDistanceStats.h"
+#import "ECFarTurnStats.h"
 
 #define kLineBuffer 20
 #define kWorstRealisticTime 43.00
@@ -72,100 +76,371 @@
 
 #pragma track statistics methods
 
-- (NSArray*)getClassesForTrackNamed:(NSString*)trackName
+- (NSArray*)getClassesForTrackWithId:(NSString*)trackName
 {
 	NSArray *classNames = nil;
 	
-	if([trackName isEqualToString:@"Daytona Beach"])
+    if([trackName isEqualToString:@"BM"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"E", @"D", @"C", @"B", @"A",
-												@"T", @"TM", @"TE", @"TD", @"TC", @"TB", @"TA",
-												@"SD", @"SA", nil];
+		classNames = [NSArray arrayWithObjects:@"SCL",
+                                                @"M",   @"TM",
+                                                @"E",   @"TE",
+                                                @"D",   @"TD", @"SD",
+                                                @"C",   @"TC", @"SC",
+                                                @"B",   @"TB", @"SB",
+                                                @"A",   @"TA", @"SA", nil];
 	}
-	else if([trackName isEqualToString:@"Derby Lane"])
+	else if([trackName isEqualToString:@"BR"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"D", @"C", @"B", @"A",
-									@"TM", @"TD", @"TC", @"TB", @"TA",
-									@"S", nil];
+		classNames = [NSArray arrayWithObjects:@"SCL",
+                                                @"M",
+                                                @"D",   @"TD",  @"SD",
+                                                @"C",   @"TC",  @"SC",
+                                                @"B",           @"SB",
+                                                @"A",           @"SA", nil];
 	}
-	else if([trackName isEqualToString:@"Ebro"])
+    else if([trackName isEqualToString:@"CA"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"J", @"D", @"C", @"B", @"A",
-									@"T", @"TJ", @"TD", @"TC", @"TB", @"TA",
-									@"S", @"SD", @"SC", @"SB", @"SA", nil];
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",   @"TM",
+                                                @"E",   @"TE",
+                                                @"D",
+                                                @"C",
+                                                @"B",   @"TB",
+                                                @"A",   @"TA", @"SA", nil];
 	}
-	else if([trackName isEqualToString:@"Flagler"])
+    else if([trackName isEqualToString:@"DB"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"D", @"C", @"B", @"A",
-									@"TD", @"TC", @"TB", @"TA",
-									@"S", @"SM", @"SD", @"SC", @"SB", @"SA", nil];
+		classNames = [NSArray arrayWithObjects: @"SCL", @"T",
+                                                @"M",   @"TM",
+                                                @"E",   @"TE",
+                                                @"D",   @"TD",
+                                                @"C",   @"TC",
+                                                @"B",   @"TB",
+                                                @"A",   @"TA", nil];
 	}
-	else if([trackName isEqualToString:@"Gulf"])
+    else if([trackName isEqualToString:@"DP"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"J", @"D", @"C", @"B", @"A", @"AA",
-									@"TJ", @"TD", @"TC", @"TB", @"TA", @"TAA",
-									@"SA", @"SAA", nil];
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                      @"M",
+                      @"E",
+                      @"D", @"TD",
+                      @"C",
+                      @"B",
+                      @"A",         @"SA", nil];
 	}
-	else if([trackName isEqualToString:@"Mardi Gras"])
+    else if([trackName isEqualToString:@"DQ"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"D", @"C", @"B", @"A",
-									 @"T", @"TM", @"TD", @"TC", @"TB", @"TA",
-									@"S", @"SM", @"SC", @"SA", nil];
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"E",   @"TE",
+                                                @"D",   @"TD",
+                                                @"C",   @"TC",    @"SC",
+                                                @"B",   @"TB",    @"SB",
+                                                @"A",   @"TA",    @"SA", nil];
 	}
-	else if([trackName isEqualToString:@"Naples - Fort Meyers"])
+	else if([trackName isEqualToString:@"EB"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"D", @"C", @"B", @"A",
-									@"TD", @"TC", @"TB", @"TA",
-									@"S", @"SA", nil];
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"J",   @"TJ",
+                                                @"D",   @"TD",  @"SD",
+                                                @"C",   @"TC",  @"SC",
+                                                @"B",   @"TB",  @"SB",
+                                                @"A",   @"TA",  @"SA", nil];
 	}
-	else if([trackName isEqualToString:@"Orange Park"])
+	else if([trackName isEqualToString:@"FL"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"D", @"C", @"B", @"A",
-									@"TM", @"TD", @"TC", @"TB", @"TA",
-									@"SD", @"SC", @"SB", @"SA", nil];
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"D",
+                                                @"C",
+                                                @"B",
+                                                @"A", @"TA", nil];
 	}
-	else if([trackName isEqualToString:@"Palm Beach"])
+	else if([trackName isEqualToString:@"GG"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"J", @"D", @"C", @"B", @"A",
-									@"T", @"TJ", @"TD", @"TC", @"TB", @"TA",
-									@"S", @"SJ", @"SD", @"SC", @"SB", @"SA", @"SAT", nil];
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"J",
+                                                @"D",   @"TD",
+                                                @"C",   @"TC",
+                                                @"B",   @"TB",
+                                                @"A",   @"TA",  @"SA",
+                                                @"AA",  @"TAA", @"SAA", nil];
 	}
-	else if([trackName isEqualToString:@"Sanford-Orlando"])
+	else if([trackName isEqualToString:@"HI"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"J", @"E", @"D", @"C", @"B", @"A",
-									@"T", @"TM", @"TJ", @"TE", @"TD", @"TC", @"TB", @"TA",
-									@"S", @"SC", @"SB", @"SA", nil];
+		classNames = [NSArray arrayWithObjects: @"SCL", nil];
 	}
-	else if([trackName isEqualToString:@"Sarasota"])
+	else if([trackName isEqualToString:@"HO"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"E", @"D", @"C", @"B", @"A",
-									@"T", @"TM", @"TE", @"TD", @"TC", @"TB", @"TA", nil];
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"D",
+                                                @"C",
+                                                @"B",
+                                                @"A", nil];
 	}
-	else if([trackName isEqualToString:@"Southland"])
+	else if([trackName isEqualToString:@"LI"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"D", @"C", @"B", @"A", @"AA",
-									@"T", @"TM", @"TD", @"TC", @"TB", @"TA", @"TAA",
-									@"S", @"SD",  @"SC", @"SB", @"SA", @"SAA", nil];
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"J",
+                                                @"D",
+                                                @"C",
+                                                @"B",
+                                                @"BB",
+                                                @"A",
+                                                @"AA", @"SAA", nil];
 	}
-	else if([trackName isEqualToString:@"Tri-State"])
+    else if([trackName isEqualToString:@"MB"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"D", @"C", @"B", @"A", @"AA",
-									@"TD", @"TC", @"TB", @"TA", @"TAA",
-									@"SB", @"SA", @"SAA", nil];
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",   @"TM",
+                                                @"D",   @"TD",
+                                                @"C",   @"TC",
+                                                @"B",   @"TB",
+                                                @"A",   @"TA",
+                                                        @"TAA", nil];
 	}
-	else if([trackName isEqualToString:@"Wheeling"])
+	else if([trackName isEqualToString:@"MG"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"D", @"C", @"B", @"A", @"AA",
-									@"TD", @"TC", @"TB", @"TA", @"TAA",
-									@"SC", @"SB", @"SA", @"SAA", nil];
+		classNames = [NSArray arrayWithObjects: @"SCL", @"T",
+                                                @"M",   @"TM",
+                                                @"E",   @"TE",
+                                                @"D",   @"TD",  @"SD",
+                                                @"C",   @"TC",  @"SC",
+                                                @"B",   @"TB",  @"SB",
+                                                @"A",   @"TA",  @"SA", nil];
 	}
-	else if([trackName isEqualToString:@"WheelingSmall"])
+	else if([trackName isEqualToString:@"MO"])
 	{
-		classNames = [NSArray arrayWithObjects:@"M", @"D", @"C", @"B", @"A", @"AA",
-					  @"TD", @"TC", @"TB", @"TA", @"TAA",
-					  @"SC", @"SB", @"SA", @"SAA", nil];
+		classNames = [NSArray arrayWithObjects: @"SCL", @"T",
+                                                @"M",
+                                                @"E",
+                                                @"D",   @"TD",
+                                                @"C",   @"TC",
+                                                @"B",   @"TB",
+                                                @"A",   @"TA", nil];
 	}
-	else
+	else if([trackName isEqualToString:@"NF"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",     @"S",
+                                                @"M",
+                                                @"E",
+                                                @"D", @"TD", @"SD",
+                                                @"C", @"TC", @"SC",
+                                                @"B", @"TB",
+                                                @"A", @"TA", @"SA", nil];
+	}
+	else if([trackName isEqualToString:@"OP"])
+	{
+		classNames = [NSArray arrayWithObjects:@"SCL",
+                                                @"M",   @"TM",
+                                                @"D",   @"TD",  @"SD",
+                                                @"C",   @"TC",  @"SC",
+                                                @"B",   @"TB",  @"SB",
+                                                @"A",   @"TA",  @"SA", nil];
+	}
+	else if([trackName isEqualToString:@"OR"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"D",
+                                                @"C",   @"TC",
+                                                @"B",   @"TB",
+                                                @"A",   @"TA", nil];
+	}
+	else if([trackName isEqualToString:@"PB"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL", @"T",
+                                                @"M",
+                                                @"J",   @"TJ",  @"SJ",
+                                                @"D",   @"TD",  @"SD",
+                                                @"C",   @"TC",  @"SC",
+                                                @"B",   @"TB",  @"SB",
+                                                @"A",   @"TA",  @"SA", nil];
+	}
+	else if([trackName isEqualToString:@"PE"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"DT",
+                                                @"CT",
+                                                @"BT",
+                                                @"AT", nil];
+	}
+	else if([trackName isEqualToString:@"PH"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"J",
+                                                @"D",
+                                                @"C",   @"TC",
+                                                @"B",   @"TB",
+                                                @"BB",
+                                                @"A",   @"TA",
+                                                @"AA",  @"TAA", @"SAA",
+                                                nil];
+	}
+	else if([trackName isEqualToString:@"PN"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                        @"TM",
+                                                @"E",   @"TE",
+                                                @"D",
+                                                @"C",
+                                                @"B",   @"TB",
+                                                @"A",   @"TA", nil];
+	}
+	else if([trackName isEqualToString:@"RT"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                        @"TD",
+                                                @"C",   @"TC",
+                                                        @"TB",
+                                                        @"TA", nil];
+	}
+	else if([trackName isEqualToString:@"SA"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL", @"T",
+                                                @"M",   @"TM",
+                                                @"E",   @"TE",
+                                                @"D",   @"TD",
+                                                @"C",   @"TC",
+                                                @"B",   @"TB",
+                                                @"A",   @"TA", nil];
+	}
+	else if([trackName isEqualToString:@"SE"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL", @"T",
+                                                @"M",
+                                                @"J",
+                                                @"D",
+                                                @"C",   @"TC",  @"SC",
+                                                @"B",   @"TB",
+                                                @"A",   @"TA",  @"SA", nil];
+	}
+	else if([trackName isEqualToString:@"SL"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"J",
+                                                @"D",   @"TD",  @"SD",
+                                                @"C",   @"TC",  @"SC",
+                                                @"B",   @"TB",  @"SB",
+                                                @"A",   @"TA",  @"SA",
+                                                @"AA",  @"TAA", @"SAA", nil];
+	}
+	else if([trackName isEqualToString:@"SN"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL", @"T",
+                                                @"M",   @"TM",
+                                                @"J",   @"TJ",
+                                                @"E",   @"TE",
+                                                @"D",   @"TD",
+                                                @"C",   @"TC",
+                                                @"B",   @"TB",
+                                                @"A",   @"TA",  @"SA", nil];
+	}
+	else if([trackName isEqualToString:@"SO"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"D",
+                                                @"C",   @"TC",
+                                                @"B",   @"TB",
+                                                @"A",   @"TA", nil];
+	}
+	else if([trackName isEqualToString:@"SP"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",   @"TM",
+                                                @"D",   @"TD",
+                                                @"C",   @"TC",
+                                                @"B",   @"TB",  @"SB",
+                                                @"A",   @"TA",  @"SA", nil];
+	}
+
+	else if([trackName isEqualToString:@"TS"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"D",   @"TD",
+                                                @"C",   @"TC",  @"SC",
+                                                @"B",   @"TB",  @"SB",
+                                                @"A",   @"TA",  @"SA",
+                                                @"AA",  @"TAA", @"SAA", nil];
+	}
+	else if([trackName isEqualToString:@"TU"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                        @"TM",
+                                                @"D",   @"TD",
+                                                @"C",   @"TC",
+                                                @"B",   @"TB",
+                                                @"A",   @"TA", nil];
+	}
+	else if([trackName isEqualToString:@"VG"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"J",
+                                                @"D",
+                                                @"C",
+                                                @"B",
+                                                @"A",
+                                                @"AA", nil];
+	}
+	else if([trackName isEqualToString:@"VL"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"D",   @"TD",
+                                                @"C",   @"TC",
+                                                @"B",   @"TB",
+                                                @"A",   @"TA",  @"SA", nil];
+	}
+	else if([trackName isEqualToString:@"WD"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"D",   @"TD",
+                                                @"C",   @"TC",  @"SC",
+                                                @"B",   @"TB",  @"SB",
+                                                @"A",   @"TA",  @"SA",
+                                                @"AA",  @"TAA", @"SAA", nil];
+	}
+	else if([trackName isEqualToString:@"WO"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                      @"M",
+                      @"J",   @"TJ",
+                      @"D",   @"TD",
+                      @"C",
+                      @"B",   @"TB",
+                      @"A",   @"TA", nil];
+	}
+	else if([trackName isEqualToString:@"WS"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"D",
+                                                @"C",
+                                                @"B",
+                                                @"A", @"SA", nil];
+	}
+	else if([trackName isEqualToString:@"WT"])
+	{
+		classNames = [NSArray arrayWithObjects: @"SCL",
+                                                @"M",
+                                                @"E",
+                                                @"D",
+                                                @"C",
+                                                @"B",
+                                                @"A", nil];
+	}
+    else
 	{
 		NSLog(@"Bad track name: %@", trackName);
 		exit(0);
@@ -480,6 +755,252 @@
     return worstTimeSoFar;
 }
 
+- (NSUInteger)processEntriesPastLines:(NSString*)pastLines
+                       forValidTracks:(NSArray*)validTrackIdsArray
+                  withStatisticsArray:(double*)dxStatsAccumulatorArray
+                      andCounterArray:(int*)dxRaceCounterArray
+{
+    
+    NSUInteger maxTrapPositions         = kMaximumNumberEntries;
+    NSUInteger totalRaces               = 0;
+    NSString *breakPositionString       = nil;
+    NSString *firstTurnPositionString   = nil;
+    NSString *farTurnPositionString     = nil;
+    NSString *finalPositionString       = nil;;
+    NSString *finalRaceTimeString       = nil;
+    NSString *trackID                   = nil;
+    NSString *raceClassString           = nil;
+    NSString *raceDateString            = nil;
+    
+    BOOL dnfOccurred                = NO;
+    NSUInteger raceDxIndex          = kNoIndex;
+    NSUInteger trapPosition         = 0;
+    NSUInteger breakPosition        = maxTrapPositions;
+    NSUInteger firstTurnPosition    = maxTrapPositions;
+    NSUInteger farTurnPosition      = maxTrapPositions;
+    NSUInteger finalPosition        = maxTrapPositions;
+    double finalRaceTime            = 0.00;
+    
+    NSArray *individualPastLines = [pastLines componentsSeparatedByString:@"\n\n"];
+    
+    for(NSString *pastLineString in individualPastLines)
+    {
+        NSArray *lines = [pastLineString componentsSeparatedByString:@"\n"];
+        
+        raceDateString = [lines firstObject];
+        
+        NSString *numEntriesString  = [lines objectAtIndex:6];
+        NSUInteger numberEntries    = [numEntriesString integerValue];
+        
+        if(numberEntries == 0) // num entries not given, so put in 8
+        {
+            numberEntries = 8;
+        }
+        
+        trackID                 = [lines objectAtIndex:1];
+        NSUInteger trackIndex   = [validTrackIdsArray indexOfObject:trackID];
+        
+        // avoids unmodeled tracks
+        if(trackIndex == kNoIndex)
+        {
+            continue;
+        }
+        
+        NSString *calls = [[lines objectAtIndex:9] substringFromIndex:7];
+        
+        NSArray *callsArray = [calls componentsSeparatedByString:@" "];
+        
+        NSString *trapPositionString    = [callsArray objectAtIndex:0];
+        trapPosition                    = [trapPositionString intValue];
+        
+        if(trapPosition == 0)
+        {
+            // simply ignore these
+            continue;
+        }
+        else if(trapPosition == 0 || trapPosition > maxTrapPositions)
+        {
+            NSLog(@"bad post position");
+            continue;
+        }
+        
+        raceDxIndex = [self getRaceDxIndexFromString:[lines objectAtIndex:3]];
+        
+        if(raceDxIndex == kNoIndex)
+        {
+            // ignore races at distances we are not interested in
+            continue;
+        }
+        else if(raceDxIndex > kNumberRaceDistances)
+        {
+            NSLog(@"bad race distance index");
+            exit(1);
+        }
+        
+        breakPositionString = [callsArray objectAtIndex:1];
+        
+        if([self isThisFallWord:breakPositionString])
+        {
+            dnfOccurred = YES;
+        }
+        else
+        {
+            breakPosition = [breakPositionString integerValue];
+            
+            if(breakPosition == 0)
+            {
+                // simply ignore these
+                continue;
+            }
+            
+            firstTurnPositionString = [callsArray objectAtIndex:2];
+            
+            if(firstTurnPositionString.length > 1)
+            {
+                firstTurnPositionString = [firstTurnPositionString substringToIndex:0];
+            }
+            
+            if([self isThisFallWord:firstTurnPositionString])
+            {
+                dnfOccurred = YES;
+            }
+            else
+            {
+                firstTurnPosition = [firstTurnPositionString integerValue];
+                
+                if(firstTurnPosition == 0)
+                {
+                    // simply ignore these
+                    continue;
+                }
+                
+                farTurnPositionString = [callsArray objectAtIndex:3];
+                
+                if(farTurnPositionString.length > 1)
+                {
+                    farTurnPositionString = [farTurnPositionString substringToIndex:0];
+                }
+                
+                if([self isThisFallWord:farTurnPositionString])
+                {
+                    dnfOccurred = YES;
+                }
+                else
+                {
+                    farTurnPosition = [farTurnPositionString integerValue];
+                    
+                    if(farTurnPosition == 0)
+                    {
+                        // simply ignore these
+                        continue;
+                    }
+                    
+                    finalPositionString = [callsArray objectAtIndex:4];
+                    
+                    if([self isThisFallWord:finalPositionString])
+                    {
+                        dnfOccurred = YES;
+                    }
+                    else
+                    {
+                        
+                        NSString *lengthsBehindOrAheadString    = [finalPositionString substringFromIndex:2];
+                        finalPositionString                    =  [finalPositionString substringToIndex:0];
+                        
+                        finalPosition = [finalPositionString integerValue];
+                        
+                        if(finalPosition > numberEntries)
+                        {
+                            finalPosition = numberEntries;
+                        }
+                        
+                        finalRaceTimeString = [lines objectAtIndex:10];
+                        
+                        
+                        if([lengthsBehindOrAheadString isEqualToString:@"OOP"])
+                        {
+                            finalRaceTime  = kDnfTime;
+                            dnfOccurred     = YES;
+                        }
+                        else
+                        {
+                            finalRaceTime = [finalRaceTimeString doubleValue];
+                        }
+                        
+                        if(finalRaceTime < 28.00)
+                        {
+                            finalRaceTime  = kDnfTime;
+                            dnfOccurred     = YES;
+                        }
+                        
+                        raceClassString = [lines objectAtIndex:2];
+                    }
+                }
+            }
+        }
+        
+        if(dnfOccurred)
+        {
+            finalPosition = numberEntries;
+            
+            finalRaceTime = [self getBestRaceTimeAtTrackNamed:trackID
+                                           atRaceDistanceIndex:raceDxIndex];
+        }
+        
+        // skip races at distances we are not modeling
+        if(raceDxIndex == kNoIndex)
+        {
+            continue;
+        }
+        
+        if(trapPosition == 0 || trapPosition > kMaximumNumberEntries)
+        {
+            NSLog(@"post position error");
+            continue;
+        }
+        else if(breakPosition == 0 || breakPosition > kMaximumNumberEntries)
+        {
+            NSLog(@"post position error");
+            continue;
+        }
+        else if(firstTurnPosition == 0 || firstTurnPosition > kMaximumNumberEntries)
+        {
+            NSLog(@"1st turn position error");
+            continue;
+        }
+        else if(farTurnPosition == 0 || farTurnPosition > kMaximumNumberEntries)
+        {
+            NSLog(@"top of stretch position error");
+            continue;
+        }
+        else if(finalPosition == 0 || finalPosition > kMaximumNumberEntries)
+        {
+            NSLog(@"final position error");
+            continue;
+        }
+    }
+    
+    NSLog(@"%@ %@  %@: %lu %lu %lu %lu %lu %lf, %lu", trackID, raceDateString, raceClassString, trapPosition, breakPosition,                  firstTurnPosition, farTurnPosition, finalPosition, finalRaceTime, raceDxIndex);
+    
+    totalRaces++;
+    
+    NSUInteger trackNumber = [validTrackIdsArray indexOfObject:trackID];
+    
+    [self addStatsForEntryAtPost:trapPosition
+             withbreakAtPosition:breakPosition
+               firstTurnPosition:firstTurnPosition
+                 farTurnPosition:farTurnPosition
+                   finalPosition:finalPosition
+                    withRaceTime:finalRaceTime
+                   atRaceDxIndex:raceDxIndex
+        withStatAccumulatorArray:&dxStatsAccumulatorArray[0]
+             andRaceCounterArray:&dxRaceCounterArray[0]
+                 forTrackINumber:trackNumber];
+    
+    return totalRaces;
+}
+
+
 - (NSArray*)processTrackAtPath:(NSString*)formattedResultsFolderPath
 			  withDxStatsArray:(double*)statsArray
 		andDxStatsCounterArray:(int*)counterArray
@@ -561,13 +1082,14 @@
 			double worstTimeInRace      = [self getWorstTimeThisRaceFromString:singleRaceString];
 			
             NSString *raceClassString   = [self getRaceClassStringFromSingleRaceString:singleRaceString];
-            NSArray *raceClassArray     = [self getClassesForTrackNamed:trackName];
+            NSString *trackID           = nil;
+            NSArray *raceClassArray     = [self getClassesForTrackWithId:trackID];
             NSUInteger classIndex       = [raceClassArray indexOfObject:raceClassString];
 
             NSUInteger arrayIndex = (raceDxIndex * raceClassArray.count) + classIndex;
             
-            winTimeAccumulatorArray[arrayIndex]     += bestTimeInRace;
-            showTimeAccumulatorArray[arrayIndex]    += thirdBestTimeInRace;
+            winTimeAccumulatorArray[arrayIndex] += bestTimeInRace;
+            showTimeAccumulatorArray[arrayIndex] += thirdBestTimeInRace;
             raceCounterArray[arrayIndex]++;
             
 			switch(raceDxIndex)
@@ -637,9 +1159,7 @@
 	NSString *secondFromLastWord	= [words objectAtIndex:words.count-3];
 	BOOL answer						= NO;
 	
-	if([secondFromLastWord isEqualToString:@"Declared"] &&
-	[nextToLastWord isEqualToString:@"No"] &&
-	[lastWord isEqualToString:@"Race"])
+	if([secondFromLastWord isEqualToString:@"Declared"] && [nextToLastWord isEqualToString:@"No"] && [lastWord isEqualToString:@"Race"])
 	{
 		answer = YES;
 	}
@@ -657,75 +1177,49 @@
 
 - (NSUInteger)getRaceDxIndexFromString:(NSString*)raceDxString
 {
-    NSUInteger raceDxIndex  = kNoIndex;
-    NSUInteger raceDx       = 0;
+    NSUInteger raceDxIndex = kNoIndex;
     
-    if([raceDxString isEqualToString:@"5.16"] || [raceDxString isEqualToString:@"5-16"]  || [raceDxString isEqualToString:@"5/16"])
-    {
-        raceDx = 550;
-    }
-    else if([raceDxString isEqualToString:@"3.8"] || [raceDxString isEqualToString:@"3-8"] || [raceDxString isEqualToString:@"3/8"])
-    {
-        raceDx = 660;
-    }
-    else if([raceDxString characterAtIndex:1] == '.' || [raceDxString characterAtIndex:1] == '-')
-    {
-        raceDx = 0;
-    }
-    else
-    {
-        raceDx = [raceDxString integerValue];
-    }
+    // Race Distances
+    NSArray *oneTurnRaceDistanceStrings     = [NSArray arrayWithObjects:@"301", @"313", @"330", @"350", nil];
+    NSArray *twoTurnRaceDistanceStrings     = [NSArray arrayWithObjects:@"545", @"546", @"550", @"566", @"NC", nil];
+    NSArray *threeTurnRaceDistanceStrings   = [NSArray arrayWithObjects:@"627", @"647", @"660", @"661", @"670",
+                                                                        @"677", @"678", @"679", @"681", @"685", @"690", @"DC", nil];
+    NSArray *marathonRaceDistanceStrings    = [NSArray arrayWithObjects:@"753", @"754", @"758", @"761", @"770", @"783", nil];
     
-    switch (raceDx)
+    if([oneTurnRaceDistanceStrings containsObject:raceDxString])
     {
-        case 545:
-        case 548:
-        case 550:
-        case 583:
-            
-            raceDxIndex = 0;
-            break;
-            
-        case 627:
-        case 647:  // Flagler
-        case 660:
-        case 677:
-        case 678:
-            
-            raceDxIndex = 1;
-            break;
-            
-        default:
-            break;
+        raceDxIndex = 0;
+    }
+    else if([twoTurnRaceDistanceStrings containsObject:raceDxString])
+    {
+        raceDxIndex = 1;
+    }
+    else if([threeTurnRaceDistanceStrings containsObject:raceDxString])
+    {
+        raceDxIndex = 2;
+    }
+    else if([marathonRaceDistanceStrings containsObject:raceDxString])
+    {
+        raceDxIndex = 3;
     }
     
-    // skip any races other than 548 and 678
-    if(raceDxIndex >= kNumberRaceDistances)
-    {
-        NSLog(@"skipping: %lu distance race", (unsigned long)raceDx);
-        
-        raceDxIndex = kNoIndex;
-    }
-
     return raceDxIndex;
 }
 
 - (void)processRaceFromString:(NSString*)singleRaceString
                 withStatisticsArray:(double*)dxStatsAccumulatorArray
                     andCounterArray:(int*)dxStatsRaceCounterArray
-              usingClassArray:(NSArray*)classArray
+                    usingClassArray:(NSArray*)classArray
                        atTrackNamed:(NSString*)trackName
-            settingRaceDistanceIndex:(NSUInteger*)raceDistanceIndex
 {
     // split singleRaceString into three pieces
     //  [0] raceInfoString
     //  [1] chartString
     //  [2] payoutStringAndExoticsString which is ignored generating stats
-  
+    
     NSArray *singleRaceStringsArray = [singleRaceString componentsSeparatedByString:@"\n\n\n"];
-    NSString *raceInfoString    = [singleRaceStringsArray objectAtIndex:0];
-    NSString *chartString       = [NSString stringWithFormat:@"%@\n", [singleRaceStringsArray objectAtIndex:1]];
+    NSString *raceInfoString        = [singleRaceStringsArray objectAtIndex:0];
+    NSString *chartString           = [NSString stringWithFormat:@"%@\n", [singleRaceStringsArray objectAtIndex:1]];
     
     NSArray *raceInfoStringsArray   = [raceInfoString componentsSeparatedByString:@"\n"];
     NSArray *chartStringsArray      = [chartString componentsSeparatedByString:@"\n"];
@@ -735,31 +1229,21 @@
         NSLog(@"got DNF");
     }
     
-    
-    NSString *raceDistanceString    = [raceInfoStringsArray objectAtIndex:4];
-    *raceDistanceIndex              = [self getRaceDxIndexFromString:raceDistanceString];
+    NSString *raceDistanceString = [raceInfoStringsArray objectAtIndex:3];
     
     // set to avoid passing pointers down the line
-    NSUInteger raceDxIndex = *raceDistanceIndex;
+    NSUInteger raceDxIndex = 000;;
     
-	// redundant check here
-	if(raceDxIndex >= kNumberRaceDistances || raceDxIndex == kNoIndex)
-	{
-		NSLog(@"bad raceDx");
-		*raceDistanceIndex = kNoIndex;
-        return;
-	}
-	
 	double dnfTime = [self getWorstRaceTimeAtTrackNamed:trackName
 									atRaceDistanceIndex:raceDxIndex];
     
-    NSString *dogName                       = nil;
-    NSString *postPositionString            = nil;
-    NSString *breakPositionString           = nil;
-    NSString *firstTurnPositionString       = nil;
-    NSString *topOfStretchPositionString    = nil;
-    NSString *finishPositionString          = nil;
-    NSString *finishRaceTimeString          = nil;
+    NSString *dogName                   = nil;
+    NSString *trapPositionString        = nil;
+    NSString *breakPositionString       = nil;
+    NSString *firstTurnPositionString   = nil;
+    NSString *farTurnPositionString     = nil;
+    NSString *finalPositionString      = nil;
+    NSString *finalRaceTimeString      = nil;
     
     // loop through races 9 lines at a time
     NSUInteger numberEntries = chartStringsArray.count / 10;
@@ -767,25 +1251,25 @@
     for(NSUInteger entryNumber = 0; entryNumber < numberEntries; entryNumber++)
     {
         // assign all fields, so that falling at any point is covered
-        NSUInteger postPosition			= 0;
+        NSUInteger trapPosition			= 0;
         NSUInteger breakPosition		= numberEntries;
         NSUInteger firstTurnPosition	= numberEntries;
-        NSUInteger topOfStretchPosition	= numberEntries;
-        NSUInteger finishPosition		= numberEntries;;
-        double finishRaceTime			= [self getWorstRaceTimeAtTrackNamed:trackName
+        NSUInteger farTurnPosition	= numberEntries;
+        NSUInteger finalPosition		= numberEntries;;
+        double finalRaceTime			= [self getWorstRaceTimeAtTrackNamed:trackName
                                                  atRaceDistanceIndex:raceDxIndex];
         
         dogName = [chartStringsArray objectAtIndex:entryNumber * 10];
         
         // check for dnf scenerio => "dnf\n" followed by 7 blank lines
-        postPositionString = [chartStringsArray objectAtIndex:(entryNumber * 10) + 1];
+        trapPositionString = [chartStringsArray objectAtIndex:(entryNumber * 10) + 1];
        
-        if([[postPositionString uppercaseString] isEqualToString:@"DNF"] || [[postPositionString uppercaseString] isEqualToString:@"X"])
+        if([[trapPositionString uppercaseString] isEqualToString:@"DNF"] || [[trapPositionString uppercaseString] isEqualToString:@"X"])
         {
             continue;
         }
         
-        postPosition        = [postPositionString integerValue];
+        trapPosition        = [trapPositionString integerValue];
         breakPositionString = [chartStringsArray objectAtIndex:(entryNumber * 10) + 2];
         
         if([[breakPositionString uppercaseString] isEqualToString:@"DNF"] || [[breakPositionString uppercaseString] isEqualToString:@"X"] == NO)
@@ -805,200 +1289,146 @@
                     firstTurnPosition = [firstTurnPositionString integerValue];
                 }
                 
-                 topOfStretchPositionString = [chartStringsArray objectAtIndex:(entryNumber * 10) + 4];
+                 farTurnPositionString = [chartStringsArray objectAtIndex:(entryNumber * 10) + 4];
                 
-                if([[topOfStretchPositionString uppercaseString] isEqualToString:@"DNF"] || [[topOfStretchPositionString uppercaseString] isEqualToString:@"X"] == NO)
+                if([[farTurnPositionString uppercaseString] isEqualToString:@"DNF"] || [[farTurnPositionString uppercaseString] isEqualToString:@"X"] == NO)
                 {
-                    if(topOfStretchPositionString.length > 1)
+                    if(farTurnPositionString.length > 1)
                     {
-                        NSString *substring		= [topOfStretchPositionString substringToIndex:1];
-                        topOfStretchPosition	= [substring integerValue];
+                        NSString *substring		= [farTurnPositionString substringToIndex:1];
+                        farTurnPosition	= [substring integerValue];
                     }
                     else
                     {
-                        topOfStretchPosition = [topOfStretchPositionString integerValue];
+                        farTurnPosition = [farTurnPositionString integerValue];
                     }
         
-                    finishPositionString = [chartStringsArray objectAtIndex:(entryNumber * 10) + 5];
+                    finalPositionString = [chartStringsArray objectAtIndex:(entryNumber * 10) + 5];
                     
-                    if([[finishPositionString uppercaseString] isEqualToString:@"DNF"] || [[finishPositionString uppercaseString] isEqualToString:@"X"] == NO)
+                    if([[finalPositionString uppercaseString] isEqualToString:@"DNF"] || [[finalPositionString uppercaseString] isEqualToString:@"X"] == NO)
                     {
-                        if(finishPositionString.length > 1)
+                        if(finalPositionString.length > 1)
                         {
-                            NSString *substring = [finishPositionString substringToIndex:1];
-                            finishPosition		= [substring integerValue];
+                            NSString *substring = [finalPositionString substringToIndex:1];
+                            finalPosition		= [substring integerValue];
                         }
                         else
                         {
-                            finishPosition = [finishPositionString integerValue];
+                            finalPosition = [finalPositionString integerValue];
                         }
 
-                        finishRaceTimeString = [chartStringsArray objectAtIndex:(entryNumber * 10) + 6];
+                        finalRaceTimeString = [chartStringsArray objectAtIndex:(entryNumber * 10) + 6];
                         
-                        if([[finishRaceTimeString uppercaseString] isEqualToString:@"DNF"] || [[finishRaceTimeString uppercaseString] isEqualToString:@"X"] == NO)
+                        if([[finalRaceTimeString uppercaseString] isEqualToString:@"DNF"] || [[finalRaceTimeString uppercaseString] isEqualToString:@"X"] == NO)
                         {
-                            finishRaceTime = [finishRaceTimeString doubleValue];
+                            finalRaceTime = [finalRaceTimeString doubleValue];
                         }
                     }
                 }
             }
         }
         
-        if(finishRaceTime > 45.00 || finishRaceTime == 0)
+        if(finalRaceTime > 45.00 || finalRaceTime == 0)
         {
-            finishRaceTime = dnfTime;
+            finalRaceTime = dnfTime;
         }
-        else if(finishRaceTime < 28.80 )
+        else if(finalRaceTime < 28.80 )
         {
             NSLog(@"bad race time");
         }
 
 //        NSLog(@"%@:%lu %lu %lu %lu %lu %lf", dogName,
-//                                            (unsigned long)postPosition,
+//                                            (unsigned long)trapPosition,
 //                                            (unsigned long)breakPosition,
 //                                            (unsigned long)firstTurnPosition,
-//                                            (unsigned long)topOfStretchPosition,
-//                                            (unsigned long)finishPosition, finishRaceTime);
+//                                            (unsigned long)farTurnPosition,
+//                                            (unsigned long)finalPosition, finalRaceTime);
         
-        [self addStatsForEntryAtPost:postPosition
-                 withbreakAtPosition:breakPosition
-                   firstTurnPosition:firstTurnPosition
-                topOfStretchPosition:topOfStretchPosition
-                       finalPosition:finishPosition
-                        withRaceTime:finishRaceTime
-                       atRaceDxIndex:raceDxIndex
-            withStatAccumulatorArray:dxStatsAccumulatorArray
-                 andRaceCounterArray:dxStatsRaceCounterArray];
+//        [self addStatsForEntryAtPost:trapPosition
+//                 withbreakAtPosition:breakPosition
+//                   firstTurnPosition:firstTurnPosition
+//                farTurnPosition:farTurnPosition
+//                       finalPosition:finalPosition
+//                        withRaceTime:finalRaceTime
+//                       atRaceDxIndex:raceDxIndex
+//            withStatAccumulatorArray:dxStatsAccumulatorArray
+//                 andRaceCounterArray:dxStatsRaceCounterArray];
+        
     }
 }
 
-- (void)addStatsForEntryAtPost:(NSUInteger)postPosition
+- (void)addStatsForEntryAtPost:(NSUInteger)trapPosition
 		   withbreakAtPosition:(NSUInteger)breakPosition
 			 firstTurnPosition:(NSUInteger)firstTurnPosition
-		  topOfStretchPosition:(NSUInteger)topOfStretchPosition
+		  farTurnPosition:(NSUInteger)farTurnPosition
 				 finalPosition:(NSUInteger)finalPosition
 				  withRaceTime:(double)raceTimeForEntry
 				 atRaceDxIndex:(NSUInteger)raceDxIndex
 	  withStatAccumulatorArray:(double*)statAccumulatorArray
 		   andRaceCounterArray:(int*)raceCounterArray
+                    forTrackINumber:(NSUInteger)trackNumber
 {
-    // skip races at distances we are not modeling
-    if(raceDxIndex == kNoIndex)
-    {
-        return;
-    }
+    NSUInteger mainOffset = (trackNumber * raceDxIndex * kNumberRaceDistances * kNumberStatFields);
+
+	NSUInteger trapPositionIndex        = trapPosition - 1;
+	NSUInteger firstTurnPositionIndex   = firstTurnPosition - 1;
+	NSUInteger farTurnPositionIndex     = farTurnPosition - 1;
     
-	if(raceTimeForEntry == 0.0)	// based on post position
-	{
-        NSLog(@"zero race time");
-		return;
-    }
-	else if(postPosition == 0 || postPosition > kMaximumNumberEntries)
-	{
-		NSLog(@"post position error");
-		return;
-	}
-	else if(firstTurnPosition == 0 || firstTurnPosition > kMaximumNumberEntries)
-	{
-		NSLog(@"1st turn position error");
-		return;
-	}
-	else if(topOfStretchPosition == 0 || topOfStretchPosition > kMaximumNumberEntries)
-	{
-		NSLog(@"top of stretch position error");
-		return;
-	}
-	else if(finalPosition == 0 || finalPosition > kMaximumNumberEntries)
-	{
-		NSLog(@"finish position error");
-		return;
-	}
-	
-	NSUInteger postPositionIndex			= postPosition - 1;
-	NSUInteger firstTurnPositionIndex		= firstTurnPosition - 1;
-	NSUInteger topOfStretchPositionIndex	= topOfStretchPosition - 1;
-	
-	NSUInteger mainOffset = (raceDxIndex * kNumberRaceDistances * kNumberStatFields) + (postPositionIndex * kNumberStatFields);
-	
-	if(breakPosition == 0)	// based on post position
-	{
-		breakPosition = kMaximumNumberEntries;
-	}
-	
-	NSUInteger index							= mainOffset + kBreakPositionFromPostStatField;
-	double accumulatedBreakValuesAtDxAndPost	= statAccumulatorArray[index];
-	accumulatedBreakValuesAtDxAndPost			+= breakPosition;
-	statAccumulatorArray[index]					= accumulatedBreakValuesAtDxAndPost;
+    // break from trap position
+	NSUInteger index                        = mainOffset + (trapPositionIndex * kNumberStatFields) + kBreakPositionFromPostStatField;
+	double accumulatedBreakValuesFormPost	= statAccumulatorArray[index];
+	accumulatedBreakValuesFormPost			+= breakPosition;
+	statAccumulatorArray[index]             = accumulatedBreakValuesFormPost;
 	
 	NSUInteger numberRaces = raceCounterArray[index];
 	numberRaces++;
 	raceCounterArray[index] = (int)numberRaces;
 	
-	if(firstTurnPosition == 0)	// based on post position
-	{
-		firstTurnPosition = kMaximumNumberEntries;
-	}
-		
-	index									= mainOffset + kFirstTurnPositionFromPostStatField;
-	double accumulatedFTValuesAtDxAndPost	= statAccumulatorArray[index];
-	accumulatedFTValuesAtDxAndPost			+= firstTurnPosition;
-	statAccumulatorArray[index]				= accumulatedFTValuesAtDxAndPost;
+    // first turn from trap position
+	index                               = mainOffset + (trapPositionIndex * kNumberStatFields) + kFirstTurnPositionFromPostStatField;
+	double accumulatedFTValuesFromPost  = statAccumulatorArray[index];
+	accumulatedFTValuesFromPost         += firstTurnPosition;
+	statAccumulatorArray[index]         = accumulatedFTValuesFromPost;
 
 	numberRaces = raceCounterArray[index];
 	numberRaces++;
 	raceCounterArray[index] = (int)numberRaces;
 	
-	if(finalPosition == 0)	// based on post position
-	{
-		finalPosition = kMaximumNumberEntries;
-	}
-
-	index												= mainOffset + kFinishPositionFromPostStatField;
-	double accumulatedFinalPositionValuesForDxAndPost	= statAccumulatorArray[index];
-	accumulatedFinalPositionValuesForDxAndPost			+= finalPosition;
-	statAccumulatorArray[index]							= accumulatedFinalPositionValuesForDxAndPost;
+    // final from trap position
+	index                                       = mainOffset + (trapPositionIndex * kNumberStatFields) + kFinalPositionFromPostStatField;
+	double accumulatedFinalPositionFromdPost	= statAccumulatorArray[index];
+	accumulatedFinalPositionFromdPost			+= finalPosition;
+	statAccumulatorArray[index]                 = accumulatedFinalPositionFromdPost;
 	
 	numberRaces = raceCounterArray[index];
 	numberRaces++;
 	raceCounterArray[index] = (int)numberRaces;
-
-    index                                           = mainOffset + kFinishTimeFromPostStatField;
-    double finishTimeAccumulatedValueAtDxAndPost	= statAccumulatorArray[index];
-    finishTimeAccumulatedValueAtDxAndPost			+= raceTimeForEntry;
-    statAccumulatorArray[index]						= finishTimeAccumulatedValueAtDxAndPost;
+   
+    // final time from trap position
+    index                                       = mainOffset + (trapPositionIndex * kNumberStatFields) + kFinalTimeFromPostStatField;
+    double finalTimeAccumulatedValuesFromPost   = statAccumulatorArray[index];
+    finalTimeAccumulatedValuesFromPost			+= raceTimeForEntry;
+    statAccumulatorArray[index]                 = finalTimeAccumulatedValuesFromPost;
     
     numberRaces = raceCounterArray[index];
     numberRaces++;
     raceCounterArray[index] = (int)numberRaces;
-	
-	if(topOfStretchPosition == 0)	// based on 1st turn position
-	{
-		topOfStretchPosition = kMaximumNumberEntries;
-	}
-	
-	mainOffset = (raceDxIndex * kNumberRaceDistances * kNumberStatFields) + (firstTurnPositionIndex * kNumberStatFields);
-	
-	index											= mainOffset + kTopOFStretchPositionFromFirstTurnStatField;
-	double accumulatedTosValueFromFtPositionAndDx	= statAccumulatorArray[index];
-	accumulatedTosValueFromFtPositionAndDx			+= topOfStretchPosition;
-	statAccumulatorArray[index]						= accumulatedTosValueFromFtPositionAndDx;
+	   
+    // far turn from first turn
+	index                                       = mainOffset + (firstTurnPositionIndex * kNumberStatFields) + kFarTurnhPositionFromFirstTurnStatField;
+	double accumulatedFarTurnValueFromFirstTurn = statAccumulatorArray[index];
+	accumulatedFarTurnValueFromFirstTurn        += farTurnPosition;
+	statAccumulatorArray[index]                 = accumulatedFarTurnValueFromFirstTurn;
 	
 	numberRaces = raceCounterArray[index];
 	numberRaces++;
 	raceCounterArray[index] = (int)numberRaces;
-	
-	
-	if(finalPosition == 0)	// based on top of stretch position
-	{
-		finalPosition = kMaximumNumberEntries;
-	}
-	
-	mainOffset = (raceDxIndex * kNumberRaceDistances * kNumberStatFields) + (topOfStretchPositionIndex * kNumberStatFields);
-	
-	index												= mainOffset + kFinishPositionFromTopOfStretchStatField;
-	double accumulatedFinalPositonsFromTosPositionAndDx	= statAccumulatorArray[index];
-	accumulatedFinalPositonsFromTosPositionAndDx		+= finalPosition;
-	statAccumulatorArray[index]							= accumulatedFinalPositonsFromTosPositionAndDx;
+		
+    // final from far turn
+	index                                       = mainOffset + (farTurnPositionIndex * kNumberStatFields) + kFinalPositionFromFarTurnStatField;
+	double accumulatedFinalPositonsFromFarTurn  = statAccumulatorArray[index];
+	accumulatedFinalPositonsFromFarTurn         += finalPosition;
+	statAccumulatorArray[index]                 = accumulatedFinalPositonsFromFarTurn;
 	
 	numberRaces = raceCounterArray[index];
 	numberRaces++;
@@ -1007,121 +1437,13 @@
 
 - (void)modelTracks
 {
-	NSError *error					= nil;
-	NSFileManager *localFileManager	= [NSFileManager defaultManager];
-	NSString *modeledTracksFolder	= @"/Users/ronjurincie/Desktop/Project Ixtlan/Tracks";
-	NSArray *trackFoldersToProcess	= [localFileManager contentsOfDirectoryAtPath:modeledTracksFolder
-																		    error:&error];
+    // add these tracks to
+    [self getTracksStatsFromPopulationsPastLines:@"/Users/ronjurincie/Desktop/Project Ixtlan/Dogs/Working Past Lines"];
 	
-	for(NSString *modeledTrackFolder in trackFoldersToProcess)
-	{
-		if([modeledTrackFolder hasSuffix:@".DS_Store"])
-		{
-			continue;
-		}
-        
-        NSLog(@"%@", modeledTrackFolder);
-	  
-        // uncomment some lines below to skip specific tracks
-//        if([modeledTrackFolder isEqualToString:@"Daytona Beach"] || [modeledTrackFolder isEqualToString:@"Derby Lane"] ||
-//           [modeledTrackFolder isEqualToString:@"Ebro"] || [modeledTrackFolder isEqualToString:@"Flagler"] ||
-//           [modeledTrackFolder isEqualToString:@"Gulf"] || [modeledTrackFolder isEqualToString:@"Mardi Gras"] ||
-//           [modeledTrackFolder isEqualToString:@"Naples - Fort Meyers"] || [modeledTrackFolder isEqualToString:@"Orange Park"] ||
-//           [modeledTrackFolder isEqualToString:@"Palm Beach"] || [modeledTrackFolder isEqualToString:@"Sanford-Orlando"] ||
-//           [modeledTrackFolder isEqualToString:@"Sarasota"] ||
-//           [modeledTrackFolder isEqualToString:@"Southland"])
-//        {
-//            continue;
-//        }
-        
-        NSString *pathToModeledTrackFolder = [NSString stringWithFormat:@"%@/%@/Formatted Result Files", modeledTracksFolder, modeledTrackFolder];
-   
-		[self getStatsForTrackAtPath:pathToModeledTrackFolder];
-        
-        // add these tracks to 
-        [self getUnmodeledTracksStatsFromPopulationsPastLines:@"/Users/ronjurincie/Desktop/Project Ixtlan/Dogs/Past Lines Library"];
-	}
-	
-	[ECMainController updateAndSaveData];
+    [ECMainController updateAndSaveData];
 }
 
-- (ECTrackStats*)getStatsForTrackAtPath:(NSString*)formattedResultsFolderPath
-{
-	// Each raceClass 2-Turn and 3-Turn stats are kept for:
-	//	averageWinTime and averageShowTime
-	ECTrackStats *trackStats = [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
-															 inManagedObjectContext:MOC];
-	// Distance Stats
-	NSUInteger dxArraySize = kNumberRaceDistances * kMaximumNumberEntries * kNumberStatFields;
-	
-	int		dxRaceCounterArray[dxArraySize];
-	double	dxStatsAccumulatorArray[dxArraySize];
-	
-	// initialize accumulators to zero
-	for(int index = 0; index < dxArraySize; index++)
-	{
-		dxStatsAccumulatorArray[index]	= 0.0;
-		dxRaceCounterArray[index]		= 0.0;
-	}
-	
-	// Class Stats
-	// post by post average times and average win times
-    NSArray *pathComponents     = [formattedResultsFolderPath pathComponents];
-	NSString *trackName			= [pathComponents objectAtIndex:pathComponents.count - 2];
-	NSArray *trackClassesArray  = [self getClassesForTrackNamed:trackName];
-	NSUInteger classArraySize	= kNumberRaceDistances * trackClassesArray.count;
-	
-	double	winTimeAccumulatorArray[classArraySize];
-	double	placeTimeAccumulatorArray[classArraySize];
-	double	showTimeAccumulatorArray[classArraySize];
-	int		raceCounterArray[classArraySize];
-	
-	// initialize accumulators to zero
-	for(int index = 0; index < classArraySize; index++)
-	{
-		raceCounterArray[index]				= 0;
-		winTimeAccumulatorArray[index]		= 0.0;
-		placeTimeAccumulatorArray[index]	= 0.0;
-		showTimeAccumulatorArray[index]		= 0.0;
-	}
 
-	
-	NSArray *thisTracksWorstAndBestTimesArray = nil;
-	
-	thisTracksWorstAndBestTimesArray = [self processTrackAtPath:formattedResultsFolderPath
-                                               withDxStatsArray:dxStatsAccumulatorArray
-                                         andDxStatsCounterArray:dxRaceCounterArray
-                                        winTimeAccumulatorArray:&winTimeAccumulatorArray[0]
-                                      placeTimeAccumulatorArray:&placeTimeAccumulatorArray[0]
-                                       showTimeAccumulatorArray:&showTimeAccumulatorArray[0]
-                                       numRacesAccumulatorArray:&raceCounterArray[0]
-                                                  andClassArray:trackClassesArray];
-   
-    NSOrderedSet *distanceStats	= [self getDistanceStatsFromArray:dxStatsAccumulatorArray
-                                                  andCounterArray:dxRaceCounterArray];
-
-    // load best time for each track into their CoreData structure
-    // use trackName and array above to load best times for track at 2-turn and 3-turn races
-    // worst fime for each track/distance <= best time * 1.11
- 	
-    [self loadWosrtAndBestTimesFromArray:thisTracksWorstAndBestTimesArray
-					   intoDistanceStats:distanceStats];
-   
-	trackStats.raceDistanceStats = distanceStats;
-	
-//	[self printStatArrays:dxStatsAccumulatorArray
-//		  andCounterArray:dxRaceCounterArray];
-//	
-	NSOrderedSet *classStats = [self getClassStatsFromWinTimesArray:&winTimeAccumulatorArray[0]
-													 showTimesArray:&showTimeAccumulatorArray[0]
-												   raceCounterArray:&raceCounterArray[0]
-													   forTrackName:trackName
-													  andTrackStats:trackStats];
-				
-	trackStats.classStats = classStats;
-	
-    return trackStats;
-}
 
 - (void)printNewTrackCouters:(NSArray*)trackCounterArray
 {
@@ -1132,90 +1454,1012 @@
 	}
 }
 
-- (void)getUnmodeledTracksStatsFromPopulationsPastLines:(NSString*)pastLinesLibraryPath
+- (NSString*)getStringWithAllClassesAtTrackWithID:(NSString*)trackID
 {
-	// for starters just return array of ALL track unique track abbreviations with their number of past lines
-	// i.e. DB 33232
+    NSString *raceClassesString = @"No Classes for this track";
+    
+    if([trackID isEqualToString:@"AB"])
+    {
+        raceClassesString = @"SCL M E D C TM TE TD TC S SD";
+    }
+    else if([trackID isEqualToString:@"BM"])
+    {
+        raceClassesString = @"SCL M J E D C B A T TM TE TD TC TB TA S SC SB SA";
+    }
+    else if([trackID isEqualToString:@"BR"])
+    {
+        raceClassesString = @"SCL M D C B A TM TD TC TB TA S SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"CA"])
+    {
+        raceClassesString = @"SCL M E D C B A AA TM TE TD TC TB TA S SC SB SA";
+    }
+    else if([trackID isEqualToString:@"CC"])
+    {
+        raceClassesString = @"SCL M J E D C B A T TM TE TD TC TB TA S SC SB SA";
+    }
+    else if([trackID isEqualToString:@"DB"])
+    {
+        raceClassesString = @"SCL M E D C B A T TM TE TD TC TB TA S SC SB SA";
+    }
+    else if([trackID isEqualToString:@"DP"])
+    {
+        raceClassesString = @"SCL M J E D C B A T TM TE TD TC TB TA S SC SB SA";
+    }
+    else if([trackID isEqualToString:@"DQ"])
+    {
+        raceClassesString = @"SCL M J E D C B A TM TJ TE TD TC TB TA S SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"EB"])
+    {
+        raceClassesString = @"SCL M J E D C B A T TM TE TD TC TB TA S SJ SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"FL"])
+    {
+        raceClassesString = @"SCL M D C B A T TD TC TB TA S SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"GG"])
+    {
+        raceClassesString = @"SCL M J D C B A AA TJ TE TD TC TB TA TAA S SC SB SA SAA";
+    }
+    else if([trackID isEqualToString:@"HI"])
+    {
+        raceClassesString = @"SCL E D C B A T TM TE TD TC TB TA";
+    }
+    else if([trackID isEqualToString:@"HO"])
+    {
+        raceClassesString = @"SCL M D C B A TM TD TC TB TA SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"JA"])
+    {
+        raceClassesString = @"SCL M D C B A T TM TA S";
+    }
+    else if([trackID isEqualToString:@"JC"])
+    {
+        raceClassesString = @"SCL M J E D C B A TM TJ TE TD TC TB TA SC SA";
+    }
+    else if([trackID isEqualToString:@"LI"])
+    {
+        raceClassesString = @"SCL M J D C B BB A AA T TM TJ TD TC TB TBB TA TAA S SJ SD SC SB SBB SA SAA";
+    }
+    else if([trackID isEqualToString:@"MB"])
+    {
+        raceClassesString = @"SCL M J D C B A AA T TM TE TD TC TB TA TAA S SC SB SA SAA";
+    }
+    else if([trackID isEqualToString:@"MG"])
+    {
+        raceClassesString = @"SCL M D C B A T TM TD TC TB TA S SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"MH"])
+    {
+        raceClassesString = @"SCL M D C B A AA TM TE TD TC TB TA TAA SC";
+    }
+    else if([trackID isEqualToString:@"MO"])
+    {
+        raceClassesString = @"SCL M E D C B A T TE TD TC TB TA S SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"NF"])
+    {
+        raceClassesString = @"SCL M E D C B A TM TE TD TC TB TA S SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"OP"])
+    {
+        raceClassesString = @"SCL M D C B A T TM TE TD TC TB TA S SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"OR"])
+    {
+        raceClassesString = @"SCL M E D C B A TM TE TD TC TB TA";
+    }
+    else if([trackID isEqualToString:@"PB"])
+    {
+        raceClassesString = @"SCL M J E D C B A AT T TM TJ TE TD TC TB TA S SJ SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"PE"])
+    {
+        raceClassesString = @"SCL M J E D C B A T TM TJ TE TD TC TB TA DT CT BT AT";
+    }
+    else if([trackID isEqualToString:@"PH"])
+    {
+        raceClassesString = @"SCL M J E D C B BB A AA T TM TJ TD TC TB TBB TA TAA S SC SB SBB SA SAA";
+    }
+    else if([trackID isEqualToString:@"PN"])
+    {
+        raceClassesString = @"SCL M E D C B A T TM TE TD TC TB TA";
+    }
+    else if([trackID isEqualToString:@"RT"])
+    {
+        raceClassesString = @"SCL M D C B A T TM TD TC TB TA S SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"SA"])
+    {
+        raceClassesString = @"SCL M E D C B A T TM TE TD TC TB TA S SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"SE"])
+    {
+        raceClassesString = @"SCL M J D C B A T TM TJ TE TD TC TB TA S SJ SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"SL"])
+    {
+        raceClassesString = @"SCL M J D C B A T TM TJ TD TC TB TA S SD SC SB SA SAA";
+    }
+    else if([trackID isEqualToString:@"SN"])
+    {
+        raceClassesString = @"SCL M J E D C B A T TM TE TD TC TB TA S SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"SO"])
+    {
+        raceClassesString = @"SCL M J E D C B A TM TJ TE TD TC TB TA SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"SP"])
+    {
+        raceClassesString = @"SCL M D C B A TM TD TC TB TA S SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"TP"])
+    {
+        raceClassesString = @"SCL M D C B A TM TD TC TB TA SA";
+    }
+    else if([trackID isEqualToString:@"TS"])
+    {
+        raceClassesString = @"SCL M D C B A AA T TM TD TC TB TA TAA S SD SC SB SA SAA";
+    }
+    else if([trackID isEqualToString:@"TU"])
+    {
+        raceClassesString = @"SCL M D C B A T TM TD TC TB TA SC SB SA";
+    }
+    else if([trackID isEqualToString:@"VG"])
+    {
+        raceClassesString = @"SCL M J D C B A AA TJ TE TD TC TB TA TAA SJ SD SC SB SA SAA";
+    }
+    else if([trackID isEqualToString:@"VL"])
+    {
+        raceClassesString = @"SCL M E D C B A T TE TD TC TB TA SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"WD"])
+    {
+        raceClassesString = @"SCL M D C B A AA T TJ TD TC TB TA TAA S SD SC SB SA SAA";
+    }
+    else if([trackID isEqualToString:@"WO"])
+    {
+        raceClassesString = @"SCL M J D C B A T TM TJ TD TC TB TA SA";
+    }
+    else if([trackID isEqualToString:@"WS"])
+    {
+        raceClassesString = @"SCL M E D C B A T TM TE TD TC TB TA DT CT BT AT SD SC SB SA";
+    }
+    else if([trackID isEqualToString:@"WT"])
+    {
+        raceClassesString = @"SCL M E D C B A T TM TE TD TC TB TA S SB SA";
+    }
+    
+    return raceClassesString;
+}
 
-	NSMutableArray *modeledTrackAbbreviations	= [NSMutableArray new];
-	NSError *error								= nil;
-    NSUInteger totalRacesEvaluated              = 0;
+- (NSArray*)getValidRaceDistancesForTrack:(NSString*)trackID
+{
+    NSMutableArray *validRaceDistances = [NSMutableArray new];
+    
+    if([trackID isEqualToString:@"BM"])    // Birmingham
+    {
+        [validRaceDistances addObject:@"330"];
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"BR"])    // Bluff's Run
+    {
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"CA"])    // Caliente
+    {
+        [validRaceDistances addObject:@"550"];
+        [validRaceDistances addObject:@"690"];
+        
+    }
+    else if([trackID isEqualToString:@"DB"])    // Daytona Beach
+    {
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"DP"])    // Dairyland Park*
+    {
+        [validRaceDistances addObject:@"550"];
+        [validRaceDistances addObject:@"660"];
+    }
+    else if([trackID isEqualToString:@"DQ"])    // Dubuque
+    {
+        [validRaceDistances addObject:@"330"];
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"EB"])    // Ebro
+    {
+        [validRaceDistances addObject:@"330"];
+        [validRaceDistances addObject:@"550"];
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"FL"])    // Flagler
+    {
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"647"];
+    }
+    else if([trackID isEqualToString:@"GG"])    // Gulf
+    {
+        [validRaceDistances addObject:@"330"];
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"HI"])    // *
+    {
+        [validRaceDistances addObject:@"566"];
+    }
+    else if([trackID isEqualToString:@"HO"])    // Hollywood*
+    {
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"JA"])    // Jacksonville*
+    {
+        [validRaceDistances addObject:@"550"];
+    }
+    else if([trackID isEqualToString:@"JC"])    // Jefferson County*
+    {
+        [validRaceDistances addObject:@"550"];
+    }
+    else if([trackID isEqualToString:@"LI"])    // Lincoln*
+    {
+        [validRaceDistances addObject:@"550"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"MB"])    // Melbourne*
+    {
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"MG"])    // Mardi Gras
+    {
+        [validRaceDistances addObject:@"550"];
+        [validRaceDistances addObject:@"661"];
+        [validRaceDistances addObject:@"770"];
+    }
+    else if([trackID isEqualToString:@"MH"])    // Mile High*
+    {
+        [validRaceDistances addObject:@"783"];
+    }
+    else if([trackID isEqualToString:@"MO"])    // Mobile
+    {
+        [validRaceDistances addObject:@"550"];
+        [validRaceDistances addObject:@"661"];
+    }
+    else if([trackID isEqualToString:@"NF"])    // Naples / Fort Meyers
+    {
+        [validRaceDistances addObject:@"330"];
+        [validRaceDistances addObject:@"550"];
+        [validRaceDistances addObject:@"661"];
+    }
+    else if([trackID isEqualToString:@"OP"])    // Orange Park
+    {
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+        [validRaceDistances addObject:@"770"];
+    }
+    else if([trackID isEqualToString:@"OR"])    // Oregon?*
+    {
+        [validRaceDistances addObject:@"566"];
+    }
+    else if([trackID isEqualToString:@"PB"])    // Palm Beach
+    {
+        [validRaceDistances addObject:@"301"];
+        [validRaceDistances addObject:@"545"];
+        [validRaceDistances addObject:@"661"];
+    }
+    else if([trackID isEqualToString:@"PE"])    // Pensacola?
+    {
+        [validRaceDistances addObject:@"550"];
+    }
+    else if([trackID isEqualToString:@"PH"])    // Phoenix*
+    {
+        [validRaceDistances addObject:@"550"];
+        [validRaceDistances addObject:@"685"];
+    }
+    else if([trackID isEqualToString:@"PN"])    // ??
+    {
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"RT"])    // Raynaham
+    {
+        [validRaceDistances addObject:@"330"];
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"SA"])    // Sarasota
+    {
+        [validRaceDistances addObject:@"330"];
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"SE"])    // ??
+    {
+        [validRaceDistances addObject:@"550"];
+    }
+    else if([trackID isEqualToString:@"SL"])    // Southland
+    {
+        [validRaceDistances addObject:@"334"];
+        [validRaceDistances addObject:@"583"];
+        [validRaceDistances addObject:@"703"];
+        [validRaceDistances addObject:@"820"];
+    }
+    else if([trackID isEqualToString:@"SN"])    // Sanford-Orlando?
+    {
+        [validRaceDistances addObject:@"313"];
+        [validRaceDistances addObject:@"350"];
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"SO"])    // Sanford-Orlando?
+    {
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"SP"])    // Derby Lane (St. Petersburt)
+    {
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"TP"])    // Tampa*
+    {
+        [validRaceDistances addObject:@"566"];
+    }
+    else if([trackID isEqualToString:@"TS"])    // Tri-State
+    {
+        [validRaceDistances addObject:@"550"];
+        [validRaceDistances addObject:@"677"];
+    }
+    else if([trackID isEqualToString:@"TU"])    // Tucson
+    {
+        [validRaceDistances addObject:@"316"];
+        [validRaceDistances addObject:@"566"];
+    }
+    else if([trackID isEqualToString:@"VG"])    // VictoryLand
+    {
+        [validRaceDistances addObject:@"566"];
+    }
+    else if([trackID isEqualToString:@"VL"])    // VictoryLand?
+    {
+        [validRaceDistances addObject:@"550"];
+        [validRaceDistances addObject:@"661"];
+    }
+    else if([trackID isEqualToString:@"WD"])    // Wheeling
+    {
+        [validRaceDistances addObject:@"330"];
+        [validRaceDistances addObject:@"548"];
+        [validRaceDistances addObject:@"678"];
+        [validRaceDistances addObject:@"761"];
+    }
+    else if([trackID isEqualToString:@"WO"])    // Wonderland
+    {
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"681"];
+    }
+    else if([trackID isEqualToString:@"WS"])    // Woodlands
+    {
+        [validRaceDistances addObject:@"566"];
+        [validRaceDistances addObject:@"678"];
+    }
+    else if([trackID isEqualToString:@"WT"])    // Wichita
+    {
+        [validRaceDistances addObject:@"550"];
+    }
+    
+    return validRaceDistances;
+}
+
+- (void)getTracksStatsFromPopulationsPastLines:(NSString*)pastLinesFolderPath
+{
+    
+    // Track IDs
+    NSArray *modeledTracks = [NSArray arrayWithObjects: @"BM", @"BR", @"CA", @"DB", @"DP", @"DQ", @"EB", @"FL", @"GG",
+                                                        @"HI", @"HO", @"JC", @"LI", @"MG", @"MH", @"MO", @"NF", @"OP",
+                                                        @"OR", @"PB", @"PE", @"PH", @"PN", @"RT", @"SA", @"SE",
+                                                        @"SL",@"SN", @"SO", @"SP", @"TP", @"TS", @"TU", @"VG", @"VL",
+                                                        @"WD",@"WO", @"WS", @"WT", nil];
+    
+//        // ignore results from tracks below due to insufficient data
+//    NSArray *ignoredTracks = [NSArray arrayWithObjects:@"**", @"CC", @"CL", @"HI", @"HO", @"IR", @"IS",
+//                                                        @"JA", @"JC", @"MB", @"MH", @"PU", nil];
+//    
+//    NSArray *validTrackClasses = [NSArray arrayWithObjects: @"SCL", @"M", @"TM", @"J", @"TJ", @"SJ", @"E", @"TE",
+//                                                            @"D", @"DT", @"TD", @"TD", @"SD", @"C", @"CT", @"TC", @"SC",
+//                                                            @"B", @"TB", @"BT", @"TB", @"SB", @"BB", @"TBB", @"SBB",
+//                                                            @"A", @"AT", @"TA", @"SA", @"AA", @"TAA", @"SAA", nil];
+    
+    // Each raceClass 2-Turn and 3-Turn stats are kept for:
+	//	averageWinTime and averageShowTime
+	ECTrackStats *trackStats = [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
+															 inManagedObjectContext:MOC];
+	// Distance Stats
+	NSUInteger dxArraySize = [modeledTracks count] * kNumberRaceDistances * kMaximumNumberEntries * kNumberStatFields;
 	
-	[modeledTrackAbbreviations addObject:@"SP"];	// Derby Land			St. Petersburg, Florida
-	[modeledTrackAbbreviations addObject:@"DB"];	// Daytona Beach		Florida
-	[modeledTrackAbbreviations addObject:@"EB"];	// Ebro					Florida
-	[modeledTrackAbbreviations addObject:@"FL"];	// Flagler				Miami, Florida
-	[modeledTrackAbbreviations addObject:@"GG"];	// Gulf					Lamarque, Texas
-	[modeledTrackAbbreviations addObject:@"MG"];	// Mardi-Gras			Hallandale, Florida
-	[modeledTrackAbbreviations addObject:@"NF"];	// Naples-Ft. Meyers	Bonita Springs, Florida
-	[modeledTrackAbbreviations addObject:@"OP"];	// Orange Park			Florida
-	[modeledTrackAbbreviations addObject:@"PB"];	// Palm Beach			West Palm Beach, Florida
-	[modeledTrackAbbreviations addObject:@"SO"];	// Sanford-Orlando		Longwood, Florida
-	[modeledTrackAbbreviations addObject:@"SA"];	// Sarasota				Florida
-	[modeledTrackAbbreviations addObject:@"SL"];	// Southland			West Memphis, Arkansas
-	[modeledTrackAbbreviations addObject:@"TS"];	// tri-state			Cross Lanes, West Virginia
-	[modeledTrackAbbreviations addObject:@"WD"];	// Southland			Wheeling, West Virginia
+	int		dxRaceCounterArray[dxArraySize];
+	double	dxStatsAccumulatorArray[dxArraySize];
 	
+	// initialize accumulators to zero
+	for(int index = 0; index < dxArraySize; index++)
+	{
+		dxStatsAccumulatorArray[index]	= 0.0;
+		dxRaceCounterArray[index]		= 0.0;
+	}
+    
+	NSError *error = nil;
+ 
 	NSFileManager *fileManager  = [NSFileManager defaultManager];
-	NSArray *pastLineFiles      = [fileManager contentsOfDirectoryAtPath:pastLinesLibraryPath
+	NSArray *pastLineFiles      = [fileManager contentsOfDirectoryAtPath:pastLinesFolderPath
                                                                    error:&error];
 				
 	for(NSString *fileName in pastLineFiles)
 	{
-		if([fileName hasSuffix:@".DS_Store"])
-		{
-			continue;
-		}
-        else if([fileName characterAtIndex:0] == '.')
+        // skip .DS_Store and ALL other . files
+		if([fileName characterAtIndex:0] == '.')
         {
             continue;
         }
 		
-		NSArray *newTracksAbbreviationArray = [[NSArray alloc] initWithObjects:@"BR",   // Bluffs Run       Council Bluffs, Iowa
-                                                                               @"BM",   // Birmingham       Birmingham, Alabama
-                                                                               @"CA",   // Caliente         Mexico ?
-                                                                               @"DU",   // Dubuque          Dubuque, Iowa
-                                                                               @"LI",   // Lincoln          Lincoln, Rhode Island
-                                                                               @"MO",   // Mobile           Theodore, Alabama
-                                                                               @"RT",   // Raynham-Taunton  Raynham, Mass
-                                                                               @"SN",   //
-                                                                               @"TU",   // Tuscon           Tuscon, Arizona
-                                                                               @"VG",   // Victoryland      Shorter, Alabama
-                                                                               nil];
+        NSString *filePath = [NSString stringWithFormat:@"%@/%@", pastLinesFolderPath, fileName];
+
+        NSLog(@"=====> %@", fileName);
         
-		NSString *fullPath = [NSString stringWithFormat:@"%@/%@", pastLinesLibraryPath, fileName];
-		
-        NSLog(@"%@", fileName);
+        NSString *dogsRacehistory = [NSString stringWithContentsOfFile:filePath
+                                                              encoding:NSStringEncodingConversionAllowLossy
+                                                                 error:&error];
         
-        NSUInteger numberRacesEvaluatedForThisEntry = [self processStatsFromPastLineFileAtPath:fullPath
-                                                                    forTracksWithAbbreviations:newTracksAbbreviationArray];
+        NSUInteger numberRacesEvaluatedForThisEntry = [self processEntriesPastLines:dogsRacehistory
+                                                                     forValidTracks:modeledTracks
+                                                                withStatisticsArray:dxStatsAccumulatorArray
+                                                                    andCounterArray:dxRaceCounterArray];
         
-        NSLog(@"races evaluated: %lu", numberRacesEvaluatedForThisEntry);
-        totalRacesEvaluated += numberRacesEvaluatedForThisEntry;
-	}
+        NSLog(@"races evaluated for this entry: %lu", numberRacesEvaluatedForThisEntry);
+    }
     
-    NSLog(@"FINISHED with total races evalutaed: %lu", totalRacesEvaluated);
+    NSMutableOrderedSet *trackStatsOrderedSet = [NSMutableOrderedSet new];
     
-//  	NSOrderedSet *classStats = [self getClassStatsFromWinTimesArray:&winTimeAccumulatorArray[0]
-//													 showTimesArray:&showTimeAccumulatorArray[0]
-//												   raceCounterArray:&raceCounterArray[0]
-//													   forTrackName:trackName
-//													  andTrackStats:trackStats];
+    for(NSString *trackID in modeledTracks)
+    {
+        ECTrackStats *newTrackStats = [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats" inManagedObjectContext:MOC];
+        NSUInteger trackIdIndex     = [modeledTracks indexOfObject:trackID];
+        
+        ECSprintRaceStats *sprintStats = [self getSprintStatsForTrackWithIndex:trackIdIndex
+                                                                   withTrackIdArray:modeledTracks
+                                                            fromArray:dxStatsAccumulatorArray
+                                                       andCounterArray:dxRaceCounterArray];
+        
+        ECTwoTurnRaceStats *twoTurnRaceStats = [self getTwoTurnStatsForTrackWithIndex:trackIdIndex
+                                                                   withTrackIdArray:modeledTracks
+                                                                          fromArray:dxStatsAccumulatorArray
+                                                            andCounterArray:dxRaceCounterArray];
+        
+        ECThreeTurnRaceStats *threeTurnRaceStats = [self getThreeTurnStatsForTrackWithIndex:trackIdIndex
+                                                                           withTrackIdArray:modeledTracks
+                                                                                  fromArray:dxStatsAccumulatorArray
+                                                                            andCounterArray:dxRaceCounterArray];
+        
+        ECMarathonRaceStats *marathonRaceStats = [self getMarathonStatsForTrackWithIndex:trackIdIndex
+                                                                        withTrackIdArray:modeledTracks
+                                                                               fromArray:dxStatsAccumulatorArray
+                                                                         andCounterArray:dxRaceCounterArray];
+        
+        newTrackStats.sprintRaceStats       = sprintStats;
+        newTrackStats.twoTurnRaceStats      = twoTurnRaceStats;
+        newTrackStats.threeTurnRaceStats    = threeTurnRaceStats;
+        newTrackStats.marathonRaceStats     = marathonRaceStats;
+        
+        newTrackStats.twoTurnRaceRecordTime     = nil;
+        newTrackStats.threeTurnRaceRecordTime   = nil;
+        newTrackStats.sprintRaceRecordTime      = nil;
+        newTrackStats.marathonRaceRecordTime    = nil;
+        
+        newTrackStats.validRaceClasses          = nil;
+        
+        [trackStatsOrderedSet addObject:newTrackStats];
+    }
     
-    ECTrackStats *trackStats    = nil;
-//	trackStats.classStats       = classStats;
+    // save stats to coreData
 }
 
-- (NSUInteger)processStatsFromPastLineFileAtPath:(NSString*)pastLineFilePath
-                      forTracksWithAbbreviations:(NSArray*)unmodeledTrackAbbreviationArray
+- (double)getBestTimeForRaceDistanceIndex:(NSUInteger)raceDxIndex
+                            atTrackWithId:(NSString*)trackID
 {
-#define kMaxPostPosition 8
+    double recordTime = 0.00;
+    
+    switch (raceDxIndex)
+    {
+        case 0:
+        {
+            if([trackID isEqualToString:@"AB"])
+            {
+                recordTime = 17.37;
+            }
+            else if([trackID isEqualToString:@"BR"])
+            {
+                recordTime = 17.54;
+            }
+            else if([trackID isEqualToString:@"DP"])
+            {
+                recordTime = 17.23;
+            }
+            else if([trackID isEqualToString:@"DQ"])
+            {
+                recordTime = 17.41;
+            }
+            else if([trackID isEqualToString:@"FL"])
+            {
+                recordTime = 18.42;
+            }
+            else if([trackID isEqualToString:@"GG"])
+            {
+                recordTime = 17.02;
+            }
+            else if([trackID isEqualToString:@"NF"])
+            {
+                recordTime = 16.66;
+            }
+            else if([trackID isEqualToString:@"OP"])
+            {
+                recordTime = 17.61;
+            }
+            else if([trackID isEqualToString:@"PB"])
+            {
+                recordTime = 16.38;
+            }
+            else if([trackID isEqualToString:@"PH"])
+            {
+                recordTime = 17.37;
+            }
+            else if([trackID isEqualToString:@"SO"])
+            {
+                recordTime = 16.59;
+            }
+            else if([trackID isEqualToString:@"SA"])
+            {
+                recordTime = 17.85;
+            }
+            else if([trackID isEqualToString:@"SL"])
+            {
+                recordTime = 17.60;
+            }
+            else if([trackID isEqualToString:@"TU"])
+            {
+                recordTime = 17.70;
+            }
+                
+            break;
+        }
+            
+        case 1:
+        {
+            if([trackID isEqualToString:@"AB"])
+            {
+                recordTime = 29.61;
+            }
+            else if([trackID isEqualToString:@"AP"])
+            {
+                recordTime = 30.01;
+            }
+            else if([trackID isEqualToString:@"BM"])
+            {
+                recordTime = 29.92;
+            }
+            else if([trackID isEqualToString:@"BR"])
+            {
+                recordTime = 29.33;
+            }
+            else if([trackID isEqualToString:@"DP"])
+            {
+                recordTime = 29.70;
+            }
+            else if([trackID isEqualToString:@"DB"])
+            {
+                recordTime = 30.00;
+            }
+            else if([trackID isEqualToString:@"SP"])
+            {
+                recordTime = 29.59;
+            }
+            else if([trackID isEqualToString:@"DQ"])
+            {
+                recordTime = 29.83;
+            }
+            else if([trackID isEqualToString:@"EB"])
+            {
+                recordTime = 29.89;
+            }
+            else if([trackID isEqualToString:@"FL"])
+            {
+                recordTime = 31.17;
+            }
+            else if([trackID isEqualToString:@"GG"])
+            {
+                recordTime = 29.42;
+            }
+            else if([trackID isEqualToString:@"JC"])
+            {
+                recordTime = 30.01;
+            }
+            else if([trackID isEqualToString:@"MG"])
+            {
+                recordTime = 29.64;
+            }
+            else if([trackID isEqualToString:@"MO"])
+            {
+                recordTime = 29.92;
+            }
+            else if([trackID isEqualToString:@"NF"])
+            {
+                recordTime = 29.54;
+            }
+            else if([trackID isEqualToString:@"OP"])
+            {
+                recordTime = 30.01;
+            }
+            else if([trackID isEqualToString:@"PB"])
+            {
+                recordTime = 29.01;
+            }
+            else if([trackID isEqualToString:@"PE"])
+            {
+                recordTime = 29.78;
+            }
+            else if([trackID isEqualToString:@"PH"])
+            {
+                recordTime = 29.54;
+            }
+            else if([trackID isEqualToString:@"SO"])
+            {
+                recordTime = 29.99;
+            }
+            else if([trackID isEqualToString:@"SA"])
+            {
+                recordTime = 29.97;
+            }
+            else if([trackID isEqualToString:@"SL"])
+            {
+                recordTime = 31.14;
+            }
+            else if([trackID isEqualToString:@"TS"])
+            {
+                recordTime = 29.61;
+            }
+            else if([trackID isEqualToString:@"TU"])
+            {
+                recordTime = 29.92;
+            }
+            else if([trackID isEqualToString:@"VG"])
+            {
+                recordTime = 30.02;
+            }
+            else if([trackID isEqualToString:@"WD"])
+            {
+                recordTime = 29.06;
+            }
+            
+            break;
+        }
+            
+        case 2:
+        {
+            if([trackID isEqualToString:@"AP"])
+            {
+                recordTime = 38.39;
+            }
+            else if([trackID isEqualToString:@"BR"])
+            {
+                recordTime = 37.96;
+            }
+            else if([trackID isEqualToString:@"DP"])
+            {
+                recordTime = 37.25;
+            }
+            else if([trackID isEqualToString:@"DB"])
+            {
+                recordTime = 37.07;
+            }
+            else if([trackID isEqualToString:@"SP"])
+            {
+                recordTime = 36.53;
+            }
+            else if([trackID isEqualToString:@"DQ"])
+            {
+                recordTime = 37.77;
+            }
+            else if([trackID isEqualToString:@"EB"])
+            {
+                recordTime = 35.90;
+            }
+            else if([trackID isEqualToString:@"FL"])
+            {
+                recordTime = 36.45;
+            }
+            else if([trackID isEqualToString:@"GG"])
+            {
+                recordTime = 36.26;
+            }
+            else if([trackID isEqualToString:@"JC"])
+            {
+                recordTime = 38.00;
+            }
+            else if([trackID isEqualToString:@"MG"])
+            {
+                recordTime = 36.43;
+            }
+            else if([trackID isEqualToString:@"MO"])
+            {
+                recordTime = 37.26;
+            }
+            else if([trackID isEqualToString:@"NF"])
+            {
+                recordTime = 37.44;
+            }
+            else if([trackID isEqualToString:@"OP"])
+            {
+                recordTime = 36.73;
+            }
+            else if([trackID isEqualToString:@"PB"])
+            {
+                recordTime = 37.29;
+            }
+            else if([trackID isEqualToString:@"PE"])
+            {
+                recordTime = 38.23;
+            }
+            else if([trackID isEqualToString:@"PH"])
+            {
+                recordTime = 38.13;
+            }
+            else if([trackID isEqualToString:@"SO"])
+            {
+                recordTime = 37.48;
+            }
+            else if([trackID isEqualToString:@"SA"])
+            {
+                recordTime = 37.20;
+            }
+            else if([trackID isEqualToString:@"SL"])
+            {
+                recordTime = 36.14;
+            }
+            else if([trackID isEqualToString:@"TS"])
+            {
+                recordTime = 37.62;
+            }
+            else if([trackID isEqualToString:@"TU"])
+            {
+                recordTime = 38.07;
+            }
+            else if([trackID isEqualToString:@"VG"])
+            {
+                recordTime = 38.62;
+            }
+            else if([trackID isEqualToString:@"WD"])
+            {
+                recordTime = 37.05;
+            }
+            
+            break;
+        }
+            
+        case 3:
+        {
+            if([trackID isEqualToString:@"DP"])
+            {
+                recordTime = 43.47;
+            }
+            else if([trackID isEqualToString:@"DQ"])
+            {
+                recordTime = 42.98;
+            }
+            else if([trackID isEqualToString:@"EB"])
+            {
+                recordTime = 43.03;
+            }
+            else if([trackID isEqualToString:@"FL"])
+            {
+                recordTime = 44.52;
+            }
+            else if([trackID isEqualToString:@"GG"])
+            {
+                recordTime = 43.16;
+            }
+            else if([trackID isEqualToString:@"MG"])
+            {
+                recordTime = 42.57;
+            }
+            else if([trackID isEqualToString:@"NF"])
+            {
+                recordTime = 42.41;
+            }
+            else if([trackID isEqualToString:@"OP"])
+            {
+                recordTime = 43.27;
+            }
+            else if([trackID isEqualToString:@"PB"])
+            {
+                recordTime = 41.47;
+            }
+            else if([trackID isEqualToString:@"PE"])
+            {
+                recordTime = 42.96;
+            }
+            else if([trackID isEqualToString:@"PH"])
+            {
+                recordTime = 42.23;
+            }
+            else if([trackID isEqualToString:@"SO"])
+            {
+                recordTime = 42.35;
+            }
+            else if([trackID isEqualToString:@"SA"])
+            {
+                recordTime = 43.41;
+            }
+            else if([trackID isEqualToString:@"SL"])  // 820 yards
+            {
+                recordTime = 46.09;
+            }
+            else if([trackID isEqualToString:@"TS"])
+            {
+                recordTime = 43.15;
+            }
+            else if([trackID isEqualToString:@"WD"])
+            {
+                recordTime = 41.85;
+            }
+            
+            break;
+        }
+    
+        default:
+            break;
+    }
+    
+    return recordTime;
+}
+
+
+- (BOOL)isThisFallWord:(NSString*)testWord
+{
+    BOOL answer = NO;
+    
+    if([[testWord uppercaseString] isEqualToString:@"X"]     ||
+       [[testWord uppercaseString] isEqualToString:@"DNF"]   ||
+       [[testWord uppercaseString] isEqualToString:@"OOP"]   ||
+       [[testWord uppercaseString] isEqualToString:@"FL"]    ||
+       [[testWord uppercaseString] isEqualToString:@"FL "]   ||
+       [[testWord uppercaseString] isEqualToString:@"F"]     ||
+       [[testWord uppercaseString] isEqualToString:@"FELL"]  ||
+       [[testWord uppercaseString] isEqualToString:@"FEL"]   ||
+       [testWord isEqualToString:@"0"]   ||
+       [testWord isEqualToString:@"bmp"] ||
+       [testWord isEqualToString:@"0"] ||
+       [testWord isEqualToString:@"."])
+    {
+        answer = YES;
+    }
+    
+    return answer;
+}
+
+- (NSArray*)getStatDistancesForTrackWithID:(NSString*)trackID
+{
+    NSArray *validDistances = nil;
+    
+    return validDistances;
+}
+
+
+- (NSString*)fixNoSpaceBeforeDateBugInFileAtPath:(NSString*)buggyFilePath
+{
+    NSError *error          = nil;
+    NSString *fileContents  = [NSString stringWithContentsOfFile:buggyFilePath
+                                                        encoding:NSStringEncodingConversionAllowLossy
+                                                           error:&error];
+   
+    // first split on \n\n to get singleRacePastLineStrings
+    NSArray *singleRacePastLine             = [fileContents componentsSeparatedByString:@"\n\n"];
+    NSMutableString *repairedFileContents   = [NSMutableString new];
+    NSUInteger numberRaces                  = singleRacePastLine.count;
+    NSUInteger linesInLastRace              = [[singleRacePastLine objectAtIndex:singleRacePastLine.count-1] length];
+ 
+    if(linesInLastRace < 14)
+    {
+        numberRaces--;
+    }
+    
+    for(NSUInteger raceNumber = 0; raceNumber < numberRaces; raceNumber++)
+    {
+//        NSLog(@"Race Number: %lu", raceNumber);
+        
+//        if(raceNumber == 84)
+//        {
+//            NSLog(@"got debug race");
+//        }
+        
+        NSString *singlePastLineString = [singleRacePastLine objectAtIndex:raceNumber];
+       
+        NSArray *lineByLineArray = [singlePastLineString componentsSeparatedByString:@"\n"];
+        
+        if(lineByLineArray.count < 5)
+        {
+            if(raceNumber == singleRacePastLine.count - 1)
+            {
+                // don't need to read these added spaces
+                continue;
+            }
+            else
+            {
+                // problem
+                NSLog(@"buggy file");
+            }
+           
+        }
+        else if(lineByLineArray.count > 30)
+        {
+            NSMutableString *multiRaceString = [NSMutableString new];
+            
+            // start with first date line
+            [multiRaceString appendFormat:@"%@\n", [lineByLineArray objectAtIndex:0]];
+            
+            // need to add line by line
+            for(NSUInteger lineNumber = 1; lineNumber < lineByLineArray.count; lineNumber++)
+            {
+                NSString *line = [lineByLineArray objectAtIndex:lineNumber];
+                
+                BOOL isDateLine = [self isLineDateLine:line];
+                    
+                if(isDateLine)
+                {
+                    // add "\n" before and after date lines, since they MUST be buggy here
+                    [multiRaceString appendFormat:@"\n%@\n", line];
+                }
+                else
+                {
+                    // add this non-date string back to newString with "\n"
+                    [multiRaceString appendFormat:@"%@\n", line];
+                }
+            }
+            
+            [repairedFileContents appendFormat:@"%@\n", multiRaceString];
+        }
+        else
+        {
+            [repairedFileContents appendString:singlePastLineString];
+            
+            // this is proper, so write it to newString with \n\n unless its last race
+            if(raceNumber < numberRaces - 1)
+            {
+                [repairedFileContents appendString:@"\n\n"];
+            }
+        }
+    }
+    
+    // append a last "\n" so that string ends with "\n\n"
+//[repairedFileContents appendString:@"\n"];
+    
+    return  repairedFileContents;
+}
+
+
+- (NSUInteger)processStatsFromPastLineString:(NSString*)originalFileContents
+                      forTracksWithAbbreviations:(NSArray*)unmodeledTrackAbbreviationArray
+                            andtrackClassesArray:(NSArray*)newTrackClassesArray
+                 withWinTimeAccumulatorArray:(NSMutableArray*)winTimeAccumulatorArray
+                    showTimeAccumulatorArray:(NSMutableArray*)winTimesAccumulatorArray
+                    numRacesAccumulatorArray:(NSMutableArray*)numRacesAccumulatorArray
+{
+#define kMaxTrapPosition 9
     
     NSUInteger totalRacesEvaluatedForThisEntry  = 0;
     NSUInteger totalDuplicatedForThisEntry      = 0;
-    
-    ECTrackStats *trackStats = [NSEntityDescription insertNewObjectForEntityForName:@"ECTrackStats"
-                                                             inManagedObjectContext:MOC];
+
 	// Distance Stats
 	NSUInteger dxArraySize = kNumberRaceDistances * kMaximumNumberEntries * kNumberStatFields;
  	
@@ -1226,24 +2470,27 @@
 	for(int index = 0; index < dxArraySize; index++)
 	{
 		dxStatsAccumulatorArray[index]	= 0.0;
-		dxRaceCounterArray[index]		= 0.0;
+		dxRaceCounterArray[index]		= 0;
 	}
-
-    NSError *error          = nil;
-    NSString *fileContents  = [NSString stringWithContentsOfFile:pastLineFilePath
-                                                        encoding:NSStringEncodingConversionAllowLossy
-                                                           error:&error];
     
-    NSArray *pastLineStrings        = [fileContents componentsSeparatedByString:@"\n\n"];
+    NSArray *pastLineStrings        = [originalFileContents componentsSeparatedByString:@"\n\n"];
     NSString *lastRaceDateString    = nil;
     NSString *raceDateString        = nil;
+    NSString *raceClassString       = @"";
+
+    NSUInteger numberRaces      = pastLineStrings.count;
+    NSUInteger lastStringSize   = [[pastLineStrings objectAtIndex:pastLineStrings.count-1] length];
     
-    // ignore last field due to 3 blank lines at end of file
-    for(NSUInteger pastLineNumber = 0; pastLineNumber < pastLineStrings.count - 1; pastLineNumber++)
+    if(lastStringSize < 23)
     {
-        NSString *individualPastLineString  = [pastLineStrings objectAtIndex:pastLineNumber];
-        NSArray *lines                      = [individualPastLineString componentsSeparatedByString:@"\n"];
-        
+        numberRaces--;
+    }
+    
+    for(NSUInteger raceNumber = 0; raceNumber < numberRaces; raceNumber++)
+    {
+        NSString *singlePastLineString  = [pastLineStrings objectAtIndex:raceNumber];
+        NSArray *lines                  = [singlePastLineString componentsSeparatedByString:@"\n"];
+    
         if(lines.count < 12)
         {
             // "No Race" scnerio encountered
@@ -1263,8 +2510,6 @@
         if([unmodeledTrackAbbreviationArray containsObject:trackAbbreviation] == NO)
         {
             // ignore this race
-            // at unknown track
-//            NSLog(@"Not target track for race on date %@", raceDateString);
             continue;
         }
         
@@ -1283,9 +2528,9 @@
        
         NSString *breakPositionString           = nil;
         NSString *firstTurnPositionString       = nil;
-        NSString *topOfStretchPositionString    = nil;
-        NSString *finishPositionString          = nil;;
-        NSString *finishRaceTimeString          = nil;
+        NSString *farTurnPositionString    = nil;
+        NSString *finalPositionString          = nil;;
+        NSString *finalRaceTimeString          = nil;
         
         BOOL dnfOccurred            = NO;
         NSString *numEntriesString  = [lines objectAtIndex:lines.count - 1];
@@ -1302,12 +2547,12 @@
             numberEntries = 8;
         }
         
-        NSUInteger postPosition         = 0;
+        NSUInteger trapPosition         = 0;
         NSUInteger breakPosition        = numberEntries;
         NSUInteger firstTurnPosition    = numberEntries;
-        NSUInteger topOfStretchPosition = numberEntries;
-        NSUInteger finishPosition       = numberEntries;
-        double finishRaceTime           = 0.00;
+        NSUInteger farTurnPosition = numberEntries;
+        NSUInteger finalPosition       = numberEntries;
+        double finalRaceTime           = 0.00;
         NSUInteger raceDxIndex          = [self getRaceDxIndexFromString:[lines objectAtIndex:2]];
         
         if(raceDxIndex == kNoIndex)
@@ -1322,14 +2567,19 @@
         }
         
         NSUInteger lineNumber           = 6;
-        NSString *postPositionString    = [lines objectAtIndex:lineNumber++];
+        NSString *trapPositionString    = [lines objectAtIndex:lineNumber++];
 
-        postPosition = [postPositionString integerValue];
+        trapPosition = [trapPositionString integerValue];
         
-        if(postPosition == 0 || postPosition > kMaxPostPosition)
+        if(trapPosition == 0)
+        {
+            // simply ignore these
+            continue;
+        }
+        else if(trapPosition == 0 || trapPosition > kMaxTrapPosition)
         {
             NSLog(@"bad post position");
-            exit(1);
+            continue;
         }
         
         breakPositionString = [lines objectAtIndex:lineNumber++];
@@ -1341,7 +2591,10 @@
            [[breakPositionString uppercaseString] isEqualToString:@"FL "]   ||
            [[breakPositionString uppercaseString] isEqualToString:@"F"]     ||
            [[breakPositionString uppercaseString] isEqualToString:@"FELL"]  ||
-           [breakPositionString isEqualToString:@"0"]                       ||
+           [[breakPositionString uppercaseString] isEqualToString:@"FEL"]   ||
+           [breakPositionString isEqualToString:@"0"]   ||
+           [breakPositionString isEqualToString:@"bmp"] ||
+           [breakPositionString isEqualToString:@"0"] ||
            [breakPositionString isEqualToString:@"."])
         {
             dnfOccurred = YES;
@@ -1349,17 +2602,25 @@
         else
         {
             breakPosition = [breakPositionString integerValue];
+            
+            if(breakPosition == 0)
+            {
+                // simply ignore these
+                continue;
+            }
         
             firstTurnPositionString = [lines objectAtIndex:lineNumber++];
             
-            if([[firstTurnPositionString uppercaseString] isEqualToString:@"X"] ||
-               [[firstTurnPositionString uppercaseString] isEqualToString:@"DNF"] ||
-               [[firstTurnPositionString uppercaseString] isEqualToString:@"OOP"] ||
-               [[firstTurnPositionString uppercaseString] isEqualToString:@"FL"] ||
-               [[firstTurnPositionString uppercaseString] isEqualToString:@"FL "] ||
+            if([[firstTurnPositionString uppercaseString] isEqualToString:@"X"]     ||
+               [[firstTurnPositionString uppercaseString] isEqualToString:@"DNF"]   ||
+               [[firstTurnPositionString uppercaseString] isEqualToString:@"OOP"]   ||
+               [[firstTurnPositionString uppercaseString] isEqualToString:@"FL"]    ||
+               [[firstTurnPositionString uppercaseString] isEqualToString:@"FL "]   ||
                [[firstTurnPositionString uppercaseString] isEqualToString:@"F"]     ||
-               [[firstTurnPositionString uppercaseString] isEqualToString:@"FELL"] ||
-               [firstTurnPositionString isEqualToString:@"0"] ||
+               [[firstTurnPositionString uppercaseString] isEqualToString:@"FELL"]  ||
+               [[firstTurnPositionString uppercaseString] isEqualToString:@"OOP"]   ||
+               [firstTurnPositionString isEqualToString:@"0"]   ||
+               [firstTurnPositionString isEqualToString:@"bmp"] ||
                [firstTurnPositionString isEqualToString:@"."])
             {
                 dnfOccurred = YES;
@@ -1367,66 +2628,150 @@
             else
             {
                 firstTurnPosition = [firstTurnPositionString integerValue];
+                
+                if(firstTurnPosition == 0)
+                {
+                    // simply ignore these
+                    continue;
+                }
               
-                if(firstTurnPosition == 1)
+                // entries at NF and FL have lengthsBehind/Ahead for 1st turn position
+                // every track adds for leader
+                if(firstTurnPosition == 1 || [trackAbbreviation isEqualToString:@"NF"] ||
+                   [trackAbbreviation isEqualToString:@"FL"] || [trackAbbreviation isEqualToString:@"MG"])
                 {
                     lineNumber++;  // for lengths in lead
                 }
                 
-                topOfStretchPositionString = [lines objectAtIndex:lineNumber++];
+                farTurnPositionString = [lines objectAtIndex:lineNumber++];
                 
-                if([[topOfStretchPositionString uppercaseString] isEqualToString:@"X"] ||
-                   [[topOfStretchPositionString uppercaseString] isEqualToString:@"DNF"] ||
-                   [[topOfStretchPositionString uppercaseString] isEqualToString:@"OOP"] ||
-                   [[topOfStretchPositionString uppercaseString] isEqualToString:@"FL"] ||
-                   [[topOfStretchPositionString uppercaseString] isEqualToString:@"FL "] ||
-                   [[topOfStretchPositionString uppercaseString] isEqualToString:@"F"]     ||
-                   [[topOfStretchPositionString uppercaseString] isEqualToString:@"FELL"] ||
-                   [topOfStretchPositionString isEqualToString:@"0"]||
-                   [topOfStretchPositionString isEqualToString:@"."])
+                if([[farTurnPositionString uppercaseString] isEqualToString:@"X"]      ||
+                   [[farTurnPositionString uppercaseString] isEqualToString:@"DNF"]    ||
+                   [[farTurnPositionString uppercaseString] isEqualToString:@"OOP"]    ||
+                   [[farTurnPositionString uppercaseString] isEqualToString:@"FL"]     ||
+                   [[farTurnPositionString uppercaseString] isEqualToString:@"FL "]    ||
+                   [[farTurnPositionString uppercaseString] isEqualToString:@"F"]      ||
+                   [[farTurnPositionString uppercaseString] isEqualToString:@"FELL"]   ||
+                   [[farTurnPositionString uppercaseString] isEqualToString:@"OOP"]    ||
+                   [farTurnPositionString isEqualToString:@"0"]    ||
+                   [farTurnPositionString isEqualToString:@"."]    ||
+                   [farTurnPositionString isEqualToString:@"bmp"]  ||
+                   [farTurnPositionString isEqualToString:@"fel"])
                 {
                     dnfOccurred = YES;
                 }
                 else
                 {
-                    topOfStretchPosition = [topOfStretchPositionString integerValue];
-                
-                    if(topOfStretchPosition == 1)
+                    farTurnPosition = [farTurnPositionString integerValue];
+                    
+                    if(farTurnPosition == 0)
+                    {
+                        // simply ignore these
+                        continue;
+                    }
+                    else if(farTurnPosition == 1)
                     {
                         lineNumber++;  // for lengths in lead
                     }
                 
-                    finishPositionString = [lines objectAtIndex:lineNumber++];
+                    finalPositionString = [lines objectAtIndex:lineNumber++];
                     
-                    if([[finishPositionString uppercaseString] isEqualToString:@"X"] ||
-                       [[finishPositionString uppercaseString] isEqualToString:@"DNF"] ||
-                       [[finishPositionString uppercaseString] isEqualToString:@"OOP"] ||
-                       [[finishPositionString uppercaseString] isEqualToString:@"FL"]  ||
-                       [[finishPositionString uppercaseString] isEqualToString:@"FL "] ||
-                       [[finishPositionString uppercaseString] isEqualToString:@"F"]     ||
-                       [[finishPositionString uppercaseString] isEqualToString:@"FELL"] ||
-                       [finishPositionString isEqualToString:@"0"] ||
-                       [finishPositionString isEqualToString:@"."])
+                    if([[finalPositionString uppercaseString] isEqualToString:@"X"]    ||
+                       [[finalPositionString uppercaseString] isEqualToString:@"DNF"]  ||
+                       [[finalPositionString uppercaseString] isEqualToString:@"OOP"]  ||
+                       [[finalPositionString uppercaseString] isEqualToString:@"FL"]   ||
+                       [[finalPositionString uppercaseString] isEqualToString:@"FL "]  ||
+                       [[finalPositionString uppercaseString] isEqualToString:@"F"]    ||
+                       [[finalPositionString uppercaseString] isEqualToString:@"FELL"] ||
+                       [[finalPositionString uppercaseString] isEqualToString:@"OOP"]  ||
+                       [finalPositionString isEqualToString:@"0"]      ||
+                       [finalPositionString isEqualToString:@"."]      ||
+                       [finalPositionString isEqualToString:@"bmp"]    ||
+                       [finalPositionString isEqualToString:@"fel"])
                     {
                         dnfOccurred = YES;
                     }
                     else
                     {
-                        finishPosition  = [finishPositionString integerValue];
+                        finalPosition  = [finalPositionString integerValue];
                         
-                        if(finishPosition > numberEntries)
+                        if(finalPosition > numberEntries)
                         {
-                            finishPosition = numberEntries;
+                            finalPosition = numberEntries;
+                        }
+                        else if(finalPosition == 0 && ([trackAbbreviation isEqualToString:@"NF"] || [trackAbbreviation isEqualToString:@"MG"]))
+                        {
+                            finalPosition  = farTurnPosition;
+                            farTurnPosition = firstTurnPosition;   // not EXACTLY right but close enough
+                            lineNumber--;
                         }
                         
                         lineNumber++;  // for lengths in lead
                         
-                        finishRaceTimeString    = [lines objectAtIndex:lineNumber++];
-                        finishRaceTime          = [finishRaceTimeString doubleValue];
+                        finalRaceTimeString = [lines objectAtIndex:lineNumber++];
                         
-                        if(finishRaceTime == 0.0)
+                        NSString *lengthsBehindOrAheadString = [lines objectAtIndex:lineNumber];
+                        
+                        if([lengthsBehindOrAheadString isEqualToString:@"OOP"])
                         {
-                            dnfOccurred = YES;
+                            finalRaceTime  = kDnfTime;
+                            dnfOccurred     = YES;
+                        }
+                        else
+                        {
+                            finalRaceTime = [finalRaceTimeString doubleValue];
+                        }
+                        
+                        if(finalRaceTime < 28.00)
+                        {
+                            finalRaceTime  = kDnfTime;
+                            dnfOccurred     = YES;
+                        }
+                    
+                        raceClassString         = @"";
+                        NSUInteger trackIndex   = [unmodeledTrackAbbreviationArray indexOfObject:trackAbbreviation];
+                        
+                        while(raceClassString.length == 0 || raceClassString.length > 2)
+                        {
+                            if(lineNumber > lines.count - 3)
+                            {
+                                NSLog(@"could not find raceClass for race");
+                                raceClassString = nil;
+                                break;
+                            }
+                            
+                            raceClassString = [lines objectAtIndex:lineNumber++];
+                            
+                            if (raceClassString.length == 3 && [raceClassString characterAtIndex:2] == ' ')
+                            {
+                                raceClassString = [raceClassString substringToIndex:2];
+                            }
+                            else if(raceClassString.length == 2 && [raceClassString characterAtIndex:1] == ' ')
+                            {
+                                raceClassString = [raceClassString substringToIndex:1];
+                            }
+                            else if([[raceClassString uppercaseString] isEqualToString:@"SCL"])
+                            {
+                                break;
+                            }
+                        }
+                        
+                        // avoids schooling races
+                        if(nil == raceClassString)
+                        {
+                            continue;
+                        }
+                    
+                        if(trackIndex != kNoIndex && raceClassString.length > 0 && raceClassString.length < 3 &&
+                                [[raceClassString lowercaseString] characterAtIndex:0] >= 'a' &&
+                                [[raceClassString lowercaseString] characterAtIndex:0] <= 'z')
+                        {
+                            NSMutableArray *thisTracksClasses = [newTrackClassesArray objectAtIndex:trackIndex];
+                            
+                            if([thisTracksClasses containsObject:raceClassString] == NO)
+                            {
+                                [thisTracksClasses addObject:raceClassString];
+                            }
                         }
                     }
                 }
@@ -1435,44 +2780,144 @@
         
         if(dnfOccurred)
         {
-            finishPosition = numberEntries;
+            finalPosition = numberEntries;
             
             switch (raceDxIndex)
             {
                 case 0:
-                    finishRaceTime = 34.50;
+                    finalRaceTime = 34.50;
                     break;
                 
                 case 1:
-                    finishRaceTime = 42.50;
+                    finalRaceTime = 42.50;
                     break;
                     
                 default:
                     break;
             }
         }
+       
+        // skip races at distances we are not modeling
+        if(raceDxIndex == kNoIndex)
+        {
+            continue;
+        }
         
-        NSLog(@"%@: %lu %lu %lu %lu %lu %lf, %lu",raceDateString, postPosition, breakPosition, firstTurnPosition, topOfStretchPosition, finishPosition, finishRaceTime, raceDxIndex);
+        if(finalRaceTime == 0.0)	// based on post position
+        {
+            NSLog(@"zero race time");
+            continue;
+        }
+        else if(trapPosition == 0 || trapPosition > kMaximumNumberEntries)
+        {
+            NSLog(@"post position error");
+            continue;
+        }
+        else if(breakPosition == 0 || breakPosition > kMaximumNumberEntries)
+        {
+            NSLog(@"post position error");
+            continue;
+        }
+        else if(firstTurnPosition == 0 || firstTurnPosition > kMaximumNumberEntries)
+        {
+            NSLog(@"1st turn position error");
+            continue;
+        }
+        else if(farTurnPosition == 0 || farTurnPosition > kMaximumNumberEntries)
+        {
+            NSLog(@"top of stretch position error");
+            continue;
+        }
+        else if(finalPosition == 0 || finalPosition > kMaximumNumberEntries)
+        {
+            NSLog(@"final position error");
+            continue;
+        }
+        
+        NSLog(@"%@ %@  %@: %lu %lu %lu %lu %lu %lf, %lu", trackAbbreviation, raceDateString, raceClassString, trapPosition, breakPosition, firstTurnPosition, farTurnPosition, finalPosition, finalRaceTime, raceDxIndex);
+        
         totalRacesEvaluatedForThisEntry++;
         
-        [self addStatsForEntryAtPost:postPosition
+        [self addStatsForEntryAtPost:trapPosition
                  withbreakAtPosition:breakPosition
                    firstTurnPosition:firstTurnPosition
-                topOfStretchPosition:topOfStretchPosition
-                       finalPosition:finishPosition
-                        withRaceTime:finishRaceTime
+                     farTurnPosition:farTurnPosition
+                       finalPosition:finalPosition
+                        withRaceTime:finalRaceTime
                        atRaceDxIndex:raceDxIndex
             withStatAccumulatorArray:&dxStatsAccumulatorArray[0]
-                 andRaceCounterArray:&dxRaceCounterArray[0]];
+                 andRaceCounterArray:&dxRaceCounterArray[0]
+                     forTrackINumber:0];
         
-//        [self loadWosrtAndBestTimesFromArray:thisTracksWorstAndBestTimesArray
-//                           intoDistanceStats:distanceStats];
-
-    }
+           }
     
     NSLog(@"total Duplicates: %lu", totalDuplicatedForThisEntry);
     return totalRacesEvaluatedForThisEntry;
+
+    return 0;
 }
+
+- (BOOL)isLineDateLine:(NSString*)testLine
+{
+    BOOL answer     = YES;
+    BOOL gotAnswer  = NO;
+    
+    if(testLine.length < 10 || testLine.length > 14)
+    {
+        answer = NO;
+    }
+    else
+    {
+        for(NSUInteger index = 0; index < testLine.length; index++)
+        {
+            char c = [testLine characterAtIndex:index];
+            
+            switch (index)
+            {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 5:
+                case 6:
+                case 8:
+                case 9:
+                {
+                    if(c < '0' || c > '9')
+                    {
+                        answer = NO;
+                        gotAnswer = YES;
+                    }
+                    
+                    break;
+                }
+                    
+                case 4:
+                case 7:
+                {
+                    if(c != '-')
+                    {
+                        answer = NO;
+                        gotAnswer = YES;
+                    }
+                    
+                    break;
+                }
+                    
+                default:
+                    break;
+            }
+            
+            if(gotAnswer)
+            {
+                break;
+            }
+        }
+    }
+    
+    return answer;
+}
+
 
 - (void)printStatArrays:(double*)statsAccumulatorArray
 		andCounterArray:(int*)raceCounterArray
@@ -1694,30 +3139,9 @@
 	return fileContents;
 }
 
-- (void)loadWosrtAndBestTimesFromArray:(NSArray*)worstAndBestTimesArray
-					 intoDistanceStats:(NSOrderedSet*)distanceStats
-{;
-	NSNumber *bestTime2Turns	= [worstAndBestTimesArray objectAtIndex:0];
-	NSNumber *bestTime3Turns	= [worstAndBestTimesArray objectAtIndex:2];
-    
-    double best2TurnRaceTime    = [bestTime2Turns doubleValue];
-    double best3TurnRaceTime    = [bestTime3Turns doubleValue];
-    double dnf2TurnRaceTime     = best2TurnRaceTime * 1.11;
-    double dnf3TurnRaceTime     = best3TurnRaceTime * 1.11;
-    
-	NSNumber *dnfTime2Turns		= [NSNumber numberWithDouble:dnf2TurnRaceTime];
-	NSNumber *dnfTime3Turns		= [NSNumber numberWithDouble:dnf3TurnRaceTime];
 
-	ECRaceDistanceStats *twoTurnRaceDxStats		= [distanceStats objectAtIndex:0];
-	ECRaceDistanceStats *threeTurnRaceDxStats	= [distanceStats objectAtIndex:1];
-	
-	twoTurnRaceDxStats.bestTime2Turns	= bestTime2Turns;
-	twoTurnRaceDxStats.dnfTime2Turns	= dnfTime2Turns;
-	threeTurnRaceDxStats.bestTime3Turns	= bestTime3Turns;
-	threeTurnRaceDxStats.dnfTime3Turns	= dnfTime3Turns;
-}
 
-- (NSUInteger)getIndexOfPostPosition:(NSArray*)tokens
+- (NSUInteger)getIndexOfTrapPosition:(NSArray*)tokens
 {
 	// return 0 if dnf situation is encountered
 	// otherwise return the index of the post postion word
@@ -1762,236 +3186,455 @@
 	return index;
 }
 
-- (NSMutableOrderedSet*)getClassStatsFromWinTimesArray:(double*)accumulatedWinTimesArray
-										showTimesArray:(double*)accumulatedShowTimesArray
-									  raceCounterArray:(int*)raceCounterArray
-										  forTrackName:(NSString*)trackName
-										 andTrackStats:(ECTrackStats*)trackStats
+- (ECSprintRaceStats*)getSprintStatsForTrackWithIndex:(NSUInteger)trackIdIndex
+                                     withTrackIdArray:(NSArray*)trackIdArray
+                                            fromArray:(double*)accumulatedStatsArray
+                                      andCounterArray:(int*)accumulatedCounterArray
 {
-	NSMutableOrderedSet *classStats = [NSMutableOrderedSet new];
-	NSArray *raceClassArray			= [self getClassesForTrackNamed:trackName];
-	NSUInteger arraySize			= raceClassArray.count * kNumberRaceDistances;
-	double averageWinTime2Turns		= 0.0;
-	double averagePlaceTime2Turns	= 0.0;
-	double averageShowTime2Turns	= 0.0;
-	double averageWinTime3Turns		= 0.0;
-	double averagePlaceTime3Turns	= 0.0;
-	double averageShowTime3Turns	= 0.0;
-	NSUInteger raceClassIndex		= 0;
-	NSString *className				= nil;
-			
-    ECClassStats *newClassStats = [NSEntityDescription insertNewObjectForEntityForName:@"ECClassStats"
-                                                                inManagedObjectContext:MOC];
-
-	for(NSUInteger index = 0; index < arraySize; index++)
-	{
-		raceClassIndex	= index < raceClassArray.count ? index : index - raceClassArray.count;
-		className		= [raceClassArray objectAtIndex:raceClassIndex];
-		
-		if(index < raceClassArray.count)  // 2 turn races
-        {
-			int num2TurnRacesThisClass          = raceCounterArray[index];
-            double accumulatedWinTimes2Turns	= accumulatedWinTimesArray[index];
-            double accumulatedShowTimes2Turns	= accumulatedShowTimesArray[index];
-			
-			if(num2TurnRacesThisClass > 0)
-			{
-				averageWinTime2Turns    = accumulatedWinTimes2Turns / num2TurnRacesThisClass;
-				averageShowTime2Turns   = accumulatedShowTimes2Turns / num2TurnRacesThisClass;
-			}
-		}
-		else	// 3 turn races
-		{
-			NSUInteger num3TurnRacesThisClass   = raceCounterArray[index];
-            double accumulatedWinTimes3Turns	= accumulatedWinTimesArray[index];
-            double accumulatedShowTimes3Turns	= accumulatedShowTimesArray[index];
-
-			if(num3TurnRacesThisClass > 0)
-			{
-				averageWinTime3Turns    = accumulatedWinTimes3Turns / num3TurnRacesThisClass;
-				averageShowTime3Turns   = accumulatedShowTimes3Turns / num3TurnRacesThisClass;
-			}
-		}
-    }
-
-    newClassStats.raceClass					= trackName;
-    newClassStats.trackStats				= trackStats;
-    newClassStats.averageWinTime2Turns		= [NSNumber numberWithDouble:averageWinTime2Turns];
-    newClassStats.averageWinTime3Turns		= [NSNumber numberWithDouble:averageWinTime3Turns];
-    newClassStats.averagePlaceTime2Turns	= [NSNumber numberWithDouble:averageShowTime2Turns];
-    newClassStats.averagePlaceTime3Turns	= [NSNumber numberWithDouble:averageShowTime3Turns];
-    newClassStats.averageShowTime2Turns		= [NSNumber numberWithDouble:averageShowTime2Turns];
-    newClassStats.averageShowTime3Turns		= [NSNumber numberWithDouble:averageShowTime3Turns];
-    newClassStats.raceClassIndex			= [NSNumber numberWithUnsignedInteger:raceClassIndex];
-		
-    [classStats addObject:newClassStats];
-
-	return classStats;
-}
-
-- (NSOrderedSet*)getDistanceStatsFromArray:(double*)accumulatedStatsArray
-						   andCounterArray:(int*)accumulatedCounterArray
-{
-	int raceCounterAtDx						= 0;
+    int raceCounterAtDx						= 0;
 	double statValue						= 0.0;
 	double breakAverageFromPost				= 0.0;
 	double firstTurnAverageFromPost			= 0.0;
-	double finishPositionAverageFromPost	= 0.0;
-	double finishTimeAverageFromPost		= 0.0;
-	double farTurnAverageFromFirstTurn		= 0.0;
-	double finishPositionAverageFromFarTurn	= 0.0;
-				
-	ECPostStats *twoTurnPost_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *twoTurnPost_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *twoTurnPost_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *twoTurnPost_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *twoTurnPost_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *twoTurnPost_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *twoTurnPost_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *twoTurnPost_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *twoTurnPost_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	
-	ECPostStats *threeTurnPost_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *threeTurnPost_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *threeTurnPost_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *threeTurnPost_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *threeTurnPost_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *threeTurnPost_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *threeTurnPost_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *threeTurnPost_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	ECPostStats *threeTurnPost_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
-	
-	ECFirstTurnStats *twoTurnFtPos_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *twoTurnFtPos_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *twoTurnFtPos_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *twoTurnFtPos_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *twoTurnFtPos_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *twoTurnFtPos_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *twoTurnFtPos_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *twoTurnFtPos_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *twoTurnFtPos_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	
-	ECFirstTurnStats *threeTurnFtPos_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *threeTurnFtPos_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *threeTurnFtPos_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *threeTurnFtPos_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *threeTurnFtPos_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *threeTurnFtPos_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *threeTurnFtPos_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *threeTurnFtPos_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	ECFirstTurnStats *threeTurnFtPos_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
-	
-	ECTopOFStretchStats *twoTurnTosPos_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *twoTurnTosPos_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *twoTurnTosPos_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *twoTurnTosPos_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *twoTurnTosPos_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *twoTurnTosPos_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *twoTurnTosPos_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *twoTurnTosPos_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *twoTurnTosPos_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	
-	ECTopOFStretchStats *threeTurnTosPos_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *threeTurnTosPos_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *threeTurnTosPos_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *threeTurnTosPos_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *threeTurnTosPos_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *threeTurnTosPos_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *threeTurnTosPos_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *threeTurnTosPos_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	ECTopOFStretchStats *threeTurnTosPos_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECTopOfStretchStats" inManagedObjectContext:MOC];
-	
-	NSArray *postStats548	= [[NSArray alloc] initWithObjects:twoTurnPost_1, twoTurnPost_2, twoTurnPost_3, twoTurnPost_4, twoTurnPost_5,
-                               twoTurnPost_6, twoTurnPost_7, twoTurnPost_8, twoTurnPost_9, nil];
-	NSArray *ftStats548		= [[NSArray alloc] initWithObjects:twoTurnFtPos_1, twoTurnFtPos_2, twoTurnFtPos_3, twoTurnFtPos_4, twoTurnFtPos_5,
-                               twoTurnFtPos_6, twoTurnFtPos_7, twoTurnFtPos_8, twoTurnFtPos_9, nil];
-	NSArray *tosStats548	= [[NSArray alloc] initWithObjects:twoTurnTosPos_1, twoTurnTosPos_2, twoTurnTosPos_3, twoTurnTosPos_4, twoTurnTosPos_5,
-                               twoTurnTosPos_6, twoTurnTosPos_7, twoTurnTosPos_8, twoTurnTosPos_9, nil];
-	
-	NSArray *postStats678	= [[NSArray alloc] initWithObjects:threeTurnPost_1, threeTurnPost_2, threeTurnPost_3, threeTurnPost_4, threeTurnPost_5,
-                               threeTurnPost_6, threeTurnPost_7, threeTurnPost_8,  threeTurnPost_9,nil];
-	NSArray *ftStats678		= [[NSArray alloc] initWithObjects:threeTurnFtPos_1, threeTurnFtPos_2, threeTurnFtPos_3, threeTurnFtPos_4, threeTurnFtPos_5,
-                               threeTurnFtPos_6, threeTurnFtPos_7, threeTurnFtPos_8,  threeTurnFtPos_9, nil];
-	NSArray *tosStats678	= [[NSArray alloc] initWithObjects:threeTurnTosPos_1, threeTurnTosPos_2, threeTurnTosPos_3, threeTurnTosPos_4, threeTurnTosPos_5,
-                               threeTurnTosPos_6, threeTurnTosPos_7, threeTurnTosPos_8, threeTurnTosPos_9, nil];
+	double finalPositionAverageFromPost	= 0.0;
+	double finalTimeAverageFromPost		= 0.0;
+	double finalPositionAverageFromTurn	= 0.0;
 
-	ECRaceDistanceStats *twoTurnRaceStats	= [NSEntityDescription insertNewObjectForEntityForName:@"ECRaceDistanceStats"
-																			inManagedObjectContext:MOC];
-	ECRaceDistanceStats *threeTurnRaceStats = [NSEntityDescription insertNewObjectForEntityForName:@"ECRaceDistanceStats"
-																			inManagedObjectContext:MOC];
-
-	twoTurnRaceStats.postStats			= [[NSOrderedSet alloc] initWithArray:postStats548];
-	twoTurnRaceStats.firstTurnStats		= [[NSOrderedSet alloc] initWithArray:ftStats548];
-	twoTurnRaceStats.topOfStretchStats	= [[NSOrderedSet alloc] initWithArray:tosStats548];
-	
-	threeTurnRaceStats.postStats			= [[NSOrderedSet alloc] initWithArray:postStats678];
-	threeTurnRaceStats.firstTurnStats		= [[NSOrderedSet alloc] initWithArray:ftStats678];
-	threeTurnRaceStats.topOfStretchStats	= [[NSOrderedSet alloc] initWithArray:tosStats678];
-	
-	NSOrderedSet *raceDxStatsSet = [[NSOrderedSet alloc] initWithObjects:twoTurnRaceStats, threeTurnRaceStats, nil];
-	
-	// iterate through arrays
-	for(int raceDxIndex = 0; raceDxIndex < kNumberRaceDistances; raceDxIndex++)
-	{
-		ECRaceDistanceStats *dxStats = [raceDxStatsSet objectAtIndex:raceDxIndex];
-		
-		for(int positionIndex = 0; positionIndex < kMaximumNumberEntries; positionIndex++)
-		{
-			ECPostStats *postStats			= [dxStats.postStats objectAtIndex:positionIndex];
-			ECFirstTurnStats *ftStats		= [dxStats.firstTurnStats objectAtIndex:positionIndex];
-			ECTopOFStretchStats *tosStats	= [dxStats.topOfStretchStats objectAtIndex:positionIndex];
-			
-			// calculate and assign average values for each post
-			for(int fieldNumber = 0; fieldNumber < kNumberStatFields; fieldNumber++)
-			{
-				// get the counter for this fieldNumber at this postIndex for this raceDxIndex
-				int index		= (raceDxIndex * (kMaximumNumberEntries * kNumberStatFields)) + (positionIndex * kNumberStatFields) + fieldNumber;
-				raceCounterAtDx	= accumulatedCounterArray[index];
-				statValue		= accumulatedStatsArray[index];
-				
-				// get the statAccumulator this fieldNumber at this postIndex for this raceDxIndex
-				switch (fieldNumber)
-				{
-					case 0:
-						breakAverageFromPost = statValue / raceCounterAtDx;
-						break;
-					
-					case 1:
-						firstTurnAverageFromPost = statValue / raceCounterAtDx;
-						break;
-					
-					case 2:
-						finishPositionAverageFromPost = statValue / raceCounterAtDx;
-						break;
-						
-					case 3:
-						finishTimeAverageFromPost = statValue / raceCounterAtDx;
-						break;
-					
-					case 4:
-						farTurnAverageFromFirstTurn = statValue / raceCounterAtDx;
-						break;
-					
-					case 5:
-						finishPositionAverageFromFarTurn = statValue / raceCounterAtDx;
-						break;
-					
-					default:
-						NSLog(@"bad field number");
-						break;
-				}
-			}
-			
-			postStats.breakPositionAverage		= [NSNumber numberWithDouble:breakAverageFromPost];
-			postStats.firstTurnPositionAverage	= [NSNumber numberWithDouble:firstTurnAverageFromPost];
-			postStats.finishPositionAverage		= [NSNumber numberWithDouble:finishPositionAverageFromPost];
-			ftStats.averagePositionFarTurn		= [NSNumber numberWithDouble:farTurnAverageFromFirstTurn];
-			tosStats.averageFinishPosition		= [NSNumber numberWithDouble:finishPositionAverageFromFarTurn];
-		}
-	}
-
-	return raceDxStatsSet;
+    ECSprintRaceStats *sprintRaceStats = [NSEntityDescription insertNewObjectForEntityForName:@"ECSprintRaceStats" inManagedObjectContext:MOC];
+    
+    // sprint races
+    ECPostStats *sprintPostStats_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *sprintPostStats_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *sprintPostStats_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *sprintPostStats_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *sprintPostStats_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *sprintPostStats_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *sprintPostStats_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *sprintPostStats_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *sprintPostStats_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+    
+    ECSprintTurnStats *sprintTurnStats_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECSprintTurnStats" inManagedObjectContext:MOC];
+    ECSprintTurnStats *sprintTurnStats_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECSprintTurnStats" inManagedObjectContext:MOC];
+    ECSprintTurnStats *sprintTurnStats_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECSprintTurnStats" inManagedObjectContext:MOC];
+    ECSprintTurnStats *sprintTurnStats_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECSprintTurnStats" inManagedObjectContext:MOC];
+    ECSprintTurnStats *sprintTurnStats_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECSprintTurnStats" inManagedObjectContext:MOC];
+    ECSprintTurnStats *sprintTurnStats_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECSprintTurnStats" inManagedObjectContext:MOC];
+    ECSprintTurnStats *sprintTurnStats_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECSprintTurnStats" inManagedObjectContext:MOC];
+    ECSprintTurnStats *sprintTurnStats_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECSprintTurnStats" inManagedObjectContext:MOC];
+    ECSprintTurnStats *sprintTurnStats_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECSprintTurnStats" inManagedObjectContext:MOC];
+    
+    NSArray *postStatsSprint = [NSArray arrayWithObjects:sprintPostStats_1, sprintPostStats_2, sprintPostStats_3, sprintPostStats_4, sprintPostStats_5,
+                                sprintPostStats_6, sprintPostStats_7, sprintPostStats_8, sprintPostStats_9, nil];
+    NSArray *turnStatsSprint = [NSArray arrayWithObjects:sprintTurnStats_1, sprintTurnStats_2, sprintTurnStats_3, sprintTurnStats_4, sprintTurnStats_5,
+                                sprintTurnStats_6, sprintTurnStats_7, sprintTurnStats_8, sprintTurnStats_9, nil];
+    
+    sprintRaceStats.postStats           = [[NSOrderedSet alloc] initWithArray:postStatsSprint];
+    sprintRaceStats.sprintTurnStats     = [[NSOrderedSet alloc] initWithArray:turnStatsSprint];
+    
+    int overallIndex = (int)trackIdIndex * kNumberRaceDistances * kMaximumNumberEntries  * kNumberStatFields;
+    
+    for(int positionIndex = 0; positionIndex < kMaximumNumberEntries; positionIndex++)
+    {
+        ECPostStats *postStats          = [sprintRaceStats.postStats objectAtIndex:positionIndex];
+        ECSprintTurnStats *turnStats    = [sprintRaceStats.sprintTurnStats objectAtIndex:positionIndex];
+        
+        // calculate and assign average values for each post
+        for(int fieldNumber = 0; fieldNumber < kNumberStatFields; fieldNumber++)
+        {
+            // get the counter for this fieldNumber at this postIndex for this raceDxIndex
+            raceCounterAtDx	= accumulatedCounterArray[overallIndex];
+            statValue		= accumulatedStatsArray[overallIndex];
+            
+            // get the statAccumulator this fieldNumber at this postIndex for this raceDxIndex
+            switch (fieldNumber)
+            {
+                case 0:
+                    breakAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 1:
+                    firstTurnAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 2:
+                    finalPositionAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 3:
+                    finalTimeAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 4:
+                    finalPositionAverageFromTurn = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 5:
+                    break;
+                    
+                default:
+                    NSLog(@"bad field number");
+                    break;
+            }
+            
+            postStats.boxNumber                 = [NSNumber numberWithInt:positionIndex + 1];
+            postStats.breakPositionAverage		= [NSNumber numberWithDouble:breakAverageFromPost];
+            postStats.firstTurnPositionAverage	= [NSNumber numberWithDouble:firstTurnAverageFromPost];
+            postStats.finalPositionAverage		= [NSNumber numberWithDouble:finalPositionAverageFromPost];
+            
+            turnStats.turnPosition              = [NSNumber numberWithDouble:positionIndex + 1];
+            turnStats.averageFinalPosition		= [NSNumber numberWithDouble:finalPositionAverageFromTurn];
+            
+            overallIndex++;
+        }
+    }
+    
+    return sprintRaceStats;
 }
+
+- (ECThreeTurnRaceStats*)getThreeTurnStatsForTrackWithIndex:(NSUInteger)trackIdIndex
+                                           withTrackIdArray:(NSArray*)trackIdArray
+                                                  fromArray:(double*)accumulatedStatsArray
+                                            andCounterArray:(int*)accumulatedCounterArray
+{
+	int raceCounterAtDx                     = 0;
+	double statValue                        = 0.0;
+	double breakAverageFromPost             = 0.0;
+	double firstTurnAverageFromPost         = 0.0;
+	double finalPositionAverageFromPost     = 0.0;
+	double finalTimeAverageFromPost         = 0.0;
+	double farTurnAverageFromFirstTurn      = 0.0;
+	double finalPositionAverageFromFarTurn	= 0.0;
+    
+    ECThreeTurnRaceStats *threeTurnStats = [NSEntityDescription insertNewObjectForEntityForName:@"ECTwoTurnStats" inManagedObjectContext:MOC];
+    
+    // 3 turn races
+	ECPostStats *post_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+    
+	ECFirstTurnStats *firstTurnPos_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	
+	ECFarTurnStats *farTurnPos_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+    
+	NSArray *postStatsArray         = [[NSArray alloc] initWithObjects:post_1, post_2, post_3, post_4, post_5, post_6, post_7, post_8, post_9, nil];
+	NSArray *firstTurnStatsArray    = [[NSArray alloc] initWithObjects:firstTurnPos_1, firstTurnPos_2, firstTurnPos_3, firstTurnPos_4, firstTurnPos_5, firstTurnPos_6, firstTurnPos_7, firstTurnPos_8, firstTurnPos_9, nil];
+	NSArray *farTurnStatsArray      = [[NSArray alloc] initWithObjects:farTurnPos_1, farTurnPos_2, farTurnPos_3, farTurnPos_4, farTurnPos_5, farTurnPos_6, farTurnPos_7, farTurnPos_8, farTurnPos_9, nil];
+	
+    threeTurnStats.postStats        = [[NSOrderedSet alloc] initWithArray:postStatsArray];
+	threeTurnStats.firstTurnStats   = [[NSOrderedSet alloc] initWithArray:firstTurnStatsArray];
+	threeTurnStats.farTurnStats     = [[NSOrderedSet alloc] initWithArray:farTurnStatsArray];
+	
+    int index = ((int)trackIdIndex * kNumberRaceDistances * kMaximumNumberEntries * kNumberStatFields) + (2 * kMaximumNumberEntries * kNumberStatFields);
+    
+    for(int positionIndex = 0; positionIndex < kMaximumNumberEntries; positionIndex++)
+    {
+        ECPostStats *postStats              = [threeTurnStats.postStats objectAtIndex:positionIndex];
+        ECFirstTurnStats *firstTurnStats    = [threeTurnStats.firstTurnStats objectAtIndex:positionIndex];
+        ECFarTurnStats *farTurnStats        = [threeTurnStats.farTurnStats objectAtIndex:positionIndex];
+        
+        // calculate and assign average values for each post
+        for(int fieldNumber = 0; fieldNumber < kNumberStatFields; fieldNumber++)
+        {
+            // get the counter for this fieldNumber at this postIndex for this raceDxIndex
+            raceCounterAtDx     = accumulatedCounterArray[index];
+            statValue           = accumulatedStatsArray[index];
+            
+            // get the statAccumulator this fieldNumber at this postIndex for this raceDxIndex
+            switch (fieldNumber)
+            {
+                case 0:
+                    breakAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 1:
+                    firstTurnAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 2:
+                    finalPositionAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 3:
+                    finalTimeAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 4:
+                    farTurnAverageFromFirstTurn = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 5:
+                    finalPositionAverageFromFarTurn = statValue / raceCounterAtDx;
+                    break;
+                    
+                default:
+                    NSLog(@"bad field number");
+                    break;
+            }
+            
+            postStats.breakPositionAverage          = [NSNumber numberWithDouble:breakAverageFromPost];
+            postStats.firstTurnPositionAverage      = [NSNumber numberWithDouble:firstTurnAverageFromPost];
+            postStats.finalPositionAverage          = [NSNumber numberWithDouble:finalPositionAverageFromPost];
+            firstTurnStats.averagePositionFarTurn   = [NSNumber numberWithDouble:farTurnAverageFromFirstTurn];
+            farTurnStats.averageFinalPosition		= [NSNumber numberWithDouble:finalPositionAverageFromFarTurn];
+            
+            index++;
+        }
+    }
+    
+	return threeTurnStats;
+}
+
+- (ECMarathonRaceStats*)getMarathonStatsForTrackWithIndex:(NSUInteger)trackIdIndex
+                                         withTrackIdArray:(NSArray*)trackIdArray
+                                                fromArray:(double*)accumulatedStatsArray
+                                          andCounterArray:(int*)accumulatedCounterArray
+{
+	int raceCounterAtDx                     = 0;
+	double statValue                        = 0.0;
+	double breakAverageFromPost             = 0.0;
+	double firstTurnAverageFromPost         = 0.0;
+	double finalPositionAverageFromPost     = 0.0;
+	double finalTimeAverageFromPost         = 0.0;
+	double farTurnAverageFromFirstTurn      = 0.0;
+	double finalPositionAverageFromFarTurn	= 0.0;
+    
+    ECMarathonRaceStats *marathonStats = [NSEntityDescription insertNewObjectForEntityForName:@"ECTwoTurnStats" inManagedObjectContext:MOC];
+    
+    // 2 turn races
+	ECPostStats *post_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+    
+	ECFirstTurnStats *firstTurnPos_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	
+	ECFarTurnStats *farTurnPos_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+    
+	NSArray *postStatsArray         = [[NSArray alloc] initWithObjects:post_1, post_2, post_3, post_4, post_5, post_6, post_7, post_8, post_9, nil];
+	NSArray *firstTurnStatsArray    = [[NSArray alloc] initWithObjects:firstTurnPos_1, firstTurnPos_2, firstTurnPos_3, firstTurnPos_4, firstTurnPos_5, firstTurnPos_6, firstTurnPos_7, firstTurnPos_8, firstTurnPos_9, nil];
+	NSArray *farTurnStatsArray      = [[NSArray alloc] initWithObjects:farTurnPos_1, farTurnPos_2, farTurnPos_3, farTurnPos_4, farTurnPos_5, farTurnPos_6, farTurnPos_7, farTurnPos_8, farTurnPos_9, nil];
+	
+    marathonStats.postStats         = [[NSOrderedSet alloc] initWithArray:postStatsArray];
+	marathonStats.firstTurnStats    = [[NSOrderedSet alloc] initWithArray:firstTurnStatsArray];
+	marathonStats.farTurnStats      = [[NSOrderedSet alloc] initWithArray:farTurnStatsArray];
+	
+    int index = ((int)trackIdIndex * kNumberRaceDistances * kMaximumNumberEntries * kNumberStatFields) + (3 * kMaximumNumberEntries * kNumberStatFields);
+    
+    for(int positionIndex = 0; positionIndex < kMaximumNumberEntries; positionIndex++)
+    {
+        ECPostStats *postStats              = [marathonStats.postStats objectAtIndex:positionIndex];
+        ECFirstTurnStats *firstTurnStats    = [marathonStats.firstTurnStats objectAtIndex:positionIndex];
+        ECFarTurnStats *farTurnStats        = [marathonStats.farTurnStats objectAtIndex:positionIndex];
+        
+        // calculate and assign average values for each post
+        for(int fieldNumber = 0; fieldNumber < kNumberStatFields; fieldNumber++)
+        {
+            // get the counter for this fieldNumber at this postIndex for this raceDxIndex
+            raceCounterAtDx     = accumulatedCounterArray[index];
+            statValue           = accumulatedStatsArray[index];
+            
+            // get the statAccumulator this fieldNumber at this postIndex for this raceDxIndex
+            switch (fieldNumber)
+            {
+                case 0:
+                    breakAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 1:
+                    firstTurnAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 2:
+                    finalPositionAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 3:
+                    finalTimeAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 4:
+                    farTurnAverageFromFirstTurn = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 5:
+                    finalPositionAverageFromFarTurn = statValue / raceCounterAtDx;
+                    break;
+                    
+                default:
+                    NSLog(@"bad field number");
+                    break;
+            }
+            
+            postStats.breakPositionAverage          = [NSNumber numberWithDouble:breakAverageFromPost];
+            postStats.firstTurnPositionAverage      = [NSNumber numberWithDouble:firstTurnAverageFromPost];
+            postStats.finalPositionAverage          = [NSNumber numberWithDouble:finalPositionAverageFromPost];
+            firstTurnStats.averagePositionFarTurn   = [NSNumber numberWithDouble:farTurnAverageFromFirstTurn];
+            farTurnStats.averageFinalPosition		= [NSNumber numberWithDouble:finalPositionAverageFromFarTurn];
+            
+            index++;
+        }
+    }
+    
+	return marathonStats;
+}
+
+- (ECTwoTurnRaceStats*)getTwoTurnStatsForTrackWithIndex:(NSUInteger)trackIdIndex
+                                       withTrackIdArray:(NSArray*)trackIdArray
+                                              fromArray:(double*)accumulatedStatsArray
+                                        andCounterArray:(int*)accumulatedCounterArray
+{
+	int raceCounterAtDx                     = 0;
+	double statValue                        = 0.0;
+	double breakAverageFromPost             = 0.0;
+	double firstTurnAverageFromPost         = 0.0;
+	double finalPositionAverageFromPost     = 0.0;
+	double finalTimeAverageFromPost         = 0.0;
+	double farTurnAverageFromFirstTurn      = 0.0;
+	double finalPositionAverageFromFarTurn	= 0.0;
+
+    ECTwoTurnRaceStats *twoTurnStats = [NSEntityDescription insertNewObjectForEntityForName:@"ECTwoTurnStats" inManagedObjectContext:MOC];
+    
+    // 2 turn races
+	ECPostStats *post_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+	ECPostStats *post_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECPostStats" inManagedObjectContext:MOC];
+    
+	ECFirstTurnStats *firstTurnPos_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	ECFirstTurnStats *firstTurnPos_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFirstTurnStats" inManagedObjectContext:MOC];
+	
+	ECFarTurnStats *farTurnPos_1 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_2 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_3 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_4 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_5 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_6 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_7 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_8 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+	ECFarTurnStats *farTurnPos_9 = [NSEntityDescription insertNewObjectForEntityForName:@"ECFarTurnStats" inManagedObjectContext:MOC];
+    
+	NSArray *postStatsArray         = [[NSArray alloc] initWithObjects:post_1, post_2, post_3, post_4, post_5, post_6, post_7, post_8, post_9, nil];
+	NSArray *firstTurnStatsArray    = [[NSArray alloc] initWithObjects:firstTurnPos_1, firstTurnPos_2, firstTurnPos_3, firstTurnPos_4, firstTurnPos_5, firstTurnPos_6, firstTurnPos_7, firstTurnPos_8, firstTurnPos_9, nil];
+	NSArray *farTurnStatsArray      = [[NSArray alloc] initWithObjects:farTurnPos_1, farTurnPos_2, farTurnPos_3, farTurnPos_4, farTurnPos_5, farTurnPos_6, farTurnPos_7, farTurnPos_8, farTurnPos_9, nil];
+	
+    twoTurnStats.postStats      = [[NSOrderedSet alloc] initWithArray:postStatsArray];
+	twoTurnStats.firstTurnStats = [[NSOrderedSet alloc] initWithArray:firstTurnStatsArray];
+	twoTurnStats.farTurnStats	= [[NSOrderedSet alloc] initWithArray:farTurnStatsArray];
+	
+    int index = ((int)trackIdIndex * kNumberRaceDistances * kMaximumNumberEntries * kNumberStatFields) + (1 * kMaximumNumberEntries * kNumberStatFields);
+    
+    for(int positionIndex = 0; positionIndex < kMaximumNumberEntries; positionIndex++)
+    {
+        ECPostStats *postStats              = [twoTurnStats.postStats objectAtIndex:positionIndex];
+        ECFirstTurnStats *firstTurnStats    = [twoTurnStats.firstTurnStats objectAtIndex:positionIndex];
+        ECFarTurnStats *farTurnStats        = [twoTurnStats.farTurnStats objectAtIndex:positionIndex];
+        
+        // calculate and assign average values for each post
+        for(int fieldNumber = 0; fieldNumber < kNumberStatFields; fieldNumber++)
+        {
+            // get the counter for this fieldNumber at this postIndex for this raceDxIndex
+            raceCounterAtDx     = accumulatedCounterArray[index];
+            statValue           = accumulatedStatsArray[index];
+            
+            // get the statAccumulator this fieldNumber at this postIndex for this raceDxIndex
+            switch (fieldNumber)
+            {
+                case 0:
+                    breakAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 1:
+                    firstTurnAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 2:
+                    finalPositionAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 3:
+                    finalTimeAverageFromPost = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 4:
+                    farTurnAverageFromFirstTurn = statValue / raceCounterAtDx;
+                    break;
+                    
+                case 5:
+                    finalPositionAverageFromFarTurn = statValue / raceCounterAtDx;
+                    break;
+                    
+                default:
+                    NSLog(@"bad field number");
+                    break;
+            }
+            
+            postStats.breakPositionAverage          = [NSNumber numberWithDouble:breakAverageFromPost];
+            postStats.firstTurnPositionAverage      = [NSNumber numberWithDouble:firstTurnAverageFromPost];
+            postStats.finalPositionAverage          = [NSNumber numberWithDouble:finalPositionAverageFromPost];
+            firstTurnStats.averagePositionFarTurn   = [NSNumber numberWithDouble:farTurnAverageFromFirstTurn];
+            farTurnStats.averageFinalPosition		= [NSNumber numberWithDouble:finalPositionAverageFromFarTurn];
+            
+            index++;
+        }
+    }
+
+	return twoTurnStats;
+}
+
 
 - (BOOL)isThisCharADigit:(char)c
 {
@@ -2040,6 +3683,7 @@
 						mutationRate:(float)mutationRate
 							comments:(NSString*)comments
 {
+    /*
     NSLog(@"createNewPopulation called in ECEvolutionManager");
 	
 	self.generationsEvolved = [self.population.generationNumber unsignedIntegerValue];
@@ -2059,7 +3703,7 @@
 
 	self.rankedPopulation = [self createNewHandicappers];
 	
-	[self fillWorkingPopulationArrayWithOriginalMembers];
+	[self fillWorkingPopulationArrayWithOriginalMembers];*/
 }
 
 
@@ -2073,23 +3717,26 @@
 
 	for(int popIndex = 0; popIndex < populationSize; popIndex++)
 	{
+        
 		ECHandicapper *tempHandicapper	= self.rankedPopulation[popIndex];
-		NSArray *thisMembersDnaTrees	= [NSArray arrayWithObjects:[self recoverTreeFromString:tempHandicapper.classStrengthTree],
-																	[self recoverTreeFromString:tempHandicapper.breakPositionStrengthTree],
-																	[self recoverTreeFromString:tempHandicapper.breakSpeedStrengthTree],
-																	[self recoverTreeFromString:tempHandicapper.firstTurnPositionStrengthTree],
-																	[self recoverTreeFromString:tempHandicapper.firstTurnSpeedStrengthTree],
-																	[self recoverTreeFromString:tempHandicapper.topOfStretchPositionStrengthTree],
-																	[self recoverTreeFromString:tempHandicapper.topOfStretchSpeedStrengthTree],
-																	[self recoverTreeFromString:tempHandicapper.finalRaceStrengthTree],
-																	[self recoverTreeFromString:tempHandicapper.earlySpeedRelevanceTree],
-																	[self recoverTreeFromString:tempHandicapper.otherRelevanceTree],
-																	nil];
+        ECDna *thisMembersDna           = nil;
+        
+        tempHandicapper.dna = thisMembersDna;
+        
+		NSArray *thisMembersDnaTrees = [NSArray arrayWithObjects:[self recoverTreeFromString:tempHandicapper.dna.classStrengthTree],
+                                                                    [self recoverTreeFromString:tempHandicapper.dna.breakPositionStrengthTree],
+                                                                    [self recoverTreeFromString:tempHandicapper.dna.firstTurnPositionStrengthTree],
+                                                                    [self recoverTreeFromString:tempHandicapper.dna.farTurnPositionStrengthTree],
+                                                                    [self recoverTreeFromString:tempHandicapper.dna.finalRaceStrengthTree],
+                                                                    [self recoverTreeFromString:tempHandicapper.dna.earlySpeedRelevanceTree],
+                                                                    [self recoverTreeFromString:tempHandicapper.dna.otherRelevanceTree],
+                                                                    nil];
 				
 		[dnaTrees addObject:thisMembersDnaTrees];
    }
    
 	self.workingPopulationDna = [dnaTrees copy];
+    
 }
 
 - (void)trainPopulationForGenerations:(NSUInteger)numberGenerations
@@ -2138,7 +3785,7 @@
     
     [ECMainController updateAndSaveData];
 	
-	NSLog(@"trainPopulation finished");
+	NSLog(@"trainPopulation finaled");
 }
 
 
@@ -2150,7 +3797,7 @@
 	// self.workingPopulation array MUST be sorted at this point with:
 	//	chldren occupying BOTTOM HALF of array with their indices
 	
-	NSUInteger startIndex					= self.populationSize - self.trainingPopSize;
+/*	NSUInteger startIndex					= self.populationSize - self.trainingPopSize;
 	NSFileManager *localFileManager			= [NSFileManager defaultManager];
 	NSDirectoryEnumerator *dirEnumerator	= [localFileManager enumeratorAtPath:resultFolderPath];
 	NSString *fileName						= nil;
@@ -2198,7 +3845,7 @@
 				}
 			}
 		}
-    }
+    } */
 }
 
 //- (BOOL)analyzeRace
@@ -2206,7 +3853,7 @@
 //	NSUInteger start, end, count;
 //	
 //	ECHandicapper *handicapper;
-//	NSNumber *postNumber;
+//	NSNumber *boxNumber;
 //	NSInvocationOperation *analyzePostOp;
 //	
 //	BOOL result					= YES;
@@ -2224,7 +3871,7 @@
 //		// skip this entry if no unscratched entry at this post
 //	}
 //		
-//	[opQueue waitUntilAllOperationsAreFinished];
+//	[opQueue waitUntilAllOperationsAreFinaled];
 //	
 //	return result;
 //}
@@ -2344,7 +3991,7 @@
 	//	1:		Curler Ron G     70½ 7 2 1 3  1 4  1 3½    30.97 3.50  Won With Ease-inside
 	//	2:		Ww's Arcadia     60  4 3 2    2    2 3½    31.21 4.90  Held Place Safe-rail
 	//	3:		Jamie M Grodeki  61½ 6 4 5    4    3 5     31.32 5.90  Swung Wide 1st-gaining
-	//  4:		Silver Fang      67  1 8 4    3    4 6½    31.43 3.90  Outfinished-inside
+	//  4:		Silver Fang      67  1 8 4    3    4 6½    31.43 3.90  Outfinaled-inside
 	//	5:		Dust Doll        65  5 5 8    8    5 7½    31.50 7.30  Blocked 1st-some Gain
 	//	6:		El Witty         64  2 6 6    6    6 8     31.51 16.60 No Room Erly-wide 2nd
 	//	7:		Top Cat Hotshot  63  3 7 7    7    7 8½    31.57 33.00 Impeded 1st-forced Wd
@@ -2364,7 +4011,7 @@
 	//	- raceClass
 	//	- raceNumber
 	//	- raceDistance
-	//	- entryNames with postPositions
+	//	- entryNames with trapPositions
 		
 //	NSString *modifiedLine		= [self removeExtraSpacesFromString:[resultFileLineByLine objectAtIndex:0]];
 //	NSArray *lineZeroTokens		= [modifiedLine componentsSeparatedByString:@" "];
@@ -2407,7 +4054,7 @@
 //
 //// iterate through resultFileLineByLine filling in entryNamesArray and postOddsArray
 //	NSMutableArray *namesByPostArray	= [NSMutableArray new];
-//	NSMutableArray *finishByPostArray	= [NSMutableArray new];
+//	NSMutableArray *finalByPostArray	= [NSMutableArray new];
 //
 //	NSUInteger lineNumber	= 0;
 //	BOOL isThisKennelLine	= NO;
@@ -2416,7 +4063,7 @@
 //	for(NSUInteger index = 0; index < kMaximumNumberEntries; index++)
 //	{
 //		[namesByPostArray addObject:@"Empty Post"];
-//		[finishByPostArray addObject:@"Empty Post"];
+//		[finalByPostArray addObject:@"Empty Post"];
 //	}
 //	
 //	// replace @"Empty Post" strings with name and odds for each post
@@ -2434,24 +4081,24 @@
 //		NSArray *tokens = [modifiedLine componentsSeparatedByString:@" "];
 //		
 //		NSString *entryName			= nil;
-//		NSUInteger postNumber		= 0;
-//		NSUInteger finishPosition	= 0;
+//		NSUInteger boxNumber		= 0;
+//		NSUInteger finalPosition	= 0;
 //		
 //		[self useResultLineArray:tokens
 //		  toGetValueForEntryName:&entryName
-//					postPosition:&postNumber
-//					andFinishPosition:&finishPosition];
+//					trapPosition:&boxNumber
+//					andFinalPosition:&finalPosition];
 //				
-//		NSNumber *finishPositionNumber = [NSNumber numberWithInteger:finishPosition];
+//		NSNumber *finalPositionNumber = [NSNumber numberWithInteger:finalPosition];
 //				
-//		[finishByPostArray replaceObjectAtIndex:postNumber-1
-//									 withObject:finishPositionNumber];
+//		[finalByPostArray replaceObjectAtIndex:boxNumber-1
+//									 withObject:finalPositionNumber];
 //				
-//		[namesByPostArray replaceObjectAtIndex:postNumber-1
+//		[namesByPostArray replaceObjectAtIndex:boxNumber-1
 //									withObject:entryName];
 //	}
 //	
-//	ECRaceResults *results	= [[ECRaceResults alloc] initWithFinishPositionsArray:finishByPostArray];
+//	ECRaceResults *results	= [[ECRaceResults alloc] initWithFinalPositionsArray:finalByPostArray];
 //	results.winningTime		= winningTime;
 //	ECRacePayouts *payouts	= [self getPayoutsUsingArray:resultFileLineByLine
 //										   atLineNumber:++lineNumber];
@@ -2470,8 +4117,8 @@
 
 - (void)useResultLineArray:(NSArray*)tokens
 	toGetValueForEntryName:(NSString**)entryNameString
-			  postPosition:(NSUInteger*)entryPostPosition
-			  andFinishPosition:(NSUInteger*)entryFinishPosition
+			  trapPosition:(NSUInteger*)entryTrapPosition
+			  andFinalPosition:(NSUInteger*)entryFinalPosition
 {
 	/* result line EXAMPLE:
 	
@@ -2482,7 +4129,7 @@
 	*/
 	
 	NSMutableString *entryName	= [NSMutableString new];
-	NSUInteger finishPosition	= 0;
+	NSUInteger finalPosition	= 0;
 	NSUInteger index			= 0;
 	
 	for(; index < tokens.count; index++)
@@ -2506,31 +4153,31 @@
 	// post position is always 2 words after name ends
 	index++;
 	NSUInteger post		= [[tokens objectAtIndex:index] integerValue];
-	*entryPostPosition	= post;
+	*entryTrapPosition	= post;
 	
-	// finish position is usually 4 words later
-	NSUInteger finishPositionIndex = index + 4;
+	// final position is usually 4 words later
+	NSUInteger finalPositionIndex = index + 4;
 
 	// if this entry is in first (at first turn) add word for placesInLead
 	NSUInteger placeAtFirstTurn = [[tokens objectAtIndex:++index] integerValue];
 	
 	if(placeAtFirstTurn == 1)
 	{
-		finishPositionIndex++;
+		finalPositionIndex++;
 		index++;
 	}
 	
 	// if this entry is in first (at top of stretch)  add word for placesInLead
 	
-	NSUInteger placeAtTopOfStretch = [[tokens objectAtIndex:index + 1] integerValue];
+	NSUInteger placeAtFarTurn = [[tokens objectAtIndex:index + 1] integerValue];
 	
-	if(placeAtTopOfStretch == 1)
+	if(placeAtFarTurn == 1)
 	{
-		finishPositionIndex++;
+		finalPositionIndex++;
 	}
 	
-	finishPosition			= [[tokens objectAtIndex:finishPositionIndex] integerValue];
-	*entryFinishPosition	= finishPosition;
+	finalPosition			= [[tokens objectAtIndex:finalPositionIndex] integerValue];
+	*entryFinalPosition	= finalPosition;
 }
 
 - (ECRacePayouts*)getPayoutsUsingArray:(NSArray*)resultFileLineByLine
@@ -2648,7 +4295,7 @@
 
 - (NSUInteger)getRaceDxFromString:(NSString*)raceNumberString
 {
-	NSString *prefix				= [raceNumberString substringToIndex:4];
+ 	NSString *prefix				= [raceNumberString substringToIndex:4];
 	NSString *stringWithoutParens	= [prefix substringFromIndex:1];
 	NSUInteger distanceOfRaceinFeet = [stringWithoutParens integerValue];
 	
@@ -2731,6 +4378,7 @@
 		NSString *pastLinesFileContents	= [NSString stringWithContentsOfFile:pastLinesFilePath
 																	encoding:NSStringEncodingConversionAllowLossy
 																	   error:&error];
+        
 		NSArray *pastRaceLinesForEntry	= [self getPastLinesForEntryFromPastLinesText:pastLinesFileContents];
 		
 		for(ECPastLineRecord *pastLine in pastRaceLinesForEntry)
@@ -2819,7 +4467,7 @@
 	pastLineRecord.isMatinee		= [tempString characterAtIndex:0] == 'm' ? YES:NO;
 	pastLineRecord.foundTrouble		= NO;
 	pastLineRecord.wasScratched		= NO;
-	pastLineRecord.didNotFinish		= NO;
+	pastLineRecord.didNotFinal		= NO;
 	pastLineRecord.ranInside		= NO;
 		pastLineRecord.ranOutside	= NO;
  	pastLineRecord.raceDate			= pastLineDate;
@@ -2829,7 +4477,7 @@
 	pastLineRecord.trackConditions	= [pastLineArray objectAtIndex:3];
 	pastLineRecord.winningTime		= [[pastLineArray objectAtIndex:4] doubleValue];
 	pastLineRecord.weight			= [[pastLineArray objectAtIndex:5] integerValue];
-	pastLineRecord.postPosition		= [[pastLineArray objectAtIndex:6] integerValue];
+	pastLineRecord.trapPosition		= [[pastLineArray objectAtIndex:6] integerValue];
 	pastLineRecord.comments			= [pastLineArray objectAtIndex:16];
 	pastLineRecord.numberEntries	= [[pastLineArray objectAtIndex:21] integerValue];
 	
@@ -2837,7 +4485,7 @@
 	
 	if(pastLineRecord.breakPosition == 0)
 	{
-		pastLineRecord.didNotFinish = YES;
+		pastLineRecord.didNotFinal = YES;
 	}
 	else
 	{
@@ -2845,7 +4493,7 @@
 		
 		if(pastLineRecord.firstTurnPosition == 0)
 		{
-			pastLineRecord.didNotFinish = YES;
+			pastLineRecord.didNotFinal = YES;
 		}
 		else
 		{
@@ -2857,42 +4505,42 @@
 			}
 			
 			pastLineRecord.deltaPosition1		= pastLineRecord.breakPosition - pastLineRecord.firstTurnPosition;
-			pastLineRecord.topOfStretchPosition	= [[pastLineArray objectAtIndex:10] integerValue];
+			pastLineRecord.farTurnPosition	= [[pastLineArray objectAtIndex:10] integerValue];
 			
-			if(pastLineRecord.topOfStretchPosition == 0)
+			if(pastLineRecord.farTurnPosition == 0)
 			{
-				pastLineRecord.didNotFinish = YES;
+				pastLineRecord.didNotFinal = YES;
 			}
 			else
 			{
-				pastLineRecord.lengthsLeadTopOfStretch	= [[pastLineArray objectAtIndex:11] integerValue];
+				pastLineRecord.lengthsLeadFarTurn	= [[pastLineArray objectAtIndex:11] integerValue];
 				
-				if(pastLineRecord.topOfStretchPosition != 1)
+				if(pastLineRecord.farTurnPosition != 1)
 				{
-					pastLineRecord.lengthsLeadTopOfStretch *= -1;  // not in lead then this must be a negative value
+					pastLineRecord.lengthsLeadFarTurn *= -1;  // not in lead then this must be a negative value
 				}
 				
-				pastLineRecord.deltaLengths1	= pastLineRecord.lengthsLeadFirstTurn - pastLineRecord.lengthsLeadTopOfStretch;
-				pastLineRecord.deltaPosition2	= pastLineRecord.firstTurnPosition - pastLineRecord.topOfStretchPosition;
-				pastLineRecord.finishPosition	= [[pastLineArray objectAtIndex:12] integerValue];
+				pastLineRecord.deltaLengths1	= pastLineRecord.lengthsLeadFirstTurn - pastLineRecord.lengthsLeadFarTurn;
+				pastLineRecord.deltaPosition2	= pastLineRecord.firstTurnPosition - pastLineRecord.farTurnPosition;
+				pastLineRecord.finalPosition	= [[pastLineArray objectAtIndex:12] integerValue];
 
-				if(pastLineRecord.finishPosition == 0)
+				if(pastLineRecord.finalPosition == 0)
 				{
-					pastLineRecord.didNotFinish = YES;
+					pastLineRecord.didNotFinal = YES;
 				}
 				else
 				{
-					pastLineRecord.lengthsLeadFinish	= [[pastLineArray objectAtIndex:13] integerValue];
+					pastLineRecord.lengthsLeadFinal	= [[pastLineArray objectAtIndex:13] integerValue];
 					
-					if(pastLineRecord.finishPosition != 1)
+					if(pastLineRecord.finalPosition != 1)
 					{
-						pastLineRecord.lengthsLeadFinish *= -1;  // not in lead then this must be a negative value
+						pastLineRecord.lengthsLeadFinal *= -1;  // not in lead then this must be a negative value
 					}
 					
 					pastLineRecord.entryTime		= [[pastLineArray objectAtIndex:14] doubleValue];
 					pastLineRecord.winOdds			= [[pastLineArray objectAtIndex:15] doubleValue];
-					pastLineRecord.deltaPosition3	= pastLineRecord.topOfStretchPosition - pastLineRecord.finishPosition;
-					pastLineRecord.deltaLengths2	= pastLineRecord.lengthsLeadTopOfStretch - pastLineRecord.lengthsLeadFinish;
+					pastLineRecord.deltaPosition3	= pastLineRecord.farTurnPosition - pastLineRecord.finalPosition;
+					pastLineRecord.deltaLengths2	= pastLineRecord.lengthsLeadFarTurn - pastLineRecord.lengthsLeadFinal;
 				}
 			}
 		}
@@ -2961,7 +4609,7 @@
 	
 		if([dnfWords containsObject:lowerCaseWord])
 		{
-			pastLineRecord.didNotFinish = YES;
+			pastLineRecord.didNotFinal = YES;
 		}
 	}
 }
@@ -3070,6 +4718,7 @@
 - (ECHandicapper*)createNewHandicapperForPopulation:(ECPopulation*)population
 									  forGeneration:(NSUInteger)birthGeneration
 {
+    /*
 	// get 2 UNIQUE parents
 	// based on selection method
 	double summedFitnessForPopulation = 0.0;
@@ -3119,16 +4768,13 @@
 	NSArray *newChildsDnaTreesArray = [self createNewDnaByCrossingOverDnaFrom:parent1
 																  withDnaFrom:parent2];
 	
-	newHandicapper.classStrengthTree				= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kClassDnaStrand]];
-	newHandicapper.breakPositionStrengthTree		= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kBreakPositionDnaStrand]];
-	newHandicapper.breakSpeedStrengthTree			= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kBreakSpeedDnaStrand]];
-	newHandicapper.firstTurnPositionStrengthTree	= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kFirstTurnPositionDnaStrand]];
-	newHandicapper.firstTurnSpeedStrengthTree		= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kFirstTurnSpeedDnaStrand]];
-	newHandicapper.topOfStretchPositionStrengthTree	= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kTopOfStretchPositionDnaStrand]];
-	newHandicapper.topOfStretchSpeedStrengthTree	= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kTopOfStretchSpeedDnaStrand]];
-	newHandicapper.finalRaceStrengthTree			= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kFinalStrengthDnaStrand]];
-	newHandicapper.earlySpeedRelevanceTree			= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kEarlySpeedRelevanceDnaStrand]];
-	newHandicapper.otherRelevanceTree				= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kOtherRelevanceDnaStrand]];
+//	newHandicapper.classStrengthTree				= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kClassDnaStrand]];
+//	newHandicapper.breakPositionStrengthTree		= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kBreakPositionDnaStrand]];
+//	newHandicapper.firstTurnPositionStrengthTree	= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kFirstTurnPositionDnaStrand]];
+//	newHandicapper.farTurnPositionStrengthTree      = [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kFarTurnPositionDnaStrand]];
+//    newHandicapper.b              = [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kBettingDnaStrand]];
+//	newHandicapper.earlySpeedRelevanceTree			= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kEarlySpeedRelevanceDnaStrand]];
+//	newHandicapper.otherRelevanceTree				= [self saveTreeToString:[newChildsDnaTreesArray objectAtIndex:kOtherRelevanceDnaStrand]];
 		
 	return newHandicapper;
 }
@@ -3139,12 +4785,12 @@
 	// orgy type does not specify unique parent
 	if(kReproductionType == kOrgyMethod)
 	{
-		return NOT_AN_INDEX; // orgy method does NOT require unique parents
+		return kNoIndex; // orgy method does NOT require unique parents
 	}
 
 	// parents are chosen based on kReproductionType and kSelection
 
-	NSUInteger parentIndex				= NOT_AN_INDEX;
+	NSUInteger parentIndex				= kNoIndex;
 	NSUInteger magnifiedSummedFitness	= (NSUInteger)(popsFitness * 10000);
 	NSUInteger intTarget				= rand() % magnifiedSummedFitness;
 	double targetValue					= (double)intTarget / 10000.0;
@@ -3181,6 +4827,9 @@
 	}
 	
 	return parentIndex;
+     */
+    return nil;
+    
 }
 
 - (void)mutateChildrenForPopulation:(ECPopulation*)pop
@@ -3209,6 +4858,7 @@
 - (NSArray*)createNewDnaByCrossingOverDnaFrom:(ECHandicapper*)parent1
 								  withDnaFrom:(ECHandicapper*)parent2
 {
+    /*
     NSUInteger parent1Index     = [parent1.rank unsignedIntegerValue];
     NSUInteger parent2Index     = [parent2.rank unsignedIntegerValue];
 	NSUInteger parent1Level		= 0;
@@ -3302,6 +4952,8 @@
 	}
 	
 	return childDnaArray;
+     */
+    return nil;
 }
 
 - (ECTree*)copyTree:parentRoot
@@ -3317,8 +4969,8 @@
     ECTree *tempNode  = parentRoot;
 	
 	if(tempNode.functionPtr &&
-       tempNode.leafVariableIndex == NOT_AN_INDEX &&
-       tempNode.leafConstant == NOT_A_CONSTANT)
+       tempNode.leafVariableIndex == kNoIndex &&
+       tempNode.leafConstant == kNoConstant)
 	{
         newTree = [[ECTree alloc] initWithFunctionPointerIndex:tempNode.functionIndex];
 		
@@ -3350,11 +5002,11 @@
 										withNode:replacementNode];
 		}
 	}
-    else if(tempNode.leafConstant != NOT_A_CONSTANT)
+    else if(tempNode.leafConstant != kNoConstant)
 	{
         newTree = [[ECTree alloc] initWithConstantValue:tempNode.leafConstant];
 	}
-    else if(tempNode.leafVariableIndex != NOT_AN_INDEX)
+    else if(tempNode.leafVariableIndex != kNoIndex)
 	{
         newTree = [[ECTree alloc] initWithRaceVariable:tempNode.leafVariableIndex];
 	}
@@ -3376,11 +5028,11 @@
 }
 - (double)evalTree:(ECTree*)treeNode
 	usingVariables:(NSMutableArray*)dataArray
-			atPost:(NSUInteger)postPosition
+			atPost:(NSUInteger)trapPosition
 {
 	double returnVal = 0.0;
 	
-	if(postPosition > kMaximumNumberEntries)
+	if(trapPosition > kMaximumNumberEntries)
 		{
 		NSLog(@"eval tree post error 1");
 		exit(1);
@@ -3390,7 +5042,7 @@
 		{
 		double leftBranchVal = [self evalTree:treeNode.leftBranch
 							   usingVariables:dataArray
-									   atPost:postPosition];
+									   atPost:trapPosition];
 		
 		if(leftBranchVal == 00000)
 			{
@@ -3401,7 +5053,7 @@
 			{
 			double rightBranchVal = [self evalTree:treeNode.rightBranch
 									usingVariables:dataArray
-											atPost:postPosition];
+											atPost:trapPosition];
 			
 			if(leftBranchVal == 00000)
 				{
@@ -3415,14 +5067,14 @@
 			returnVal = treeNode.functionPtr(leftBranchVal);
 			}
 		}
-	else if(treeNode.leafConstant != NOT_A_CONSTANT)
+	else if(treeNode.leafConstant != kNoConstant)
 		{
 		returnVal = treeNode.leafConstant;
 		}
 	else
 		{
 		// get value for this race variable
-		if(treeNode.leafVariableIndex == NOT_AN_INDEX)
+		if(treeNode.leafVariableIndex == kNoIndex)
 			{
 			NSLog(@"eval tree error alpha");
 			exit(1);
@@ -3454,21 +5106,22 @@
 
 
 - (void)replaceOldDnaStringsForChildWithIndex:(NSUInteger)popIndex
-{
+{/*
     // Since dnaTrees are stored as strings in coreData data model
     // need to copy just edited trees to appropriate strings
     ECHandicapper *changedHandicapper = nil;
-    
+  
 	changedHandicapper.classStrengthTree				= self.workingPopulationDna[popIndex][0];
     changedHandicapper.breakPositionStrengthTree		= self.workingPopulationDna[popIndex][1];
     changedHandicapper.breakSpeedStrengthTree           = self.workingPopulationDna[popIndex][2];
     changedHandicapper.firstTurnPositionStrengthTree	= self.workingPopulationDna[popIndex][3];
     changedHandicapper.firstTurnSpeedStrengthTree		= self.workingPopulationDna[popIndex][4];
-    changedHandicapper.topOfStretchPositionStrengthTree	= self.workingPopulationDna[popIndex][5];
-    changedHandicapper.topOfStretchSpeedStrengthTree	= self.workingPopulationDna[popIndex][6];
+    changedHandicapper.farTurnPositionStrengthTree	= self.workingPopulationDna[popIndex][5];
+    changedHandicapper.farTurnSpeedStrengthTree	= self.workingPopulationDna[popIndex][6];
 	changedHandicapper.finalRaceStrengthTree			= self.workingPopulationDna[popIndex][7];
     changedHandicapper.earlySpeedRelevanceTree			= self.workingPopulationDna[popIndex][8];
     changedHandicapper.otherRelevanceTree				= self.workingPopulationDna[popIndex][9];
+   */
 }
 
 
@@ -3498,8 +5151,8 @@
     ECTree *tempNode  = parentRoot;
 	
 	if(tempNode.functionPtr &&
-       tempNode.leafVariableIndex == NOT_AN_INDEX &&
-       tempNode.leafConstant == NOT_A_CONSTANT)
+       tempNode.leafVariableIndex == kNoIndex &&
+       tempNode.leafConstant == kNoConstant)
 	{
         newTree = [[ECTree alloc] initWithFunctionPointerIndex:tempNode.functionIndex];
 
@@ -3526,11 +5179,11 @@
             }
         }
     }
-    else if(tempNode.leafConstant != NOT_A_CONSTANT)
+    else if(tempNode.leafConstant != kNoConstant)
     {
         newTree = [[ECTree alloc] initWithConstantValue:tempNode.leafConstant];
     }
-    else if(tempNode.leafVariableIndex != NOT_AN_INDEX)
+    else if(tempNode.leafVariableIndex != kNoIndex)
     {
         newTree = [[ECTree alloc] initWithRaceVariable:tempNode.leafVariableIndex];
     }
@@ -3577,64 +5230,66 @@
             // don't worry about trees, will rebuild trees later from the strings below
             NSString *dnaString = [self saveTreeToString:[self createTreeForStrand:strandNumber
                                                                            atLevel:rootLevel]];
-            switch (strandNumber)
-            {
-                case kClassDnaStrand:
-                    newbie.classStrengthTree = dnaString;
-                    break;
-                    
-                case kBreakPositionDnaStrand:
-                    newbie.breakPositionStrengthTree = dnaString;
-                    break;
-                    
-                case kBreakSpeedDnaStrand:
-                    newbie.breakSpeedStrengthTree = dnaString;
-                    break;
-                    
-                case kFirstTurnPositionDnaStrand:
-                    newbie.firstTurnPositionStrengthTree = dnaString;
-                    break;
-                    
-                case kFirstTurnSpeedDnaStrand:
-                    newbie.firstTurnSpeedStrengthTree = dnaString;
-                    break;
-                    
-                case kTopOfStretchPositionDnaStrand:
-                    newbie.topOfStretchPositionStrengthTree = dnaString;
-                    break;
-                    
-                case kTopOfStretchSpeedDnaStrand:
-                    newbie.topOfStretchSpeedStrengthTree = dnaString;
-                    break;
-				
-                case kFinalStrengthDnaStrand:
-					newbie.finalRaceStrengthTree = dnaString;
-					break;
-				
-                case kEarlySpeedRelevanceDnaStrand:
-                    newbie.earlySpeedRelevanceTree = dnaString;
-                    break;
-				
-                case kOtherRelevanceDnaStrand:
-					newbie.otherRelevanceTree = dnaString;
-					break;
-				
-                default:
-                    break;
-            }
-            
-            NSLog(@"%i: %@", popIndex, dnaString);
+//            switch (strandNumber)
+//            {
+//                case kClassDnaStrand:
+//                    newbie.classStrengthTree = dnaString;
+//                    break;
+//                    
+//                case kBreakPositionDnaStrand:
+//                    newbie.breakPositionStrengthTree = dnaString;
+//                    break;
+//                    
+//                case kBreakSpeedDnaStrand:
+//                    newbie.breakSpeedStrengthTree = dnaString;
+//                    break;
+//                    
+//                case kFirstTurnPositionDnaStrand:
+//                    newbie.firstTurnPositionStrengthTree = dnaString;
+//                    break;
+//                    
+//                case kFirstTurnSpeedDnaStrand:
+//                    newbie.firstTurnSpeedStrengthTree = dnaString;
+//                    break;
+//                    
+//                case kFarTurnPositionDnaStrand:
+//                    newbie.farTurnPositionStrengthTree = dnaString;
+//                    break;
+//                    
+//                case kFarTurnSpeedDnaStrand:
+//                    newbie.farTurnSpeedStrengthTree = dnaString;
+//                    break;
+//				
+//                case kFinalStrengthDnaStrand:
+//					newbie.finalRaceStrengthTree = dnaString;
+//					break;
+//				
+//                case kEarlySpeedRelevanceDnaStrand:
+//                    newbie.earlySpeedRelevanceTree = dnaString;
+//                    break;
+//				
+//                case kOtherRelevanceDnaStrand:
+//					newbie.otherRelevanceTree = dnaString;
+//					break;
+//				
+//                default:
+//                    break;
+//            }
+//            
+//            NSLog(@"%i: %@", popIndex, dnaString);
         }
         
-        newbie.birthGeneration  = self.population.generationNumber;
-        newbie.rank				= [NSNumber numberWithInteger:popIndex];
-        
-        [handicappersSet addObject:newbie];
+//        newbie.birthGeneration  = self.population.generationNumber;
+//        newbie.rank				= [NSNumber numberWithInteger:popIndex];
+//        
+//        [handicappersSet addObject:newbie];
     }
-    
-    [self.population addIndividualHandicappers:[handicappersSet copy]];
-	
-	return [immutableArray mutableCopy];
+//    
+//    [self.population addIndividualHandicappers:[handicappersSet copy]];
+//	
+//	return [immutableArray mutableCopy];
+        
+        return nil;
 }
 
 - (ECTree*)createTreeForStrand:(NSUInteger)dnaStrand
@@ -3773,14 +5428,14 @@
         [treeString appendString:@")"];
         
     }
-    else if(tree.leafVariableIndex != NOT_AN_INDEX)
+    else if(tree.leafVariableIndex != kNoIndex)
     {
         // append index in brackets[]
         [treeString appendString:[NSString stringWithFormat:@"%ld", (unsigned long)tree.leafVariableIndex]];
     }
     else
     {
-        if(tree.leafConstant == NOT_A_CONSTANT)
+        if(tree.leafConstant == kNoConstant)
         {
             NSLog(@"save tree error");
         }
@@ -4036,7 +5691,7 @@
     // 8:  position at break
     // 9:  position turn 1
     // 10: position turn 2
-    // 11: position at finish
+    // 11: position at final
     // 12: entry time
     // 13: lead by lengths 1
     // 14: lead by lengths 2
@@ -4053,7 +5708,7 @@
 	// 0: class strength
 	//      2:  race class
     //      9:  winning time
-    //      11: position at finish
+    //      11: position at final
     //      12: entry time
 	
     // 1: break position strength

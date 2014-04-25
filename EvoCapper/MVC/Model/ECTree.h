@@ -30,7 +30,7 @@
 /***************/
 //
 // overflow and underflow are ignored here
-// capture and deal with those when trees are evaluated
+// to be trapped in evalTree method
 
 long double add(double a, double b);
 long double subtract(double a, double b);

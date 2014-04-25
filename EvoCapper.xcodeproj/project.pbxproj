@@ -7,11 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7A00C43618A545640049C89B /* ECFirstTurnStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C43518A545640049C89B /* ECFirstTurnStats.m */; };
-		7A00C43C18A545650049C89B /* ECRaceClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C43B18A545650049C89B /* ECRaceClass.m */; };
-		7A00C44518A545650049C89B /* ECPostStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C44418A545650049C89B /* ECPostStats.m */; };
-		7A00C44818A545650049C89B /* ECTopOFStretchStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A00C44718A545650049C89B /* ECTopOFStretchStats.m */; };
-		7A200ED918B963420078C15B /* ECRaceDistanceStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A200ED818B963420078C15B /* ECRaceDistanceStats.m */; };
+		7A21FABC190AAF9700785880 /* ECBettingResults.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FABB190AAF9700785880 /* ECBettingResults.m */; };
+		7A21FABF190AAF9800785880 /* ECPopulation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FABE190AAF9800785880 /* ECPopulation.m */; };
+		7A21FAC2190AAF9800785880 /* ECDna.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FAC1190AAF9800785880 /* ECDna.m */; };
+		7A21FAC5190AAF9800785880 /* ECHandicapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FAC4190AAF9800785880 /* ECHandicapper.m */; };
+		7A21FAC8190AAF9800785880 /* ECRaceBet.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FAC7190AAF9800785880 /* ECRaceBet.m */; };
+		7A21FAE9190AB1A500785880 /* ECTrackStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FAE8190AB1A500785880 /* ECTrackStats.m */; };
+		7A21FAEC190AB1A600785880 /* ECThreeTurnRaceStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FAEB190AB1A600785880 /* ECThreeTurnRaceStats.m */; };
+		7A21FAEF190AB1A600785880 /* ECSprintRaceStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FAEE190AB1A600785880 /* ECSprintRaceStats.m */; };
+		7A21FAF2190AB1A600785880 /* ECTracks.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FAF1190AB1A600785880 /* ECTracks.m */; };
+		7A21FAF5190AB1A600785880 /* ECMarathonRaceStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FAF4190AB1A600785880 /* ECMarathonRaceStats.m */; };
+		7A21FAF8190AB1A600785880 /* ECFarTurnStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FAF7190AB1A600785880 /* ECFarTurnStats.m */; };
+		7A21FAFB190AB1A600785880 /* ECFirstTurnStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FAFA190AB1A600785880 /* ECFirstTurnStats.m */; };
+		7A21FAFE190AB1A600785880 /* ECSprintTurnStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FAFD190AB1A600785880 /* ECSprintTurnStats.m */; };
+		7A21FB01190AB1A600785880 /* ECPostStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FB00190AB1A600785880 /* ECPostStats.m */; };
+		7A21FB04190AB1A600785880 /* ECTwoTurnRaceStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FB03190AB1A600785880 /* ECTwoTurnRaceStats.m */; };
 		7A27ED391818221400AA91AE /* evocappLogo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7A27ED381818221400AA91AE /* evocappLogo.jpg */; };
 		7A27ED4118184CEE00AA91AE /* ECMainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A27ED4018184CEE00AA91AE /* ECMainController.m */; };
 		7A699BAA184050370000E6B8 /* NSString+ECStringValidizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A699BA9184050370000E6B8 /* NSString+ECStringValidizer.m */; };
@@ -32,11 +42,6 @@
 		7AB3B3BF18340BBC0089C80C /* ECTrainigRaceRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3BE18340BBC0089C80C /* ECTrainigRaceRecord.m */; };
 		7AB3B3C21835507E0089C80C /* ECPastLineRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3B3C11835507E0089C80C /* ECPastLineRecord.m */; };
 		7AB9FD1A181AFF8300C17A46 /* ECTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AB9FD19181AFF8300C17A46 /* ECTree.m */; };
-		7ADFE5F218B059FA00435993 /* ECPopulation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ADFE5F118B059FA00435993 /* ECPopulation.m */; };
-		7ADFE5F818B05BE600435993 /* ECTrackStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ADFE5F718B05BE600435993 /* ECTrackStats.m */; };
-		7ADFE5FB18B05BE600435993 /* ECTracks.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ADFE5FA18B05BE600435993 /* ECTracks.m */; };
-		7AE54A4718BC396C00F947B7 /* ECHandicapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AE54A4618BC396C00F947B7 /* ECHandicapper.m */; };
-		7AE54A4D18BC3A4E00F947B7 /* ECClassStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AE54A4C18BC3A4E00F947B7 /* ECClassStats.m */; };
 		7AF3591C183D213500BFFD26 /* EvoCapper.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7AF3591A183D213500BFFD26 /* EvoCapper.xcdatamodeld */; };
 		7AF939311891B4A400E22398 /* ECEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AF939301891B4A400E22398 /* ECEntry.m */; };
 /* End PBXBuildFile section */
@@ -52,19 +57,40 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7A00C43418A545640049C89B /* ECFirstTurnStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECFirstTurnStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECFirstTurnStats.h"; sourceTree = "<group>"; };
-		7A00C43518A545640049C89B /* ECFirstTurnStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECFirstTurnStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECFirstTurnStats.m"; sourceTree = "<group>"; };
-		7A00C43A18A545650049C89B /* ECRaceClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRaceClass.h; path = "MVC/Model/Managed Objects/Track Stats/ECRaceClass.h"; sourceTree = "<group>"; };
-		7A00C43B18A545650049C89B /* ECRaceClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRaceClass.m; path = "MVC/Model/Managed Objects/Track Stats/ECRaceClass.m"; sourceTree = "<group>"; };
-		7A00C44318A545650049C89B /* ECPostStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECPostStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECPostStats.h"; sourceTree = "<group>"; };
-		7A00C44418A545650049C89B /* ECPostStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECPostStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECPostStats.m"; sourceTree = "<group>"; };
-		7A00C44618A545650049C89B /* ECTopOFStretchStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECTopOFStretchStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECTopOFStretchStats.h"; sourceTree = "<group>"; };
-		7A00C44718A545650049C89B /* ECTopOFStretchStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECTopOFStretchStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECTopOFStretchStats.m"; sourceTree = "<group>"; };
-		7A200ED718B963420078C15B /* ECRaceDistanceStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRaceDistanceStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECRaceDistanceStats.h"; sourceTree = "<group>"; };
-		7A200ED818B963420078C15B /* ECRaceDistanceStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRaceDistanceStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECRaceDistanceStats.m"; sourceTree = "<group>"; };
+		7A21FABA190AAF9700785880 /* ECBettingResults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECBettingResults.h; path = "MVC/Model/Managed Objects/Handicappers/ECBettingResults.h"; sourceTree = "<group>"; };
+		7A21FABB190AAF9700785880 /* ECBettingResults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECBettingResults.m; path = "MVC/Model/Managed Objects/Handicappers/ECBettingResults.m"; sourceTree = "<group>"; };
+		7A21FABD190AAF9800785880 /* ECPopulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECPopulation.h; path = "MVC/Model/Managed Objects/Handicappers/ECPopulation.h"; sourceTree = "<group>"; };
+		7A21FABE190AAF9800785880 /* ECPopulation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECPopulation.m; path = "MVC/Model/Managed Objects/Handicappers/ECPopulation.m"; sourceTree = "<group>"; };
+		7A21FAC0190AAF9800785880 /* ECDna.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECDna.h; path = "MVC/Model/Managed Objects/Handicappers/ECDna.h"; sourceTree = "<group>"; };
+		7A21FAC1190AAF9800785880 /* ECDna.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECDna.m; path = "MVC/Model/Managed Objects/Handicappers/ECDna.m"; sourceTree = "<group>"; };
+		7A21FAC3190AAF9800785880 /* ECHandicapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECHandicapper.h; path = "MVC/Model/Managed Objects/Handicappers/ECHandicapper.h"; sourceTree = "<group>"; };
+		7A21FAC4190AAF9800785880 /* ECHandicapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECHandicapper.m; path = "MVC/Model/Managed Objects/Handicappers/ECHandicapper.m"; sourceTree = "<group>"; };
+		7A21FAC6190AAF9800785880 /* ECRaceBet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRaceBet.h; path = "MVC/Model/Managed Objects/Handicappers/ECRaceBet.h"; sourceTree = "<group>"; };
+		7A21FAC7190AAF9800785880 /* ECRaceBet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRaceBet.m; path = "MVC/Model/Managed Objects/Handicappers/ECRaceBet.m"; sourceTree = "<group>"; };
+		7A21FAE7190AB1A500785880 /* ECTrackStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECTrackStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECTrackStats.h"; sourceTree = "<group>"; };
+		7A21FAE8190AB1A500785880 /* ECTrackStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECTrackStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECTrackStats.m"; sourceTree = "<group>"; };
+		7A21FAEA190AB1A600785880 /* ECThreeTurnRaceStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECThreeTurnRaceStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECThreeTurnRaceStats.h"; sourceTree = "<group>"; };
+		7A21FAEB190AB1A600785880 /* ECThreeTurnRaceStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECThreeTurnRaceStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECThreeTurnRaceStats.m"; sourceTree = "<group>"; };
+		7A21FAED190AB1A600785880 /* ECSprintRaceStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECSprintRaceStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECSprintRaceStats.h"; sourceTree = "<group>"; };
+		7A21FAEE190AB1A600785880 /* ECSprintRaceStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECSprintRaceStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECSprintRaceStats.m"; sourceTree = "<group>"; };
+		7A21FAF0190AB1A600785880 /* ECTracks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECTracks.h; path = "MVC/Model/Managed Objects/Track Stats/ECTracks.h"; sourceTree = "<group>"; };
+		7A21FAF1190AB1A600785880 /* ECTracks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECTracks.m; path = "MVC/Model/Managed Objects/Track Stats/ECTracks.m"; sourceTree = "<group>"; };
+		7A21FAF3190AB1A600785880 /* ECMarathonRaceStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECMarathonRaceStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECMarathonRaceStats.h"; sourceTree = "<group>"; };
+		7A21FAF4190AB1A600785880 /* ECMarathonRaceStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECMarathonRaceStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECMarathonRaceStats.m"; sourceTree = "<group>"; };
+		7A21FAF6190AB1A600785880 /* ECFarTurnStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECFarTurnStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECFarTurnStats.h"; sourceTree = "<group>"; };
+		7A21FAF7190AB1A600785880 /* ECFarTurnStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECFarTurnStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECFarTurnStats.m"; sourceTree = "<group>"; };
+		7A21FAF9190AB1A600785880 /* ECFirstTurnStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECFirstTurnStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECFirstTurnStats.h"; sourceTree = "<group>"; };
+		7A21FAFA190AB1A600785880 /* ECFirstTurnStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECFirstTurnStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECFirstTurnStats.m"; sourceTree = "<group>"; };
+		7A21FAFC190AB1A600785880 /* ECSprintTurnStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECSprintTurnStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECSprintTurnStats.h"; sourceTree = "<group>"; };
+		7A21FAFD190AB1A600785880 /* ECSprintTurnStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECSprintTurnStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECSprintTurnStats.m"; sourceTree = "<group>"; };
+		7A21FAFF190AB1A600785880 /* ECPostStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECPostStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECPostStats.h"; sourceTree = "<group>"; };
+		7A21FB00190AB1A600785880 /* ECPostStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECPostStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECPostStats.m"; sourceTree = "<group>"; };
+		7A21FB02190AB1A600785880 /* ECTwoTurnRaceStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECTwoTurnRaceStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECTwoTurnRaceStats.h"; sourceTree = "<group>"; };
+		7A21FB03190AB1A600785880 /* ECTwoTurnRaceStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECTwoTurnRaceStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECTwoTurnRaceStats.m"; sourceTree = "<group>"; };
 		7A27ED381818221400AA91AE /* evocappLogo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = evocappLogo.jpg; path = MVC/Views/Images/evocappLogo.jpg; sourceTree = "<group>"; };
 		7A27ED3F18184CEE00AA91AE /* ECMainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = ECMainController.h; path = MVC/Controllers/ECMainController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		7A27ED4018184CEE00AA91AE /* ECMainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = ECMainController.m; path = MVC/Controllers/ECMainController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		7A4EC75718F6E44700A3D3A3 /* TrackInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrackInfo.h; sourceTree = "<group>"; };
 		7A699BA8184050370000E6B8 /* NSString+ECStringValidizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+ECStringValidizer.h"; path = "NSString Catagory/NSString+ECStringValidizer.h"; sourceTree = "<group>"; };
 		7A699BA9184050370000E6B8 /* NSString+ECStringValidizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+ECStringValidizer.m"; path = "NSString Catagory/NSString+ECStringValidizer.m"; sourceTree = "<group>"; };
 		7A98B3B618170ECD0013F43D /* EvoCapper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EvoCapper.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -100,16 +126,6 @@
 		7AB9FD18181AFF8300C17A46 /* ECTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECTree.h; path = MVC/Model/ECTree.h; sourceTree = "<group>"; };
 		7AB9FD19181AFF8300C17A46 /* ECTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECTree.m; path = MVC/Model/ECTree.m; sourceTree = "<group>"; };
 		7AB9FD1B181C2C4F00C17A46 /* General.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = General.h; sourceTree = "<group>"; };
-		7ADFE5F018B059FA00435993 /* ECPopulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECPopulation.h; path = "MVC/Model/Managed Objects/Handicappers/ECPopulation.h"; sourceTree = "<group>"; };
-		7ADFE5F118B059FA00435993 /* ECPopulation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECPopulation.m; path = "MVC/Model/Managed Objects/Handicappers/ECPopulation.m"; sourceTree = "<group>"; };
-		7ADFE5F618B05BE600435993 /* ECTrackStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECTrackStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECTrackStats.h"; sourceTree = "<group>"; };
-		7ADFE5F718B05BE600435993 /* ECTrackStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECTrackStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECTrackStats.m"; sourceTree = "<group>"; };
-		7ADFE5F918B05BE600435993 /* ECTracks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECTracks.h; path = "MVC/Model/Managed Objects/Track Stats/ECTracks.h"; sourceTree = "<group>"; };
-		7ADFE5FA18B05BE600435993 /* ECTracks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECTracks.m; path = "MVC/Model/Managed Objects/Track Stats/ECTracks.m"; sourceTree = "<group>"; };
-		7AE54A4518BC396C00F947B7 /* ECHandicapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECHandicapper.h; path = "MVC/Model/Managed Objects/Handicappers/ECHandicapper.h"; sourceTree = "<group>"; };
-		7AE54A4618BC396C00F947B7 /* ECHandicapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECHandicapper.m; path = "MVC/Model/Managed Objects/Handicappers/ECHandicapper.m"; sourceTree = "<group>"; };
-		7AE54A4B18BC3A4E00F947B7 /* ECClassStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECClassStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECClassStats.h"; sourceTree = "<group>"; };
-		7AE54A4C18BC3A4E00F947B7 /* ECClassStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECClassStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECClassStats.m"; sourceTree = "<group>"; };
 		7AF3591B183D213500BFFD26 /* EvoCapper.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = EvoCapper.xcdatamodel; sourceTree = "<group>"; };
 		7AF9392F1891B4A400E22398 /* ECEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECEntry.h; path = MVC/Model/ECEntry.h; sourceTree = "<group>"; };
 		7AF939301891B4A400E22398 /* ECEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECEntry.m; path = MVC/Model/ECEntry.m; sourceTree = "<group>"; };
@@ -230,6 +246,7 @@
 			isa = PBXGroup;
 			children = (
 				7AB9FD05181AC6C500C17A46 /* Constants.h */,
+				7A4EC75718F6E44700A3D3A3 /* TrackInfo.h */,
 				7AB9FD1B181C2C4F00C17A46 /* General.h */,
 				7A98B3CB18170ECD0013F43D /* ECAppDelegate.h */,
 				7A98B3CC18170ECD0013F43D /* ECAppDelegate.m */,
@@ -283,22 +300,26 @@
 		7AAB7F5E1843020400658D6A /* Track Stats */ = {
 			isa = PBXGroup;
 			children = (
-				7A00C44318A545650049C89B /* ECPostStats.h */,
-				7A00C44418A545650049C89B /* ECPostStats.m */,
-				7A00C43418A545640049C89B /* ECFirstTurnStats.h */,
-				7A00C43518A545640049C89B /* ECFirstTurnStats.m */,
-				7A00C44618A545650049C89B /* ECTopOFStretchStats.h */,
-				7A00C44718A545650049C89B /* ECTopOFStretchStats.m */,
-				7A00C43A18A545650049C89B /* ECRaceClass.h */,
-				7A00C43B18A545650049C89B /* ECRaceClass.m */,
-				7ADFE5F618B05BE600435993 /* ECTrackStats.h */,
-				7ADFE5F718B05BE600435993 /* ECTrackStats.m */,
-				7ADFE5F918B05BE600435993 /* ECTracks.h */,
-				7ADFE5FA18B05BE600435993 /* ECTracks.m */,
-				7A200ED718B963420078C15B /* ECRaceDistanceStats.h */,
-				7A200ED818B963420078C15B /* ECRaceDistanceStats.m */,
-				7AE54A4B18BC3A4E00F947B7 /* ECClassStats.h */,
-				7AE54A4C18BC3A4E00F947B7 /* ECClassStats.m */,
+				7A21FAF0190AB1A600785880 /* ECTracks.h */,
+				7A21FAF1190AB1A600785880 /* ECTracks.m */,
+				7A21FAE7190AB1A500785880 /* ECTrackStats.h */,
+				7A21FAE8190AB1A500785880 /* ECTrackStats.m */,
+				7A21FAED190AB1A600785880 /* ECSprintRaceStats.h */,
+				7A21FAEE190AB1A600785880 /* ECSprintRaceStats.m */,
+				7A21FB02190AB1A600785880 /* ECTwoTurnRaceStats.h */,
+				7A21FB03190AB1A600785880 /* ECTwoTurnRaceStats.m */,
+				7A21FAEA190AB1A600785880 /* ECThreeTurnRaceStats.h */,
+				7A21FAEB190AB1A600785880 /* ECThreeTurnRaceStats.m */,
+				7A21FAF3190AB1A600785880 /* ECMarathonRaceStats.h */,
+				7A21FAF4190AB1A600785880 /* ECMarathonRaceStats.m */,
+				7A21FAFF190AB1A600785880 /* ECPostStats.h */,
+				7A21FB00190AB1A600785880 /* ECPostStats.m */,
+				7A21FAFC190AB1A600785880 /* ECSprintTurnStats.h */,
+				7A21FAFD190AB1A600785880 /* ECSprintTurnStats.m */,
+				7A21FAF9190AB1A600785880 /* ECFirstTurnStats.h */,
+				7A21FAFA190AB1A600785880 /* ECFirstTurnStats.m */,
+				7A21FAF6190AB1A600785880 /* ECFarTurnStats.h */,
+				7A21FAF7190AB1A600785880 /* ECFarTurnStats.m */,
 			);
 			name = "Track Stats";
 			sourceTree = "<group>";
@@ -306,21 +327,27 @@
 		7AF35910183D200A00BFFD26 /* Managed Objects */ = {
 			isa = PBXGroup;
 			children = (
-				7AF939281891B44700E22398 /* Handicappers */,
+				7AF939281891B44700E22398 /* Population */,
 				7AAB7F5E1843020400658D6A /* Track Stats */,
 			);
 			name = "Managed Objects";
 			sourceTree = "<group>";
 		};
-		7AF939281891B44700E22398 /* Handicappers */ = {
+		7AF939281891B44700E22398 /* Population */ = {
 			isa = PBXGroup;
 			children = (
-				7ADFE5F018B059FA00435993 /* ECPopulation.h */,
-				7ADFE5F118B059FA00435993 /* ECPopulation.m */,
-				7AE54A4518BC396C00F947B7 /* ECHandicapper.h */,
-				7AE54A4618BC396C00F947B7 /* ECHandicapper.m */,
+				7A21FAC6190AAF9800785880 /* ECRaceBet.h */,
+				7A21FAC7190AAF9800785880 /* ECRaceBet.m */,
+				7A21FAC3190AAF9800785880 /* ECHandicapper.h */,
+				7A21FAC4190AAF9800785880 /* ECHandicapper.m */,
+				7A21FAC0190AAF9800785880 /* ECDna.h */,
+				7A21FAC1190AAF9800785880 /* ECDna.m */,
+				7A21FABD190AAF9800785880 /* ECPopulation.h */,
+				7A21FABE190AAF9800785880 /* ECPopulation.m */,
+				7A21FABA190AAF9700785880 /* ECBettingResults.h */,
+				7A21FABB190AAF9700785880 /* ECBettingResults.m */,
 			);
-			name = Handicappers;
+			name = Population;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -426,25 +453,30 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7ADFE5FB18B05BE600435993 /* ECTracks.m in Sources */,
-				7ADFE5F218B059FA00435993 /* ECPopulation.m in Sources */,
-				7A00C44818A545650049C89B /* ECTopOFStretchStats.m in Sources */,
-				7A00C44518A545650049C89B /* ECPostStats.m in Sources */,
-				7ADFE5F818B05BE600435993 /* ECTrackStats.m in Sources */,
-				7A200ED918B963420078C15B /* ECRaceDistanceStats.m in Sources */,
+				7A21FAEF190AB1A600785880 /* ECSprintRaceStats.m in Sources */,
 				7A98B3CD18170ECD0013F43D /* ECAppDelegate.m in Sources */,
+				7A21FAEC190AB1A600785880 /* ECThreeTurnRaceStats.m in Sources */,
+				7A21FAC5190AAF9800785880 /* ECHandicapper.m in Sources */,
 				7AF939311891B4A400E22398 /* ECEntry.m in Sources */,
-				7AE54A4D18BC3A4E00F947B7 /* ECClassStats.m in Sources */,
-				7A00C43618A545640049C89B /* ECFirstTurnStats.m in Sources */,
+				7A21FAFB190AB1A600785880 /* ECFirstTurnStats.m in Sources */,
+				7A21FAF2190AB1A600785880 /* ECTracks.m in Sources */,
+				7A21FABC190AAF9700785880 /* ECBettingResults.m in Sources */,
+				7A21FAC8190AAF9800785880 /* ECRaceBet.m in Sources */,
+				7A21FAC2190AAF9800785880 /* ECDna.m in Sources */,
 				7AB3B3B9182F02B00089C80C /* ECRaceResults.m in Sources */,
+				7A21FAFE190AB1A600785880 /* ECSprintTurnStats.m in Sources */,
 				7A98B3C618170ECD0013F43D /* main.m in Sources */,
 				7AB3B3B3182EFE740089C80C /* ECRaceRecord.m in Sources */,
 				7A27ED4118184CEE00AA91AE /* ECMainController.m in Sources */,
-				7A00C43C18A545650049C89B /* ECRaceClass.m in Sources */,
+				7A21FAF8190AB1A600785880 /* ECFarTurnStats.m in Sources */,
 				7AB9FD1A181AFF8300C17A46 /* ECTree.m in Sources */,
+				7A21FABF190AAF9800785880 /* ECPopulation.m in Sources */,
 				7AB3B3BF18340BBC0089C80C /* ECTrainigRaceRecord.m in Sources */,
+				7A21FAE9190AB1A500785880 /* ECTrackStats.m in Sources */,
 				7A699BAA184050370000E6B8 /* NSString+ECStringValidizer.m in Sources */,
-				7AE54A4718BC396C00F947B7 /* ECHandicapper.m in Sources */,
+				7A21FB01190AB1A600785880 /* ECPostStats.m in Sources */,
+				7A21FAF5190AB1A600785880 /* ECMarathonRaceStats.m in Sources */,
+				7A21FB04190AB1A600785880 /* ECTwoTurnRaceStats.m in Sources */,
 				7AB3B3BC182F03200089C80C /* ECRacePayouts.m in Sources */,
 				7AF3591C183D213500BFFD26 /* EvoCapper.xcdatamodeld in Sources */,
 				7AB3B3C21835507E0089C80C /* ECPastLineRecord.m in Sources */,

@@ -12,21 +12,21 @@
 
 @synthesize winningTime					= _winningTime;
 @synthesize winningPost					= _winningPost;
-@synthesize postsFinishPositionArray	= _postsFinishPositionArray;
-@synthesize postsFinishTimeArray		= _postsFinishTimeArray;
+@synthesize postsFinalPositionArray	= _postsFinalPositionArray;
+@synthesize postsFinalTimeArray		= _postsFinalTimeArray;
 
-- (ECRaceResults*)initWithFinishPositionsArray:(NSArray*)finishPositionsByPost
+- (ECRaceResults*)initWithFinalPositionsArray:(NSArray*)finalPositionsByPost
 {
 	self = [super init];
 	
 	if(self)
 	{
 		self.winningPost				= 0;
-		self.postsFinishPositionArray	= finishPositionsByPost;
+		self.postsFinalPositionArray	= finalPositionsByPost;
 		
-		for(NSUInteger index = 0; index < finishPositionsByPost.count; index++)
+		for(NSUInteger index = 0; index < finalPositionsByPost.count; index++)
 		{
-			if([[finishPositionsByPost objectAtIndex:index] unsignedIntegerValue] == 1)
+			if([[finalPositionsByPost objectAtIndex:index] unsignedIntegerValue] == 1)
 			{
 				self.winningPost = index+ 1;
 				break;

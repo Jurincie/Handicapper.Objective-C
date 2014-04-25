@@ -2,55 +2,27 @@
 //  ECTrackStats.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 2/15/14.
+//  Created by Ron Jurincie on 4/25/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class ECClassStats, ECRaceClass, ECRaceDistanceStats;
+@class ECMarathonRaceStats, ECSprintRaceStats, ECThreeTurnRaceStats, ECTracks, ECTwoTurnRaceStats;
 
 @interface ECTrackStats : NSManagedObject
 
-@property (nonatomic, retain) NSString			*trackName;
-@property (nonatomic, retain) NSOrderedSet		*raceClasses;
-@property (nonatomic, retain) NSOrderedSet		*classStats;
-@property (nonatomic, retain) NSOrderedSet		*raceDistanceStats;
-@property (nonatomic, retain) NSManagedObject	*tracks;
+@property (nonatomic, retain) NSNumber * marathonRaceRecordTime;
+@property (nonatomic, retain) NSNumber * sprintRaceRecordTime;
+@property (nonatomic, retain) NSNumber * threeTurnRaceRecordTime;
+@property (nonatomic, retain) NSString * trackName;
+@property (nonatomic, retain) NSNumber * twoTurnRaceRecordTime;
+@property (nonatomic, retain) NSString * validRaceClasses;
+@property (nonatomic, retain) ECSprintRaceStats *sprintRaceStats;
+@property (nonatomic, retain) ECTracks *tracks;
+@property (nonatomic, retain) ECTwoTurnRaceStats *twoTurnRaceStats;
+@property (nonatomic, retain) ECThreeTurnRaceStats *threeTurnRaceStats;
+@property (nonatomic, retain) ECMarathonRaceStats *marathonRaceStats;
 
-@end
-
-@interface ECTrackStats (CoreDataGeneratedAccessors)
-
-- (void)insertObject:(ECClassStats *)value inClassStatsAtIndex:(NSUInteger)idx;
-- (void)removeObjectFromClassStatsAtIndex:(NSUInteger)idx;
-- (void)insertClassStats:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
-- (void)removeClassStatsAtIndexes:(NSIndexSet *)indexes;
-- (void)replaceObjectInClassStatsAtIndex:(NSUInteger)idx withObject:(ECClassStats *)value;
-- (void)replaceClassStatsAtIndexes:(NSIndexSet *)indexes withClassStats:(NSArray *)values;
-- (void)addClassStatsObject:(ECClassStats *)value;
-- (void)removeClassStatsObject:(ECClassStats *)value;
-- (void)addClassStats:(NSOrderedSet *)values;
-- (void)removeClassStats:(NSOrderedSet *)values;
-- (void)insertObject:(ECRaceClass *)value inRaceClassesAtIndex:(NSUInteger)idx;
-- (void)removeObjectFromRaceClassesAtIndex:(NSUInteger)idx;
-- (void)insertRaceClasses:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
-- (void)removeRaceClassesAtIndexes:(NSIndexSet *)indexes;
-- (void)replaceObjectInRaceClassesAtIndex:(NSUInteger)idx withObject:(ECRaceClass *)value;
-- (void)replaceRaceClassesAtIndexes:(NSIndexSet *)indexes withRaceClasses:(NSArray *)values;
-- (void)addRaceClassesObject:(ECRaceClass *)value;
-- (void)removeRaceClassesObject:(ECRaceClass *)value;
-- (void)addRaceClasses:(NSOrderedSet *)values;
-- (void)removeRaceClasses:(NSOrderedSet *)values;
-- (void)insertObject:(ECRaceDistanceStats *)value inRaceDistanceStatsAtIndex:(NSUInteger)idx;
-- (void)removeObjectFromRaceDistanceStatsAtIndex:(NSUInteger)idx;
-- (void)insertRaceDistanceStats:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
-- (void)removeRaceDistanceStatsAtIndexes:(NSIndexSet *)indexes;
-- (void)replaceObjectInRaceDistanceStatsAtIndex:(NSUInteger)idx withObject:(ECRaceDistanceStats *)value;
-- (void)replaceRaceDistanceStatsAtIndexes:(NSIndexSet *)indexes withRaceDistanceStats:(NSArray *)values;
-- (void)addRaceDistanceStatsObject:(ECRaceDistanceStats *)value;
-- (void)removeRaceDistanceStatsObject:(ECRaceDistanceStats *)value;
-- (void)addRaceDistanceStats:(NSOrderedSet *)values;
-- (void)removeRaceDistanceStats:(NSOrderedSet *)values;
 @end

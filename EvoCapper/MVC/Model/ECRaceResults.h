@@ -13,9 +13,9 @@
 
 @property (assign)				NSUInteger	winningPost;
 @property (assign)				double		winningTime;
-@property (nonatomic, strong)	NSArray		*postsFinishPositionArray;
-@property (nonatomic, strong)	NSArray		*postsFinishTimeArray;
+@property (nonatomic, strong)	NSArray		*postsFinalPositionArray;
+@property (nonatomic, strong)	NSArray		*postsFinalTimeArray;
 
-- (ECRaceResults*)initWithFinishPositionsArray:(NSArray*)finishPositionsByPost;
+- (ECRaceResults*)initWithFinalPositionsArray:(NSArray*)finalPositionsByPost;
 
 @end

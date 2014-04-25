@@ -2,32 +2,25 @@
 //  ECHandicapper.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 2/24/14.
+//  Created by Ron Jurincie on 4/25/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
 #import "ECHandicapper.h"
+#import "ECBettingResults.h"
+#import "ECDna.h"
 #import "ECPopulation.h"
+#import "ECRaceBet.h"
 
 
 @implementation ECHandicapper
 
-@dynamic amountBetOnWinBets;
 @dynamic birthGeneration;
-@dynamic breakPositionStrengthTree;
-@dynamic breakSpeedStrengthTree;
-@dynamic classStrengthTree;
-@dynamic earlySpeedRelevanceTree;
-@dynamic finalRaceStrengthTree;
-@dynamic firstTurnPositionStrengthTree;
-@dynamic firstTurnSpeedStrengthTree;
-@dynamic numberWinBets;
-@dynamic numberWinBetWinners;
-@dynamic otherRelevanceTree;
-@dynamic rank;
-@dynamic topOfStretchPositionStrengthTree;
-@dynamic topOfStretchSpeedStrengthTree;
+@dynamic minimumNumberRaces;
 @dynamic winThreshold;
-@dynamic handicapperPopulation;
+@dynamic bets;
+@dynamic bettingResults;
+@dynamic dna;
+@dynamic population;
 
 @end

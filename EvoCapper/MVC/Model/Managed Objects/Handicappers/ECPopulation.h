@@ -2,7 +2,7 @@
 //  ECPopulation.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 2/15/14.
+//  Created by Ron Jurincie on 4/25/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
@@ -22,14 +22,14 @@
 @property (nonatomic, retain) NSNumber * mutationRate;
 @property (nonatomic, retain) NSString * populationName;
 @property (nonatomic, retain) NSNumber * populationSize;
-@property (nonatomic, retain) NSSet *individualHandicappers;
+@property (nonatomic, retain) NSSet *handicappers;
 @end
 
 @interface ECPopulation (CoreDataGeneratedAccessors)
 
-- (void)addIndividualHandicappersObject:(ECHandicapper *)value;
-- (void)removeIndividualHandicappersObject:(ECHandicapper *)value;
-- (void)addIndividualHandicappers:(NSSet *)values;
-- (void)removeIndividualHandicappers:(NSSet *)values;
+- (void)addHandicappersObject:(ECHandicapper *)value;
+- (void)removeHandicappersObject:(ECHandicapper *)value;
+- (void)addHandicappers:(NSSet *)values;
+- (void)removeHandicappers:(NSSet *)values;
 
 @end
