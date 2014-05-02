@@ -51,50 +51,21 @@
 
 + (void)updateAndSaveData;
 
-- (void)getTracksStatsFromPopulationsPastLines:(NSString*)modifiedPastLinesPath;
+- (void)getTracksStatsFromPopulationsPastLines;
+- (NSString*)getTrackNameFromTrackId:(NSString*)trackID;
 - (NSUInteger)getRaceDxIndexFromString:(NSString*)raceDistanceString;
 - (NSArray*)getModeledRaceDistancesForTrackWithID:(NSString*)trackID;
-- (NSUInteger)processEntriesPastLines:(NSString*)pastLines
-                       forValidTracks:(NSArray*)validTrackAbbreviationsArray
-                  withStatisticsArray:(double*)dxStatsAccumulatorArray
-                      andCounterArray:(int*)dxRaceCounterArray;
-
 - (NSString*)getStringWithAllClassesAtTrackWithID:(NSString*)trackID;
 
 - (double)getBestTimeForRaceDistanceIndex:(NSUInteger)raceDxIndex
                                atTrackWithId:(NSString*)trackID;
 
-- (NSArray*)getValidRaceDistancesForTrack:(NSString*)trackID;
-
-- (NSArray*)processTrackAtPath:(NSString*)modifiedResultsFolderPath
-			  withDxStatsArray:(double*)statsArray
-		andDxStatsCounterArray:(int*)counterArray
-	   winTimeAccumulatorArray:(double*)winTimeAccumulatorArray
-	 placeTimeAccumulatorArray:(double*)placeTimeAccumulatorArray
-	  showTimeAccumulatorArray:(double*)showTimeAccumulatorArray
-	  numRacesAccumulatorArray:(int*)numRacesAccumulatorArray
-				 andClassArray:(NSArray*)classArray;
-
 - (NSArray*)getStatDistancesForTrackWithID:(NSString*)trackID;
-
-- (void)processRaceFromString:(NSString*)singleRaceString
-          withStatisticsArray:(double*)dxStatsAccumulatorArray
-              andCounterArray:(int*)dxStatsRaceCounterArray
-              usingClassArray:(NSArray*)classArray
-                 atTrackNamed:(NSString*)trackName
-     settingRaceDistanceIndex:(NSUInteger*)raceDistanceIndex;
-
 - (BOOL)isThisFallWord:(NSString*)testWord;
 - (BOOL)isThisLineDeclaredNoRace:(NSString*)firstLine;
 - (double)getBestRaceTimeAtTrackNamed:(NSString*)trackName
 				  atRaceDistanceIndex:(NSUInteger)raceDxIndex;
-
 - (NSString*)getRaceClassStringFromSingleRaceString:(NSString*)singleRaceString;
-- (double)getBestTimeThisRaceFromString:(NSString*)singleRaceString;
-- (double)getShowTimeThisRaceFromString:(NSString*)singleRaceString;
-- (double)getWorstRaceTimeAtTrackNamed:(NSString*)trackName
-				   atRaceDistanceIndex:(NSUInteger)raceDxIndex;
-
 - (void)editPastLinesAtPath:(NSString*)uneditedPastLinesPath;
 - (NSString*)stripHtmlAndWhitespaceFromFileAtPath:(NSString*)originalFileContents;
 - (NSString*)modifyPastLineString:(NSString*)originalLine;
@@ -105,17 +76,6 @@
 - (void)modelTracks;
 - (NSArray*)getClassesForTrackWithId:(NSString*)trackName;
 - (void)printNewTrackCouters:(NSArray*)trackCounterArray;
-
-- (void)addStatsForEntryAtPost:(NSUInteger)trapPosition
-		   withbreakAtPosition:(NSUInteger)breakPosition
-			 firstTurnPosition:(NSUInteger)firstTurnPosition
-               farTurnPosition:(NSUInteger)farTurnPosition
-				 finalPosition:(NSUInteger)finalPosition
-				  withRaceTime:(double)raceTimeForEntry
-				 atRaceDxIndex:(NSUInteger)raceDxIndex
-	  withStatAccumulatorArray:(double*)statAccumulatorArray
-		   andRaceCounterArray:(int*)raceCounterArray
-               forTrackINumber:(NSUInteger)trackNumber;
 
 - (ECSprintRaceStats*)getSprintStatsForTrackWithIndex:(NSUInteger)trackIdIndex
                                      withTrackIdArray:(NSArray*)trackIdArray
@@ -139,16 +99,8 @@
 
 - (NSUInteger)getIndexOfTrapPosition:(NSArray*)tokens;
 - (BOOL)isThisCharADigit:(char)c;
-- (BOOL)isThisADecimalWord:(NSString*)word;
 - (void)printStatArrays:(double*)statsAccumulatorArray
 		andCounterArray:(int*)raceCounterArray;
-
-- (NSUInteger)processStatsFromPastLineString:(NSString*)originalFileContents
-                  forTracksWithAbbreviations:(NSArray*)unmodeledTrackAbbreviationArray
-                        andtrackClassesArray:(NSArray*)newTrackClassesArray
-                 withWinTimeAccumulatorArray:(NSMutableArray*)winTimeAccumulatorArray
-                    showTimeAccumulatorArray:(NSMutableArray*)showTimesAccumulatorArray
-                    numRacesAccumulatorArray:(NSMutableArray*)numRacesAccumulatorArray;
 
 #pragma darwinian methods
 - (void)createNewPopoulationWithName:(NSString*)name

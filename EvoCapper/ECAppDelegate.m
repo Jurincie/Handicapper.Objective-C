@@ -396,7 +396,11 @@
 {
 	NSLog(@"buildTrackStatsFromPastLines Button Tapped");
 	
-	[self.evolutionManager getTracksStatsFromPopulationsPastLines:@"/Users/ronjurincie/Desktop/Project Ixtlan/Dogs/Formulated Past Lines"];
+    self.evolutionManager = [[ECMainController alloc] init];
+    
+	[self.evolutionManager getTracksStatsFromPopulationsPastLines];
+    
+    [self saveAction:self];
 
 }
 

@@ -12,7 +12,7 @@
 /*
  AS OF: 04/10/2014
  
- TrackID    Distances Stats        Classes             Distances Without Stats
+ TrackID    Distances Stats         Distances Without Stats
  
     **      NONE                            ALL
     AD      NONE                            ALL

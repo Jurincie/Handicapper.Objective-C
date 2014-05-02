@@ -20,7 +20,7 @@
 @property (readonly, strong, nonatomic) NSManagedObjectContext			*managedObjectContext;
 
 @property (strong, nonatomic) ECMainController	*evolutionManager;
-@property (strong, nonatomic) ECPopulation			*currentPopulation;
+@property (strong, nonatomic) ECPopulation      *currentPopulation;
 
 - (IBAction)trainPopulationButtonTapped:(id)sender;
 - (IBAction)startButtonTapped:(id)sender;
