@@ -106,31 +106,31 @@ sameTrack
 /////////////////////////////
 
 Tree3: breakPositionStrength
-With Variables:
+ with Variables:
 (breakPosition - postBreakPositionAverage),
 (winningTime - recordTimeForDx),
 classStrength
 
 Tree4: earlySpeedStrength
-With Variables:
+ with Variables:
 (1stTurnPosition - breakPosition - avgImprovementFromBreakPositionToFirstTurn),
 (winningTime - recordTimeForDx),
 classStrength
 
-Tree5: midtrackSpeedStrength
-With Variables:
+ree5: midtrackSpeedStrength
+ with Variables:
 (farTurnPosition - firstTurnPosition - avgImprovementFromFirstTurnPositionToFarTurn,
  (winningTime - recordTimeForDx),
  classStrength
  
- Tree6: lateSpeedStrength
- With Variables:
+Tree6: lateSpeedStrength
+with Variables:
  (finalPosition - farTurnPosition - avgImprovementFromFarTurnPositionToFinal),
  (winningTime - recordTimeForDx),
  classStrength
  
- Tree7: overallClassStrength
- With Variables:
+Tree7: overallClassStrength
+ with Variables:
  (finalPosition[post-1] - avgFinalPositionForPostAtDx),
  (finalTime - winningTime) + 1.0,
  winningTime,
@@ -141,7 +141,7 @@ With Variables:
  ///////////////////////////
  
  Tree8: raceToFirstTurnStrength
- With Variables:
+ with Variables:
  breakDistance[post-1],
  breakSpeed[post-1],
  earlySpeedStrength[post-1],
@@ -150,14 +150,14 @@ With Variables:
  collisionPropensity[post-1] + 1
  
  Tree9: raceToFarTurnStrength
- With Variables:
+ with Variables:
  firstTurnDistance[post-1],
  midtrackSpeedStrength[post-1],
  numberDogsAhead [post-1] + 1,
  collisionPropensity[post-1] + 1
  
  Tree10: raceToFinalStrength
- With Variables:
+ with Variables:
  farTurnDistance[post-1],
  lateSpeedStrength[post-1],
  numberDogsAhead [post-1] + 1,
@@ -168,12 +168,12 @@ With Variables:
  ///////////////////////
  
  Tree11: betStrength
- With Variables:
+ with Variables:
  finalDistance[post-1],
  classStrength[post-1],
  odds[post-1],
  daysSinceLastRace[post-1]
-
+ (could track how each entry did against other dogs in this race, when they met before) previousMeetingStrength ??
 */
 
 #endif

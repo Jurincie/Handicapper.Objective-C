@@ -2,7 +2,7 @@
 //  ECPostStats.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 4/25/14.
+//  Created by Ron Jurincie on 5/3/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
@@ -17,9 +17,9 @@
 @property (nonatomic, retain) NSNumber * breakPositionAverage;
 @property (nonatomic, retain) NSNumber * finalPositionAverage;
 @property (nonatomic, retain) NSNumber * firstTurnPositionAverage;
-@property (nonatomic, retain) ECSprintRaceStats *sprintRaceStats;
-@property (nonatomic, retain) ECTwoTurnRaceStats *twoTurnRaceStats;
-@property (nonatomic, retain) ECThreeTurnRaceStats *threeTurnRaceStats;
 @property (nonatomic, retain) ECMarathonRaceStats *marathonRaceStats;
+@property (nonatomic, retain) ECSprintRaceStats *sprintRaceStats;
+@property (nonatomic, retain) ECThreeTurnRaceStats *threeTurnRaceStats;
+@property (nonatomic, retain) ECTwoTurnRaceStats *twoTurnRaceStats;
 
 @end

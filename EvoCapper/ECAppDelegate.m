@@ -245,39 +245,6 @@
 }
 
 
-
-// Custon code
-- (IBAction)editPastLinesButtonTapped:(id)sender
-{
-	NSString *uneditedPastLinePath = @"/Users/ronjurincie/Desktop/Project Ixtlan/Dogs/Unedited Past Lines";
-	
-	[self.evolutionManager editPastLinesAtPath:uneditedPastLinePath];
-}
-
-- (IBAction)buildTrackStatisticsButtonTapped:(id)sender
-{
-    
-	// check to see if ECTracks object exists in CoreData
-	NSError *error					= nil;
-	NSFetchRequest *fetchRequest	= [[NSFetchRequest alloc] init];
-	NSEntityDescription *entity		= [NSEntityDescription entityForName:@"ECTracks"
-												  inManagedObjectContext:self.managedObjectContext];
-	[fetchRequest setEntity:entity];
-	
-	NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest
-																	   error:&error];
-	
-	if(fetchedObjects.count > 0)
-	{
-		// tracks object already exists
-	
-	}
-	else
-	{
-		[self.evolutionManager modelTracks];
-	}
-}
-
 - (IBAction)startButtonTapped:(id)sender
 {
 	// check to see if coreData has any populations

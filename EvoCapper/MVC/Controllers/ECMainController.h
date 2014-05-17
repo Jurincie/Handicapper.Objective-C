@@ -51,53 +51,42 @@
 
 + (void)updateAndSaveData;
 
+- (NSUInteger)returnGreatestValueForCalls:(NSArray*)raceCallsArray;
+- (void)printArray:(NSArray*)arrayToPrint;
 - (void)getTracksStatsFromPopulationsPastLines;
 - (NSString*)getTrackNameFromTrackId:(NSString*)trackID;
 - (NSUInteger)getRaceDxIndexFromString:(NSString*)raceDistanceString;
 - (NSArray*)getModeledRaceDistancesForTrackWithID:(NSString*)trackID;
 - (NSString*)getStringWithAllClassesAtTrackWithID:(NSString*)trackID;
+- (void)printTwinNonZeroValuesWithIndicesInCArray:(double*)cArray
+                                           ofSize:(NSUInteger)arraySize;
+
+- (NSUInteger)getIndexForTrackIndex:(NSUInteger)trackIdIndex
+                atRaceDistanceIndex:(NSUInteger)raceDistanceIndex
+                 forStatFieldNumber:(NSUInteger)kBreakPositionFromTrapPositionStatField
+                       withPosition:(NSUInteger)positionIndex;
 
 - (double)getBestTimeForRaceDistanceIndex:(NSUInteger)raceDxIndex
                                atTrackWithId:(NSString*)trackID;
-
-- (NSArray*)getStatDistancesForTrackWithID:(NSString*)trackID;
 - (BOOL)isThisFallWord:(NSString*)testWord;
 - (BOOL)isThisLineDeclaredNoRace:(NSString*)firstLine;
-- (double)getBestRaceTimeAtTrackNamed:(NSString*)trackName
-				  atRaceDistanceIndex:(NSUInteger)raceDxIndex;
+- (BOOL)isThisDistanceIndex:(NSUInteger)raceDistanceIndex
+      modeledForTrackWithID:(NSString*)trackString;
+
 - (NSString*)getRaceClassStringFromSingleRaceString:(NSString*)singleRaceString;
-- (void)editPastLinesAtPath:(NSString*)uneditedPastLinesPath;
-- (NSString*)stripHtmlAndWhitespaceFromFileAtPath:(NSString*)originalFileContents;
-- (NSString*)modifyPastLineString:(NSString*)originalLine;
 - (NSString*)getStringFromArray:(NSArray*)textLinesArray;
-- (BOOL)isLineDateLine:(NSString*)testLine;
 
 #pragma track statistics methods
 - (void)modelTracks;
 - (NSArray*)getClassesForTrackWithId:(NSString*)trackName;
-- (void)printNewTrackCouters:(NSArray*)trackCounterArray;
 
-- (ECSprintRaceStats*)getSprintStatsForTrackWithIndex:(NSUInteger)trackIdIndex
-                                     withTrackIdArray:(NSArray*)trackIdArray
-                                            fromArray:(double*)accumulatedStatsArray
-                                      andCounterArray:(int*)accumulatedCounterArray;
+- (id)getStatsForTrackWithIndex:(NSUInteger)trackIdIndex
+               withTrackIdArray:(NSArray*)trackIdArray
+                forRaceDistance:(NSUInteger)raceDistanceIndex
+                      fromArray:(double*)statsAndCounterAccumulatorArrray
+                  withArraySize:(NSUInteger)arraySize;
 
-- (ECTwoTurnRaceStats*)getTwoTurnStatsForTrackWithIndex:(NSUInteger)trackIdIndex
-                                       withTrackIdArray:(NSArray*)trackIdArray
-                                              fromArray:(double*)accumulatedStatsArray
-                                        andCounterArray:(int*)accumulatedCounterArray;
 
-- (ECThreeTurnRaceStats*)getThreeTurnStatsForTrackWithIndex:(NSUInteger)trackIdIndex
-                                           withTrackIdArray:(NSArray*)trackIdArray
-                                                  fromArray:(double*)accumulatedStatsArray
-                                            andCounterArray:(int*)accumulatedCounterArray;
-
-- (ECMarathonRaceStats*)getMarathonStatsForTrackWithIndex:(NSUInteger)trackIdIndex
-                                         withTrackIdArray:(NSArray*)trackIdArray
-                                                fromArray:(double*)accumulatedStatsArray
-                                          andCounterArray:(int*)accumulatedCounterArray;
-
-- (NSUInteger)getIndexOfTrapPosition:(NSArray*)tokens;
 - (BOOL)isThisCharADigit:(char)c;
 - (void)printStatArrays:(double*)statsAccumulatorArray
 		andCounterArray:(int*)raceCounterArray;
@@ -172,7 +161,6 @@
 - (NSUInteger)getIndexOfFirstDateToken:(NSArray*)lineZeroTokens;
 - (NSUInteger)getRaceDxFromString:(NSString*)raceNumberString;
 - (NSString*)getMmSubstringFromSpelledMonth:(NSString*)spelledMonthString;
-- (NSString*)getRaceDistanceStringFromString:(NSString*)fileNameString;
 
 - (void)useResultLineArray:(NSArray*)tokens
 	toGetValueForEntryName:(NSString**)entryNameString

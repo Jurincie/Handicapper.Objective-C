@@ -2,7 +2,7 @@
 //  ECTrackStats.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 4/25/14.
+//  Created by Ron Jurincie on 5/3/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
@@ -19,10 +19,10 @@
 @property (nonatomic, retain) NSString * trackName;
 @property (nonatomic, retain) NSNumber * twoTurnRaceRecordTime;
 @property (nonatomic, retain) NSString * validRaceClasses;
+@property (nonatomic, retain) ECMarathonRaceStats *marathonRaceStats;
 @property (nonatomic, retain) ECSprintRaceStats *sprintRaceStats;
+@property (nonatomic, retain) ECThreeTurnRaceStats *threeTurnRaceStats;
 @property (nonatomic, retain) ECTracks *tracks;
 @property (nonatomic, retain) ECTwoTurnRaceStats *twoTurnRaceStats;
-@property (nonatomic, retain) ECThreeTurnRaceStats *threeTurnRaceStats;
-@property (nonatomic, retain) ECMarathonRaceStats *marathonRaceStats;
 
 @end

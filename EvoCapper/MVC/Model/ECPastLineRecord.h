@@ -22,7 +22,7 @@
 
 @property (assign)				BOOL		foundTrouble;
 @property (assign)				BOOL		isMatinee;
-@property (assign)				BOOL		didNotFinal;
+@property (assign)				BOOL		didNotFinish;
 @property (assign)				BOOL		ranInside;
 @property (assign)				BOOL		ranMidtrack;
 @property (assign)				BOOL		ranOutside;

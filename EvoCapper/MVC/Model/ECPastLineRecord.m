@@ -22,7 +22,7 @@
 
 @synthesize foundTrouble	= _foundTrouble;
 @synthesize isMatinee		= _isMatinee;
-@synthesize didNotFinal	= _didNotFinal;
+@synthesize didNotFinish	= _didNotFinish;
 @synthesize wasScratched	= _wasScratched;
 @synthesize ranInside		= _ranInside;
 @synthesize ranMidtrack		= _ranMidtrack;

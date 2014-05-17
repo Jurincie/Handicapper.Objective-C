@@ -25,8 +25,6 @@
 - (IBAction)trainPopulationButtonTapped:(id)sender;
 - (IBAction)startButtonTapped:(id)sender;
 - (IBAction)saveAction:(id)sender;
-- (IBAction)buildTrackStatisticsButtonTapped:(id)sender;
-- (IBAction)editPastLinesButtonTapped:(id)sender;
 - (IBAction)buildTrackStatsFromPastLinesButtonTapped:(id)sender;
 
 - (NSArray*)getNewPopulationInformation;

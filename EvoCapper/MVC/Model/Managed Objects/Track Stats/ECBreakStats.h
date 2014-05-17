@@ -1,5 +1,5 @@
 //
-//  ECFarTurnStats.h
+//  ECBreakStats.h
 //  EvoCapper
 //
 //  Created by Ron Jurincie on 5/3/14.
@@ -9,13 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class ECMarathonRaceStats, ECThreeTurnRaceStats, ECTwoTurnRaceStats;
+@class ECMarathonRaceStats, ECSprintRaceStats, ECThreeTurnRaceStats, ECTwoTurnRaceStats;
 
-@interface ECFarTurnStats : NSManagedObject
+@interface ECBreakStats : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * averageFinalPosition;
-@property (nonatomic, retain) NSNumber * farTurnPosition;
+@property (nonatomic, retain) NSNumber * breakPosition;
+@property (nonatomic, retain) NSNumber * firstTurnPositionAverage;
 @property (nonatomic, retain) ECMarathonRaceStats *marathonRaceStats;
+@property (nonatomic, retain) ECSprintRaceStats *sprintRaceStats;
 @property (nonatomic, retain) ECThreeTurnRaceStats *threeTurnRaceStats;
 @property (nonatomic, retain) ECTwoTurnRaceStats *twoTurnRaceStats;
 

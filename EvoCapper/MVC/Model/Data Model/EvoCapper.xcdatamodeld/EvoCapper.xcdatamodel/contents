@@ -9,15 +9,27 @@
         <relationship name="bets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ECRaceBet" inverseName="bettingResults" inverseEntity="ECRaceBet" syncable="YES"/>
         <relationship name="handicapper" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECHandicapper" inverseName="bettingResults" inverseEntity="ECHandicapper" syncable="YES"/>
     </entity>
+    <entity name="ECBreakStats" representedClassName="ECBreakStats" syncable="YES">
+        <attribute name="breakPosition" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="firstTurnPositionAverage" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="marathonRaceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECMarathonRaceStats" inverseName="breakStats" inverseEntity="ECMarathonRaceStats" syncable="YES"/>
+        <relationship name="sprintRaceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECSprintRaceStats" inverseName="breakStats" inverseEntity="ECSprintRaceStats" syncable="YES"/>
+        <relationship name="threeTurnRaceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECThreeTurnRaceStats" inverseName="breakStats" inverseEntity="ECThreeTurnRaceStats" syncable="YES"/>
+        <relationship name="twoTurnRaceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECTwoTurnRaceStats" inverseName="breakStats" inverseEntity="ECTwoTurnRaceStats" syncable="YES"/>
+    </entity>
     <entity name="ECDna" representedClassName="ECDna" syncable="YES">
-        <attribute name="bettingStrengthTree" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="breakPositionStrengthTree" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="classStrengthTree" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="earlySpeedRelevanceTree" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="farTurnPositionStrengthTree" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="finalRaceStrengthTree" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="firstTurnPositionStrengthTree" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="otherRelevanceTree" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bettingStrengthDnaStrand" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="breakStrengthDnaStrand" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="earlySpeedRelevanceDnaStrand" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="getClassStrengthDnaStrand" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lateSpeedDnaStrand" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="midtrackSpeedDnaStrand" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="otherRelevanceDnaStrand" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="raceToFarTurnDnaStrand" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="raceToFinishDnaStrand" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="raceToFirstTurnDnaStrand" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recentClassDnaTree" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="speedToFirstTurnDnaStrand" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="handicapper" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECHandicapper" inverseName="dna" inverseEntity="ECHandicapper" syncable="YES"/>
     </entity>
     <entity name="ECFarTurnStats" representedClassName="ECFarTurnStats" syncable="YES">
@@ -44,6 +56,7 @@
         <relationship name="population" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="ECPopulation" inverseName="handicappers" inverseEntity="ECPopulation" syncable="YES"/>
     </entity>
     <entity name="ECMarathonRaceStats" representedClassName="ECMarathonRaceStats" syncable="YES">
+        <relationship name="breakStats" optional="YES" toMany="YES" minCount="3" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECBreakStats" inverseName="marathonRaceStats" inverseEntity="ECBreakStats" syncable="YES"/>
         <relationship name="farTurnStats" optional="YES" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECFarTurnStats" inverseName="marathonRaceStats" inverseEntity="ECFarTurnStats" syncable="YES"/>
         <relationship name="firstTurnStats" optional="YES" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECFirstTurnStats" inverseName="marathonRaceStats" inverseEntity="ECFirstTurnStats" syncable="YES"/>
         <relationship name="postStats" optional="YES" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECPostStats" inverseName="marathonRaceStats" inverseEntity="ECPostStats" syncable="YES"/>
@@ -83,6 +96,7 @@
         <relationship name="handicapper" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECHandicapper" inverseName="bets" inverseEntity="ECHandicapper" syncable="YES"/>
     </entity>
     <entity name="ECSprintRaceStats" representedClassName="ECSprintRaceStats" syncable="YES">
+        <relationship name="breakStats" optional="YES" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECBreakStats" inverseName="sprintRaceStats" inverseEntity="ECBreakStats" syncable="YES"/>
         <relationship name="postStats" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECPostStats" inverseName="sprintRaceStats" inverseEntity="ECPostStats" syncable="YES"/>
         <relationship name="sprintTurnStats" optional="YES" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECSprintTurnStats" inverseName="sprintRaceStats" inverseEntity="ECSprintTurnStats" syncable="YES"/>
         <relationship name="trackStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECTrackStats" inverseName="sprintRaceStats" inverseEntity="ECTrackStats" syncable="YES"/>
@@ -93,6 +107,7 @@
         <relationship name="sprintRaceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECSprintRaceStats" inverseName="sprintTurnStats" inverseEntity="ECSprintRaceStats" syncable="YES"/>
     </entity>
     <entity name="ECThreeTurnRaceStats" representedClassName="ECThreeTurnRaceStats" syncable="YES">
+        <relationship name="breakStats" optional="YES" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECBreakStats" inverseName="threeTurnRaceStats" inverseEntity="ECBreakStats" syncable="YES"/>
         <relationship name="farTurnStats" optional="YES" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECFarTurnStats" inverseName="threeTurnRaceStats" inverseEntity="ECFarTurnStats" syncable="YES"/>
         <relationship name="firstTurnStats" optional="YES" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECFirstTurnStats" inverseName="threeTurnRaceStats" inverseEntity="ECFirstTurnStats" syncable="YES"/>
         <relationship name="postStats" optional="YES" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECPostStats" inverseName="threeTurnRaceStats" inverseEntity="ECPostStats" syncable="YES"/>
@@ -115,6 +130,7 @@
         <relationship name="twoTurnRaceStats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ECTwoTurnRaceStats" inverseName="trackStats" inverseEntity="ECTwoTurnRaceStats" syncable="YES"/>
     </entity>
     <entity name="ECTwoTurnRaceStats" representedClassName="ECTwoTurnRaceStats" syncable="YES">
+        <relationship name="breakStats" optional="YES" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECBreakStats" inverseName="twoTurnRaceStats" inverseEntity="ECBreakStats" syncable="YES"/>
         <relationship name="farTurnStats" optional="YES" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECFarTurnStats" inverseName="twoTurnRaceStats" inverseEntity="ECFarTurnStats" syncable="YES"/>
         <relationship name="firstTurnStats" optional="YES" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECFirstTurnStats" inverseName="twoTurnRaceStats" inverseEntity="ECFirstTurnStats" syncable="YES"/>
         <relationship name="postStats" optional="YES" toMany="YES" minCount="9" maxCount="9" deletionRule="Nullify" ordered="YES" destinationEntity="ECPostStats" inverseName="twoTurnRaceStats" inverseEntity="ECPostStats" syncable="YES"/>
@@ -122,19 +138,20 @@
     </entity>
     <elements>
         <element name="ECBettingResults" positionX="-927" positionY="-0" width="128" height="148"/>
-        <element name="ECDna" positionX="-648" positionY="99" width="180" height="178"/>
+        <element name="ECBreakStats" positionX="-963" positionY="-261" width="128" height="133"/>
+        <element name="ECDna" positionX="-648" positionY="99" width="180" height="240"/>
         <element name="ECFarTurnStats" positionX="502" positionY="-171" width="128" height="118"/>
         <element name="ECFirstTurnStats" positionX="511" positionY="-325" width="128" height="118"/>
         <element name="ECHandicapper" positionX="-1134" positionY="81" width="128" height="148"/>
+        <element name="ECMarathonRaceStats" positionX="-945" positionY="-243" width="128" height="118"/>
         <element name="ECPopulation" positionX="-963" positionY="228" width="128" height="193"/>
-        <element name="ECPostStats" positionX="277" positionY="-279" width="128" height="163"/>
+        <element name="ECPostStats" positionX="277" positionY="-279" width="128" height="165"/>
         <element name="ECRaceBet" positionX="-1161" positionY="-180" width="128" height="178"/>
-        <element name="ECSprintRaceStats" positionX="538" positionY="92" width="128" height="28"/>
+        <element name="ECSprintRaceStats" positionX="538" positionY="92" width="128" height="103"/>
         <element name="ECSprintTurnStats" positionX="252" positionY="-99" width="128" height="88"/>
+        <element name="ECThreeTurnRaceStats" positionX="-954" positionY="-252" width="128" height="118"/>
         <element name="ECTracks" positionX="-1143" positionY="-396" width="128" height="60"/>
         <element name="ECTrackStats" positionX="-900" positionY="-405" width="198" height="208"/>
-        <element name="ECTwoTurnRaceStats" positionX="-963" positionY="-261" width="128" height="28"/>
-        <element name="ECThreeTurnRaceStats" positionX="-954" positionY="-252" width="128" height="28"/>
-        <element name="ECMarathonRaceStats" positionX="-945" positionY="-243" width="128" height="28"/>
+        <element name="ECTwoTurnRaceStats" positionX="-963" positionY="-261" width="128" height="118"/>
     </elements>
 </model>

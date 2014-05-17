@@ -2,7 +2,7 @@
 //  ECSprintTurnStats.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 4/25/14.
+//  Created by Ron Jurincie on 5/3/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 

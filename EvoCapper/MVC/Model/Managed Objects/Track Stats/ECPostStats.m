@@ -2,7 +2,7 @@
 //  ECPostStats.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 4/25/14.
+//  Created by Ron Jurincie on 5/3/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
@@ -19,9 +19,9 @@
 @dynamic breakPositionAverage;
 @dynamic finalPositionAverage;
 @dynamic firstTurnPositionAverage;
-@dynamic sprintRaceStats;
-@dynamic twoTurnRaceStats;
-@dynamic threeTurnRaceStats;
 @dynamic marathonRaceStats;
+@dynamic sprintRaceStats;
+@dynamic threeTurnRaceStats;
+@dynamic twoTurnRaceStats;
 
 @end

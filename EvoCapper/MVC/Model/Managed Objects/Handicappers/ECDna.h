@@ -2,7 +2,7 @@
 //  ECDna.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 4/25/14.
+//  Created by Ron Jurincie on 5/10/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
@@ -13,14 +13,18 @@
 
 @interface ECDna : NSManagedObject
 
-@property (nonatomic, retain) NSString * bettingStrengthTree;
-@property (nonatomic, retain) NSString * breakPositionStrengthTree;
-@property (nonatomic, retain) NSString * classStrengthTree;
-@property (nonatomic, retain) NSString * earlySpeedRelevanceTree;
-@property (nonatomic, retain) NSString * farTurnPositionStrengthTree;
-@property (nonatomic, retain) NSString * finalRaceStrengthTree;
-@property (nonatomic, retain) NSString * firstTurnPositionStrengthTree;
-@property (nonatomic, retain) NSString * otherRelevanceTree;
+@property (nonatomic, retain) NSString * bettingStrengthDnaStrand;
+@property (nonatomic, retain) NSString * breakStrengthDnaStrand;
+@property (nonatomic, retain) NSString * getClassStrengthDnaStrand;
+@property (nonatomic, retain) NSString * earlySpeedRelevanceDnaStrand;
+@property (nonatomic, retain) NSString * midtrackSpeedDnaStrand;
+@property (nonatomic, retain) NSString * lateSpeedDnaStrand;
+@property (nonatomic, retain) NSString * speedToFirstTurnDnaStrand;
+@property (nonatomic, retain) NSString * otherRelevanceDnaStrand;
+@property (nonatomic, retain) NSString * recentClassDnaTree;
+@property (nonatomic, retain) NSString * raceToFirstTurnDnaStrand;
+@property (nonatomic, retain) NSString * raceToFarTurnDnaStrand;
+@property (nonatomic, retain) NSString * raceToFinishDnaStrand;
 @property (nonatomic, retain) ECHandicapper *handicapper;
 
 @end
