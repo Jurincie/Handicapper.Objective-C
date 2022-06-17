@@ -18,5 +18,6 @@
 @property (assign)	double	trifectaPayout;
 @property (assign)	double	superfectaPayout;
 @property (assign)	double	dailyDoublePayout;
+@property (assign)	double	triSuperPayout;
 
 @end

@@ -244,27 +244,33 @@
     return NSTerminateNow;
 }
 
+- (IBAction)testDnaButtonTapped:(id)sender
+{
+    if(nil == self.evolutionManager)
+    {
+        self.evolutionManager = [[ECMainController alloc] init];
+    }
+    
+    [self.evolutionManager testDna];
+}
+
 
 - (IBAction)startButtonTapped:(id)sender
 {
 	// check to see if coreData has any populations
 	NSError *error					= nil;
-	BOOL oneOrMorePopulationsExist	= YES;
 	BOOL selectOldPopulation		= NO;
 	NSArray *newPopulationStrings	= nil;
 
 	NSFetchRequest *fetchRequest	= [[NSFetchRequest alloc] init];
-	NSEntityDescription *entity		= [NSEntityDescription entityForName:@"ECHandicapperPopulation"
+	NSEntityDescription *entity		= [NSEntityDescription entityForName:@"ECPopulation"
 												  inManagedObjectContext:self.managedObjectContext];
 	[fetchRequest setEntity:entity];
 
 	NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest
 																	   error:&error];
-				
-	if(fetchedObjects.count > 0)
-	{
-		oneOrMorePopulationsExist = YES;
-	}
+		
+    BOOL oneOrMorePopulationsExist = fetchedObjects.count > 0 ? YES : NO;
 	
 	if(oneOrMorePopulationsExist)
 	{
@@ -292,13 +298,17 @@
 		// prompt user for new population fields
 		newPopulationStrings		= [self getNewPopulationInformation];
 		NSString *populationName	= [newPopulationStrings objectAtIndex:0];
-		NSUInteger initialSize		= [[newPopulationStrings objectAtIndex:1] unsignedIntegerValue];
-		NSUInteger maxTreeDepth		= [[newPopulationStrings objectAtIndex:2] unsignedIntegerValue];
-		NSUInteger minTreeDepth		= [[newPopulationStrings objectAtIndex:3] unsignedIntegerValue];
+		NSUInteger initialSize		= [[newPopulationStrings objectAtIndex:1] integerValue];
+		NSUInteger maxTreeDepth		= [[newPopulationStrings objectAtIndex:2] integerValue];
+		NSUInteger minTreeDepth		= [[newPopulationStrings objectAtIndex:3] integerValue];
 		double mutationRate			= [[newPopulationStrings objectAtIndex:4] doubleValue];
 		NSString *comments			= [newPopulationStrings objectAtIndex:5];
 		
-		
+        if(nil == self.evolutionManager)
+        {
+            self.evolutionManager = [[ECMainController alloc] init];
+        }
+
 		[self.evolutionManager createNewPopoulationWithName:populationName
 												initialSize:initialSize
 											   maxTreeDepth:maxTreeDepth
@@ -332,12 +342,12 @@
 	NSMutableArray *newPopulationStrings = [NSMutableArray new];
 	
 	
-	NSString *populationName	= nil;
-	NSUInteger initialSize		= 0;
-	NSUInteger maxTreeDepth		= 0;
-	NSUInteger minTreeDepth		= 0;
-	double mutationRate			= 0.0;
-	NSString *commentString		= nil;
+	NSString *populationName	= @"TEST Population 1";
+	NSUInteger initialSize		= 256;
+	NSUInteger maxTreeDepth		= 7;
+	NSUInteger minTreeDepth		= 4;
+	double mutationRate			= 0.001;
+	NSString *commentString		= @"May 17, 2014: INITIAL TEST POPULATION";
 	
 	[newPopulationStrings addObject:populationName];
 	[newPopulationStrings addObject:[NSString stringWithFormat:@"%lu", initialSize]];
@@ -363,7 +373,10 @@
 {
 	NSLog(@"buildTrackStatsFromPastLines Button Tapped");
 	
-    self.evolutionManager = [[ECMainController alloc] init];
+    if(nil == self.evolutionManager)
+    {
+        self.evolutionManager = [[ECMainController alloc] init];
+    }
     
 	[self.evolutionManager getTracksStatsFromPopulationsPastLines];
     
@@ -374,6 +387,11 @@
 - (IBAction)trainPopulationButtonTapped:(id)sender
 {
     NSLog(@"Train Population Button Tapped");
+   
+    if(nil == self.evolutionManager)
+    {
+        self.evolutionManager = [[ECMainController alloc] init];
+    }
 
     [self.evolutionManager trainPopulationForGenerations:2];
 }

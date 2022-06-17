@@ -10,13 +10,14 @@
 
 @implementation ECRacePayouts
 
-@synthesize winPayout				= _winPayout;
-@synthesize placePayout				= _placePayout;
-@synthesize showPayout				= _showPayout;
-@synthesize quinellaPayout			= _quinellaPayout;
-@synthesize perfectaPayout			= _perfectaPayout;
-@synthesize trifectaPayout			= _trifectaPayout;
-@synthesize superfectaPayout		= _superfectaPayout;
-@synthesize dailyDoublePayout		= _dailyDoublePayout;
+@synthesize winPayout           = _winPayout;
+@synthesize placePayout         = _placePayout;
+@synthesize showPayout          = _showPayout;
+@synthesize quinellaPayout      = _quinellaPayout;
+@synthesize perfectaPayout      = _perfectaPayout;
+@synthesize trifectaPayout      = _trifectaPayout;
+@synthesize superfectaPayout    = _superfectaPayout;
+@synthesize dailyDoublePayout   = _dailyDoublePayout;
+@synthesize triSuperPayout      = _triSuperPayout;
 
 @end

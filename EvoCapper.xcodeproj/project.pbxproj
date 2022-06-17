@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A0CD1E5193633FA00242B80 /* NSString+ECStringValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0CD1E4193633FA00242B80 /* NSString+ECStringValidator.m */; };
+		7A0CD1E81937B92E00242B80 /* ECHandicapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0CD1E71937B92E00242B80 /* ECHandicapper.m */; };
 		7A1247221915D6F300494FEE /* ECPostStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A1247211915D6F300494FEE /* ECPostStats.m */; };
 		7A1247251915D6F300494FEE /* ECSprintRaceStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A1247241915D6F300494FEE /* ECSprintRaceStats.m */; };
 		7A1247281915D6F300494FEE /* ECFarTurnStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A1247271915D6F300494FEE /* ECFarTurnStats.m */; };
@@ -20,11 +22,9 @@
 		7A1247431915D75B00494FEE /* ECBreakStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A1247421915D75B00494FEE /* ECBreakStats.m */; };
 		7A21FABC190AAF9700785880 /* ECBettingResults.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FABB190AAF9700785880 /* ECBettingResults.m */; };
 		7A21FABF190AAF9800785880 /* ECPopulation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FABE190AAF9800785880 /* ECPopulation.m */; };
-		7A21FAC5190AAF9800785880 /* ECHandicapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FAC4190AAF9800785880 /* ECHandicapper.m */; };
 		7A21FAC8190AAF9800785880 /* ECRaceBet.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A21FAC7190AAF9800785880 /* ECRaceBet.m */; };
 		7A27ED391818221400AA91AE /* evocappLogo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7A27ED381818221400AA91AE /* evocappLogo.jpg */; };
 		7A27ED4118184CEE00AA91AE /* ECMainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A27ED4018184CEE00AA91AE /* ECMainController.m */; };
-		7A699BAA184050370000E6B8 /* NSString+ECStringValidizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A699BA9184050370000E6B8 /* NSString+ECStringValidizer.m */; };
 		7A98B3BA18170ECD0013F43D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A98B3B918170ECD0013F43D /* Cocoa.framework */; };
 		7A98B3C418170ECD0013F43D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A98B3C218170ECD0013F43D /* InfoPlist.strings */; };
 		7A98B3C618170ECD0013F43D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A98B3C518170ECD0013F43D /* main.m */; };
@@ -58,6 +58,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7A0CD1E3193633FA00242B80 /* NSString+ECStringValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+ECStringValidator.h"; path = "NSString Catagory/NSString+ECStringValidator.h"; sourceTree = "<group>"; };
+		7A0CD1E4193633FA00242B80 /* NSString+ECStringValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+ECStringValidator.m"; path = "NSString Catagory/NSString+ECStringValidator.m"; sourceTree = "<group>"; };
+		7A0CD1E61937B92E00242B80 /* ECHandicapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECHandicapper.h; path = "MVC/Model/Managed Objects/Handicappers/ECHandicapper.h"; sourceTree = "<group>"; };
+		7A0CD1E71937B92E00242B80 /* ECHandicapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECHandicapper.m; path = "MVC/Model/Managed Objects/Handicappers/ECHandicapper.m"; sourceTree = "<group>"; };
 		7A1247201915D6F300494FEE /* ECPostStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECPostStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECPostStats.h"; sourceTree = "<group>"; };
 		7A1247211915D6F300494FEE /* ECPostStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECPostStats.m; path = "MVC/Model/Managed Objects/Track Stats/ECPostStats.m"; sourceTree = "<group>"; };
 		7A1247231915D6F300494FEE /* ECSprintRaceStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = ECSprintRaceStats.h; path = "MVC/Model/Managed Objects/Track Stats/ECSprintRaceStats.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -84,16 +88,12 @@
 		7A21FABB190AAF9700785880 /* ECBettingResults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECBettingResults.m; path = "MVC/Model/Managed Objects/Handicappers/ECBettingResults.m"; sourceTree = "<group>"; };
 		7A21FABD190AAF9800785880 /* ECPopulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECPopulation.h; path = "MVC/Model/Managed Objects/Handicappers/ECPopulation.h"; sourceTree = "<group>"; };
 		7A21FABE190AAF9800785880 /* ECPopulation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECPopulation.m; path = "MVC/Model/Managed Objects/Handicappers/ECPopulation.m"; sourceTree = "<group>"; };
-		7A21FAC3190AAF9800785880 /* ECHandicapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECHandicapper.h; path = "MVC/Model/Managed Objects/Handicappers/ECHandicapper.h"; sourceTree = "<group>"; };
-		7A21FAC4190AAF9800785880 /* ECHandicapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECHandicapper.m; path = "MVC/Model/Managed Objects/Handicappers/ECHandicapper.m"; sourceTree = "<group>"; };
 		7A21FAC6190AAF9800785880 /* ECRaceBet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ECRaceBet.h; path = "MVC/Model/Managed Objects/Handicappers/ECRaceBet.h"; sourceTree = "<group>"; };
 		7A21FAC7190AAF9800785880 /* ECRaceBet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ECRaceBet.m; path = "MVC/Model/Managed Objects/Handicappers/ECRaceBet.m"; sourceTree = "<group>"; };
 		7A27ED381818221400AA91AE /* evocappLogo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = evocappLogo.jpg; path = MVC/Views/Images/evocappLogo.jpg; sourceTree = "<group>"; };
 		7A27ED3F18184CEE00AA91AE /* ECMainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = ECMainController.h; path = MVC/Controllers/ECMainController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		7A27ED4018184CEE00AA91AE /* ECMainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = ECMainController.m; path = MVC/Controllers/ECMainController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		7A4EC75718F6E44700A3D3A3 /* TrackInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrackInfo.h; sourceTree = "<group>"; };
-		7A699BA8184050370000E6B8 /* NSString+ECStringValidizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+ECStringValidizer.h"; path = "NSString Catagory/NSString+ECStringValidizer.h"; sourceTree = "<group>"; };
-		7A699BA9184050370000E6B8 /* NSString+ECStringValidizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+ECStringValidizer.m"; path = "NSString Catagory/NSString+ECStringValidizer.m"; sourceTree = "<group>"; };
 		7A98B3B618170ECD0013F43D /* EvoCapper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EvoCapper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A98B3B918170ECD0013F43D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7A98B3BC18170ECD0013F43D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -253,8 +253,8 @@
 				7AB9FD1B181C2C4F00C17A46 /* General.h */,
 				7A98B3CB18170ECD0013F43D /* ECAppDelegate.h */,
 				7A98B3CC18170ECD0013F43D /* ECAppDelegate.m */,
-				7A699BA8184050370000E6B8 /* NSString+ECStringValidizer.h */,
-				7A699BA9184050370000E6B8 /* NSString+ECStringValidizer.m */,
+				7A0CD1E3193633FA00242B80 /* NSString+ECStringValidator.h */,
+				7A0CD1E4193633FA00242B80 /* NSString+ECStringValidator.m */,
 				7A27ED36181821F700AA91AE /* MVC */,
 				7A98B3D418170ECE0013F43D /* Images.xcassets */,
 				7A98B3C018170ECD0013F43D /* Supporting Files */,
@@ -343,14 +343,14 @@
 			children = (
 				7A21FAC6190AAF9800785880 /* ECRaceBet.h */,
 				7A21FAC7190AAF9800785880 /* ECRaceBet.m */,
-				7A21FAC3190AAF9800785880 /* ECHandicapper.h */,
-				7A21FAC4190AAF9800785880 /* ECHandicapper.m */,
 				7A21FABD190AAF9800785880 /* ECPopulation.h */,
 				7A21FABE190AAF9800785880 /* ECPopulation.m */,
 				7A21FABA190AAF9700785880 /* ECBettingResults.h */,
 				7A21FABB190AAF9700785880 /* ECBettingResults.m */,
 				7AD71048191F164D00794F70 /* ECDna.h */,
 				7AD71049191F164D00794F70 /* ECDna.m */,
+				7A0CD1E61937B92E00242B80 /* ECHandicapper.h */,
+				7A0CD1E71937B92E00242B80 /* ECHandicapper.m */,
 			);
 			name = Handicappers;
 			sourceTree = "<group>";
@@ -459,8 +459,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A1247251915D6F300494FEE /* ECSprintRaceStats.m in Sources */,
+				7A0CD1E81937B92E00242B80 /* ECHandicapper.m in Sources */,
 				7A98B3CD18170ECD0013F43D /* ECAppDelegate.m in Sources */,
-				7A21FAC5190AAF9800785880 /* ECHandicapper.m in Sources */,
+				7A0CD1E5193633FA00242B80 /* NSString+ECStringValidator.m in Sources */,
 				7A12473A1915D6F400494FEE /* ECTrackStats.m in Sources */,
 				7AF939311891B4A400E22398 /* ECEntry.m in Sources */,
 				7A1247281915D6F300494FEE /* ECFarTurnStats.m in Sources */,
@@ -477,7 +478,6 @@
 				7AB3B3BF18340BBC0089C80C /* ECTrainigRaceRecord.m in Sources */,
 				7AD7104A191F164D00794F70 /* ECDna.m in Sources */,
 				7A1247221915D6F300494FEE /* ECPostStats.m in Sources */,
-				7A699BAA184050370000E6B8 /* NSString+ECStringValidizer.m in Sources */,
 				7AB3B3BC182F03200089C80C /* ECRacePayouts.m in Sources */,
 				7A1247311915D6F400494FEE /* ECMarathonRaceStats.m in Sources */,
 				7A12472E1915D6F300494FEE /* ECThreeTurnRaceStats.m in Sources */,

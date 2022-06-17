@@ -48,8 +48,9 @@
 
 #pragma sharedMemory and CoreData methods
 + (id)sharedManager;
-
 + (void)updateAndSaveData;
+
+- (void)testDna;
 
 - (NSUInteger)returnGreatestValueForCalls:(NSArray*)raceCallsArray;
 - (void)printArray:(NSArray*)arrayToPrint;
@@ -68,13 +69,15 @@
 
 - (double)getBestTimeForRaceDistanceIndex:(NSUInteger)raceDxIndex
                                atTrackWithId:(NSString*)trackID;
-- (BOOL)isThisFallWord:(NSString*)testWord;
-- (BOOL)isThisLineDeclaredNoRace:(NSString*)firstLine;
+
 - (BOOL)isThisDistanceIndex:(NSUInteger)raceDistanceIndex
       modeledForTrackWithID:(NSString*)trackString;
-
 - (NSString*)getRaceClassStringFromSingleRaceString:(NSString*)singleRaceString;
 - (NSString*)getStringFromArray:(NSArray*)textLinesArray;
+
+- (NSString*)removeExtraSpacesFromString:(NSString*)originalString;
+- (BOOL)isThisLineDeclaredNoRace:(NSString*)firstLine;
+
 
 #pragma track statistics methods
 - (void)modelTracks;
@@ -99,7 +102,6 @@
 						mutationRate:(float)mutationRate
 							comments:(NSString*)comments;
 
-
 - (NSMutableArray*)createNewHandicappers;
 - (ECHandicapper*)createNewHandicapperForPopulation:(ECPopulation*)population
 									  forGeneration:(NSUInteger)birthGeneration;
@@ -121,6 +123,7 @@
 
 - (NSArray*)getWinPredictionsFromPopulation:(ECPopulation*)population
 									forRace:(ECTrainigRaceRecord*)raceRecord;
+- (void)analyzeRaceUsingTrainingRaceRecord:(ECTrainigRaceRecord*)trainingRaceRecord;
 
 #pragma tree methods
 - (ECTree*)createTreeForStrand:(NSUInteger)dnaStrand
@@ -145,6 +148,7 @@
 - (NSUInteger)getTreeNodeTypeAtLevel:(NSUInteger)level;
 - (void)freeTree:(ECTree*)node;
 
+//
 - (NSUInteger)getPastLineVariableForDnaStrand:(NSUInteger)dnaStrand;
 - (double)getLeafVariableValueForIndex:(NSUInteger)leafVariableIndex
 					fromPastLineRecord:(ECPastLineRecord*)pastLineRecord;
@@ -154,10 +158,9 @@
 
 - (NSUInteger)getIndexOfComma:(NSString*)inString;
 - (NSUInteger)getIndexOfClosedParen:(NSString*)inString;
-- (NSArray*)getTrainingRaceRecordsForResultsFileAtPath:(NSString*)resultsFileAtPath;
-- (ECTrainigRaceRecord*)getTrainingRaceRecordFromLines:(NSArray*)resultFileLines;
+- (ECTrainigRaceRecord*)getTrainingRaceRecordResultFileContents:(NSString*)resultFileContents;
 
-- (NSString*)removeExtraSpacesFromString:(NSString*)originalString;
+
 - (NSUInteger)getIndexOfFirstDateToken:(NSArray*)lineZeroTokens;
 - (NSUInteger)getRaceDxFromString:(NSString*)raceNumberString;
 - (NSString*)getMmSubstringFromSpelledMonth:(NSString*)spelledMonthString;

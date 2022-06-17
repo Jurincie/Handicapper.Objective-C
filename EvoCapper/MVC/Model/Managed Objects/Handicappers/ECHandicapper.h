@@ -2,7 +2,7 @@
 //  ECHandicapper.h
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 4/25/14.
+//  Created by Ron Jurincie on 5/29/14.
 //  Copyright (c) 2014 Ron Jurincie. All rights reserved.
 //
 
@@ -16,6 +16,7 @@
 @property (nonatomic, retain) NSNumber * birthGeneration;
 @property (nonatomic, retain) NSNumber * minimumNumberRaces;
 @property (nonatomic, retain) NSNumber * winThreshold;
+@property (nonatomic, retain) NSNumber * isaZombie;
 @property (nonatomic, retain) NSSet *bets;
 @property (nonatomic, retain) NSSet *bettingResults;
 @property (nonatomic, retain) ECDna *dna;

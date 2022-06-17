@@ -24,6 +24,7 @@
 - (id) initWithFunctionPointerIndex:(NSUInteger)funcPtrIndex;
 - (id) initWithConstantValue:(long double)c;
 - (id) initWithRaceVariable:(NSUInteger)raceVariableIndex;
+- (id) initWithBooleanNode;
 
 /***************/
 /* c functions */

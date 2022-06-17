@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13C1021" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13D65" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="ECBettingResults" representedClassName="ECBettingResults" syncable="YES">
         <attribute name="amountBet" optional="YES" attributeType="Float" defaultValueString="0" syncable="YES"/>
         <attribute name="amountWon" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
@@ -48,6 +48,7 @@
     </entity>
     <entity name="ECHandicapper" representedClassName="ECHandicapper" syncable="YES">
         <attribute name="birthGeneration" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="isaZombie" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="minimumNumberRaces" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="winThreshold" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <relationship name="bets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ECRaceBet" inverseName="handicapper" inverseEntity="ECRaceBet" syncable="YES"/>
@@ -142,16 +143,16 @@
         <element name="ECDna" positionX="-648" positionY="99" width="180" height="240"/>
         <element name="ECFarTurnStats" positionX="502" positionY="-171" width="128" height="118"/>
         <element name="ECFirstTurnStats" positionX="511" positionY="-325" width="128" height="118"/>
-        <element name="ECHandicapper" positionX="-1134" positionY="81" width="128" height="148"/>
-        <element name="ECMarathonRaceStats" positionX="-945" positionY="-243" width="128" height="118"/>
+        <element name="ECHandicapper" positionX="-1134" positionY="81" width="128" height="163"/>
+        <element name="ECMarathonRaceStats" positionX="-794" positionY="-243" width="128" height="118"/>
         <element name="ECPopulation" positionX="-963" positionY="228" width="128" height="193"/>
         <element name="ECPostStats" positionX="277" positionY="-279" width="128" height="165"/>
         <element name="ECRaceBet" positionX="-1161" positionY="-180" width="128" height="178"/>
         <element name="ECSprintRaceStats" positionX="538" positionY="92" width="128" height="103"/>
         <element name="ECSprintTurnStats" positionX="252" positionY="-99" width="128" height="88"/>
-        <element name="ECThreeTurnRaceStats" positionX="-954" positionY="-252" width="128" height="118"/>
+        <element name="ECThreeTurnRaceStats" positionX="-1017" positionY="-136" width="128" height="118"/>
         <element name="ECTracks" positionX="-1143" positionY="-396" width="128" height="60"/>
-        <element name="ECTrackStats" positionX="-900" positionY="-405" width="198" height="208"/>
-        <element name="ECTwoTurnRaceStats" positionX="-963" positionY="-261" width="128" height="118"/>
+        <element name="ECTrackStats" positionX="-855" positionY="-459" width="198" height="208"/>
+        <element name="ECTwoTurnRaceStats" positionX="-830" positionY="-127" width="128" height="118"/>
     </elements>
 </model>

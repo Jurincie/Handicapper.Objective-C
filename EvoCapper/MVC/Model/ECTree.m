@@ -19,7 +19,7 @@
 @synthesize leafVariableIndex   = _leafVariableIndex;
 @synthesize leafConstant        = _leafConstant;
 
-- (id) initWithFunctionPointerIndex:(NSUInteger)funcPtrIndex
+- (id)initWithFunctionPointerIndex:(NSUInteger)funcPtrIndex
 {
     if(self = [super init])
     {
@@ -81,7 +81,7 @@
     return self;
 }
 
-- (id) initWithConstantValue:(long double)c
+- (id)initWithConstantValue:(long double)c
 {
     if(self = [super init])
     {
@@ -97,7 +97,7 @@
     return self;
 }
 
-- (id) initWithRaceVariable:(NSUInteger)raceVariableIndex
+- (id)initWithRaceVariable:(NSUInteger)raceVariableIndex
 {
     if(self = [super init])
     {
@@ -113,7 +113,19 @@
     return self;
 }
 
-/**********************************************************/
+- (id) initWithBooleanNode
+{
+    if(self = [super init])
+    {
+        
+    }
+    
+    return self;
+}
+
+/***********************************************************
+            Mathematical C Functions
+***********************************************************/
 
 
 long double add(double a, double b)
@@ -150,7 +162,7 @@ long double squareRoot(double a)
 	}
 	else
 	{
-		answer = pow(a, .5);
+		answer = sqrt(a);
 	}
     
 	return answer;
