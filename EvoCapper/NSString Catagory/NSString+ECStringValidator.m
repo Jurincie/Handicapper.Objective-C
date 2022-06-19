@@ -2,7 +2,7 @@
 //  NSString+ECStringValidizer.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 11/22/13.
+//  Created by Ron Jurincie on 11/22/21.
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 

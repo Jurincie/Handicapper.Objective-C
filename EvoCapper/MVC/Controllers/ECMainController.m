@@ -2,7 +2,7 @@
 //  ECMainController.m
 //  EvoCapper
 //
-//  Created by Ron Jurincie on 10/23/13.
+//  Created by Ron Jurincie on 10/23/21.
 //  Copyright (c) 2013 Ron Jurincie. All rights reserved.
 //
 
